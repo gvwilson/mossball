@@ -12,10 +12,13 @@ def _():
 
 
 @app.cell
-def _():
+def _(mo):
     from mydemo import Widget
-    Widget()
-    return (Widget,)
+
+    widget = mo.ui.anywidget(Widget())
+
+    widget
+    return Widget, widget
 
 
 if __name__ == "__main__":
