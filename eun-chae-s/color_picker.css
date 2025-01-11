@@ -1,0 +1,30 @@
+.picker-widget {
+     div {
+        width: 100%;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+     }
+
+     button {
+        margin: 10px;
+        padding: 5px;
+        border-radius: 4px;
+        font-size: 1rem;
+        border: 1px solid black;
+        background-color: white;
+     }
+
+     button:hover {
+        background-color: azure;
+        color: black;
+     }
+
+     span {
+        background-color: white;
+        width: 50%;
+        text-align: center;
+     }
+ }

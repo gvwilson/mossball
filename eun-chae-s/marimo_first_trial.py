@@ -215,11 +215,25 @@ def _(ToggleWidget):
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(mo):
-    switch_get, switch_set = mo.state(False)
-    switch = mo.ui.switch(value=switch_get(), label="Turned on" if switch_get() else "Turned off", on_change=switch_set)
-    return switch, switch_get, switch_set
+    mo.md(r"""## Plugin 3""")
+    return
+
+
+@app.cell
+def _(anywidget, traitlets):
+    class ColorPickerWidget(anywidget.AnyWidget):
+        _esm = "color_picker.js"
+        _css = "color_picker.css"
+        colour = traitlets.Unicode("").tag(sync=True)
+    return (ColorPickerWidget,)
+
+
+@app.cell
+def _(ColorPickerWidget):
+    ColorPickerWidget()
+    return
 
 
 if __name__ == "__main__":
