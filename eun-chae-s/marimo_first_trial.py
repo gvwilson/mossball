@@ -41,7 +41,7 @@ def _(y):
 
 @app.cell
 def _(x):
-    y = x + 5
+    y = 2*x + 5
     return (y,)
 
 
@@ -53,7 +53,7 @@ def _():
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""## Plugin 1""")
+    mo.md(r"""## Plugin 1: Message""")
     return
 
 
@@ -132,7 +132,7 @@ def _(button, mo):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""## Plugin 2""")
+    mo.md(r"""## Plugin 2: Toggle""")
     return
 
 
@@ -217,7 +217,7 @@ def _(ToggleWidget):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""## Plugin 3""")
+    mo.md(r"""## Plugin 3: Colour Picker""")
     return
 
 
@@ -233,6 +233,28 @@ def _(anywidget, traitlets):
 @app.cell
 def _(ColorPickerWidget):
     ColorPickerWidget()
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""## Plugin 4: Timer""")
+    return
+
+
+@app.cell
+def _(anywidget, traitlets):
+    class TimerPickerWidget(anywidget.AnyWidget):
+        _esm = "timer.js"
+        _css = "timer.css"
+        pressed_stop = traitlets.Bool(False).tag(sync=True)
+        curr_val = traitlets.Int(0).tag(sync=True)
+    return (TimerPickerWidget,)
+
+
+@app.cell
+def _(TimerPickerWidget):
+    TimerPickerWidget()
     return
 
 
