@@ -9,8 +9,10 @@ def _():
     import marimo as mo
     import os
     from dotenv import load_dotenv
+    from openai import OpenAI
+    import random
     from SimpleWidget.src.simple_widget import EvenceWidget
-    return EvenceWidget, load_dotenv, mo, os
+    return EvenceWidget, OpenAI, load_dotenv, mo, os, random
 
 
 @app.cell
@@ -85,10 +87,7 @@ def _(adventure_choice, mo, name):
 
 
 @app.cell
-def _(adventure_choice, name, os):
-    from openai import OpenAI
-    import random
-
+def _(OpenAI, adventure_choice, name, os, random):
     client = OpenAI(
         api_key=os.environ.get("OPENAI_API_KEY"), 
     )
@@ -110,14 +109,12 @@ def _(adventure_choice, name, os):
         next_adventure = random.choice([a for a in adventures if a != adventure_choice.value])
         next_fact = generate_fun_fact(next_adventure)
     return (
-        OpenAI,
         adventures,
         chosen_fact,
         client,
         generate_fun_fact,
         next_adventure,
         next_fact,
-        random,
     )
 
 
