@@ -1,0 +1,28 @@
+.slides-widget {
+    text-align: center;
+}
+
+.slides-widget button {
+    margin: 10px;
+    padding: 5px 10px;
+    font-size: 1rem;
+    background-color: #1c7361;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.slides-widget button:disabled {
+    background-color: #afafaf;
+    cursor: default;
+}
+
+.slides-widget div {
+    margin: 10px;
+    padding: 100px 5px;
+    font-size: 2rem;
+    text-align: center;
+    border: 1px solid #1c7361;
+    border-radius: 5px;
+}
