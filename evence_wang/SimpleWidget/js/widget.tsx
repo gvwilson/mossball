@@ -3,7 +3,6 @@ import { createRender } from "@anywidget/react";
 import { useState, useRef, useEffect } from "react";
 import { Fireworks } from "@fireworks-js/react";
 import type { FireworksHandlers } from "@fireworks-js/react";
-import ReactMarkdown from "react-markdown";
 import "./widget.css";
 
 const render = createRender(() => {
@@ -29,13 +28,10 @@ const render = createRender(() => {
   return (
     <div className="hello_widget">
 		<button type="button" onClick={handleClick}>
-			Hello!
+			Enjoy some fireworks!
 		</button>
 		{showHello && (
 		<div>
-			<ReactMarkdown className="hello_text">
-				{"### 🎆 Hello World! 🎆"}
-			</ReactMarkdown>
 			<Fireworks
 			ref={ fireworksRef }
 			options={{
