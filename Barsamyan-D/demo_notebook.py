@@ -1,5 +1,6 @@
 import marimo
 
+
 __generated_with = "0.10.12"
 app = marimo.App(width="medium")
 
@@ -8,8 +9,31 @@ app = marimo.App(width="medium")
 def _():
     import marimo as mo
 
-    mo.md("#David's Marimo Plugin Demo")
+    mo.md("#David's Marimo Notebook Plugin Demo")
     return (mo,)
+
+
+@app.cell
+def _(mo):
+    f_name = mo.ui.text()
+    l_name = mo.ui.text()
+    mo.md(f"###Name: {f_name} <br> Last Name: {l_name}")
+    return f_name, l_name
+
+
+@app.cell
+def _(mo):
+    date = mo.ui.date()
+    mo.md(f"###Date: {date}")
+    return date
+
+
+
+@app.cell
+def _(mo):
+    mo.md("##Custom Scatter Plot Generator")
+    return mo
+
 
 
 @app.cell
@@ -69,6 +93,19 @@ def _(colour, mo, title, x_coords, y_coords):
     img_tag = f'<img src="data:image/png;base64,{img_str}" />'
     mo.md(img_tag)
     return ax, base64, buf, fig, img_str, img_tag, io, np, plt
+
+
+@app.cell
+def _(mo, date, f_name, l_name):
+    mo.md(f"""{f_name.value} {l_name.value}'s Scatter plot made on {date.value}.""")
+    return mo
+
+
+@app.cell
+def _(mo):
+    mo.md(f"""AnyWidget counter with Dynamically adjusted confetti.""")
+    return mo
+
 
 @app.cell
 def _():
