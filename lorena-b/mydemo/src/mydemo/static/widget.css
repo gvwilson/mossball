@@ -1,10 +1,10 @@
 .mydemo button {
 	background: linear-gradient(
 		300deg,
-		#9933ff 33.26%,
-		#ff6666 46.51%,
-		#faca30 59.77%,
-		#00cd99 73.03%,
+		#ff33c2 33.26%,
+		#bc75ce 46.51%,
+		#bb96de 59.77%,
+		#00a4cd 73.03%,
 		#00ccff 86.29%
 	);
 	border-radius: 10px;
@@ -20,4 +20,5 @@
 
 .mydemo button:hover {
 	transform: scale(1.05);
+	transform: opacity(0.5);
 }
