@@ -70,6 +70,22 @@ def _(colour, mo, title, x_coords, y_coords):
     mo.md(img_tag)
     return ax, base64, buf, fig, img_str, img_tag, io, np, plt
 
+@app.cell
+def _():
+    import anywidget
+    import traitlets
+
+    class CounterWidget(anywidget.AnyWidget):
+        _esm = "index.js"
+        _css = "index.css"
+        value = traitlets.Int(0).tag(sync=True)
+
+    w = CounterWidget()
+    w.value = 0
+    w
+    return w, anywidget, traitlets
+ 
+
 
 if __name__ == "__main__":
     app.run()

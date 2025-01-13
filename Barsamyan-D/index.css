@@ -1,0 +1,31 @@
+.counter-button {
+    background-color: #5acf3d;
+    border: 0;
+    border-radius: 10px;
+    padding: 10px 50px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.counter-button:hover {
+    background-color: #25c025;
+}
+
+.reset-button {
+    background-color: #ff6b6b;
+    border: 0;
+    border-radius: 10px;
+    padding: 10px 50px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.reset-button:hover {
+    background-color: #db1e1e;
+}
