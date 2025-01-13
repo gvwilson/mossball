@@ -1,0 +1,29 @@
+.hello_widget {
+	text-align: center;
+  }
+
+  .hello_widget button {
+	background: #87ceeb;
+	border-radius: 10px;
+	border: 0;
+	color: white;
+	cursor: pointer;
+	font-family: "Roboto", sans-serif;
+	font-size: 2em;
+	padding: 15px 30px;
+	transition: transform 0.25s ease-in-out;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	display: inline-block;
+	margin: 0 auto;
+  }
+
+  .hello_widget button:hover {
+	transform: scale(1.05);
+  }
+
+  .hello_widget .hello_text {
+	margin-top: 20px;
+	font-family: "Roboto", sans-serif;
+	font-size: 1.5em;
+	text-align: center;
+  }
