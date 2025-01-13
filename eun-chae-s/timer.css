@@ -1,0 +1,26 @@
+.timer-widget {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    #timer-text {
+        font-size: 2rem;
+    }
+  
+    button {
+        width: 150px;
+        border: 1px solid black;
+        margin: 5px;
+    }
+
+    button:hover {
+        background-color: cornflowerblue;
+        color: white;
+    }
+
+    #button-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
