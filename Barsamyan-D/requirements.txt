@@ -1,3 +1,2 @@
-marimo
 matplotlib
 numpy
