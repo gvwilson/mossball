@@ -154,17 +154,16 @@ D2L
 <li>Can be used in conjunction with other H5P content types: ex: fill in the blanks pop-up within a video (interactive video)</li>
 <li>There is a complex fill in the blanks content type that has advanced feedback and dropdown options</li>
 </ul></td>
-<td valign="top">
-Canvas:
-<ul>
+<td valign="top">Canvas:<ul>
 <li>No auto-check option: answers are only shown at the end of the quiz</li>
 <li>No hint tooltip functionality</li>
-<ul/>  
+</ul>
 Blackboard Learn:
 <ul>
 <li>Very similar to Canvas</li>
 <li>Supports regular expressions for answer matching</li>
 <li>Partial credit scoring option</li>
+</ul>
 </ul></td>
 <td valign="top"><ul>
 <li>A student mentioned that fill in the blanks exercises aren’t usually stimulating due to lack of visual elements, this H5P content type can be combined with other types to create a more visually engaging experience.</li>
@@ -174,13 +173,26 @@ Blackboard Learn:
 <tr>
 <td valign="top">Drag the words</td>
 <td valign="top"><ul>
-<li> *H5P LIST* </li>
+<li>User can drag words to fill in the blanks</li>
+<li>Can show hint tooltips to the user</li>
+<li>No rich text support</li>
+<li>Instant feedback option available</li>
+<li>Score with detailed feedback shown on submission</li>
+<li>For dragging words onto images: can use the drag and drop content type</li>
 </ul></td>
-<td valign="top">*OTHER PLATFORM*<ul>
-<li>*OTHER PLATFORM LIST*</li>
+<td valign="top">Blackboard Learn<ul>
+    <li>They don’t have a drag the words implementation, but they have picking the matching word from a dropdown</li>
+    <li>Multimedia support, can match pictures to words</li>
+    <li>Rich text support</li>
+  </ul>
+Moodle
+  <ul>
+    <li>Similar to H5P, but with rich text support and partial grading</li>
+    <li>Drag and drop onto image content type also available</li>
+  </ul>
 </ul></td>
 <td valign="top"><ul>
-<li>*SUMMARY LIST*</li>
+<li>H5P drag the words/drag and drop cover most functionality except for rich text support and partial scoring which are included in the Moodle implementation</li>
 </ul></td>
 </tr>
 
