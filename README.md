@@ -40,24 +40,27 @@ Below are a few of the H5P plugins suggested by professors and students, along w
 <tr>
 <td valign="top">Multiple Choice</td>
 <td valign="top"><ul>
-<li>Each choice is initially a grey box </li>
+<li>When there is only one correct answer, the selection symbol is a radio button; when there are multiple correct answers, the symbol is a checkbox</li>
+<li>Each choice is initially within a grey box </li>
 <li>When you hover over a choice, the colour of the box changes to light grey</li>
-<li>When you select the option, the colour changes to blue, the circle is filled in, and the whole box becomes outlined with a thicker blue border which becomes thinner again once you click away</li>
+<li>When you select the option, the colour of the box changes to blue, the radio button is filled in (or the checkbox is checkmarked), and the whole box becomes outlined with a thicker blue border which becomes thinner again once you click away</li>
 </ul></td>
-<td valign="top">Quercus<ul>
+<td valign="top">Canvas<ul>
 <li>All boxes are always white</li>
-<li>When the option is selected, only the circle is filled in</li>
+<li>When the option is selected, only the radio button is filled in</li>
 </ul>
 D2L
 <ul>
 <li>All boxes are initially white </li>
-<li>When you hover over it, the box changes to grey, and the circle’s outline becomes thicker and changes from grey to blue</li>
-<li>When you select an option, the box becomes blue and the circle is filled in; the outline remains blue until you click away on something else</li>
+<li>When you hover over it, the box changes to grey, and the outline of the radio button / checkbox becomes thicker and changes from grey to blue</li>
+<li>When you select an option, the box becomes blue and the button is filled in; the outline remains blue until you click away</li>
+<li>The specific widgets for when there is a single correct answer versus multiple are separated as “Multiple Choice” and “Multi-Set”</li>
 </ul></td>
 <td valign="top"><ul>
-<li>For quizzes, having the boxes and background as both white is more consistent and less distracting</li>
-<li>For small exercises in between a lecture or reading, giving the boxes a different colour can help the exercise to stand out from the rest of the page content; however, this might look awkward if the text for the choices is long or different sizes</li>
+<li>For quizzes, having the boxes and background as both white like Canvas is more consistent and less distracting</li>
+<li>For small exercises in between a lecture or reading, giving the boxes a different colour like H5P can help the exercise to stand out from the rest of the page content; however, this might look awkward if the options span multiple lines or of varying sizes</li>
 <li>Having the box change colour on hover and on click is useful, as makes it obvious to the student which option they selected</li>
+<li>Multiple choice questions can be embedded within lessons to test students’ knowledge while learning; Single Choice Set / Question Set can be used at the end of a module/lesson to review and solidify their understanding</li>
 </ul></td>
 </tr>
 
