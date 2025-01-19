@@ -48,7 +48,7 @@ Below are a few of the H5P plugins suggested by professors and students, along w
 <td valign="top">Canvas<ul>
 <li>All boxes are always white</li>
 <li>When the option is selected, only the radio button is filled in</li>
-</ul>
+</ul>  
 D2L
 <ul>
 <li>All boxes are initially white </li>
@@ -146,13 +146,29 @@ D2L
 <tr>
 <td valign="top">Fill in the blanks</td>
 <td valign="top"><ul>
-<li> *H5P LIST* </li>
+<li>Users can type their answers into the blanks</li>
+<li>It can be set to auto-check each response or check after all the blanks are filled</li>
+<li>Score is shown at the end and the user can reveal the solutions</li>
+<li>Multimedia support, can add an image or video</li>
+<li>Functionality to show hint tooltips to the user</li>
+<li>Can be used in conjunction with other H5P content types: ex: fill in the blanks pop-up within a video (interactive video)</li>
+<li>There is a complex fill in the blanks content type that has advanced feedback and dropdown options</li>
 </ul></td>
-<td valign="top">*OTHER PLATFORM*<ul>
-<li>*OTHER PLATFORM LIST*</li>
+<td valign="top">
+Canvas:
+<ul>
+<li>No auto-check option: answers are only shown at the end of the quiz</li>
+<li>No hint tooltip functionality</li>
+<ul/>  
+Blackboard Learn:
+<ul>
+<li>Very similar to Canvas</li>
+<li>Supports regular expressions for answer matching</li>
+<li>Partial credit scoring option</li>
 </ul></td>
 <td valign="top"><ul>
-<li>*SUMMARY LIST*</li>
+<li>A student mentioned that fill in the blanks exercises aren’t usually stimulating due to lack of visual elements, this H5P content type can be combined with other types to create a more visually engaging experience.</li>
+<li>H5P has more features than what is seen on other platforms, but is missing partial credit scoring and regex support.</li>
 </ul></td>
 </tr>
 <tr>
