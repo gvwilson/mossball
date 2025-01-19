@@ -20,6 +20,18 @@ multiple choice, fill in the blanks, and so on.
 
 You may also want to clone the [Marimo repository][marimo-repo].
 
+## Research and Possible Plugins
+
+### Initial Feedback and General Findings
+
+### Suggested H5P Plugins and Comparisons to Other Implementations
+
+| **Widget**      | **H5P Features** | **Other Implementation(s)** |
+|-----------------|------------------|-----------------------------|
+| Multiple Choice |                  |                             |
+|                 |                  |                             |
+|                 |                  |                             |
+
 [anywidget]: https://anywidget.dev/
 [h5p]: https://h5p.org/content-types-and-applications
 [marimo]: https://marimo.io/
