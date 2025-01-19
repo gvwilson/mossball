@@ -29,6 +29,8 @@ You may also want to clone the [Marimo repository][marimo-repo].
 Below are a few of the H5P plugins suggested by professors and students, along with some differences noted between the H5P versions and those from other online learning platforms:
 
 <table>
+
+<!-- Cassandra -->
 <tr>
 <th>Widget</th>
 <th>H5P Features</th>
@@ -57,9 +59,10 @@ D2L
 <li>For small exercises in between a lecture or reading, giving the boxes a different colour can help the exercise to stand out from the rest of the page content; however, this might look awkward if the text for the choices is long or different sizes</li>
 <li>Having the box change colour on hover and on click is useful, as makes it obvious to the student which option they selected</li>
 </ul></td>
+</tr>
 
 <tr>
-<td valign="top">*WIDGET*</td>
+<td valign="top">Sort the paragraphs</td>
 <td valign="top"><ul>
 <li> *H5P LIST* </li>
 </ul></td>
@@ -71,6 +74,110 @@ D2L
 </ul></td>
 </tr>
 
+<!-- Rachel -->
+<tr>
+<td valign="top">Branching Scenario</td>
+<td valign="top"><ul>
+<li> *H5P LIST* </li>
+</ul></td>
+<td valign="top">*OTHER PLATFORM*<ul>
+<li>*OTHER PLATFORM LIST*</li>
+</ul></td>
+<td valign="top"><ul>
+<li>*SUMMARY LIST*</li>
+</ul></td>
+</tr>
+<tr>
+<td valign="top">Chart</td>
+<td valign="top"><ul>
+<li> *H5P LIST* </li>
+</ul></td>
+<td valign="top">*OTHER PLATFORM*<ul>
+<li>*OTHER PLATFORM LIST*</li>
+</ul></td>
+<td valign="top"><ul>
+<li>*SUMMARY LIST*</li>
+</ul></td>
+</tr>
+
+
+<!-- Evence -->
+<tr>
+<td valign="top">Course Presentation</td>
+<td valign="top"><ul>
+<li> *H5P LIST* </li>
+</ul></td>
+<td valign="top">*OTHER PLATFORM*<ul>
+<li>*OTHER PLATFORM LIST*</li>
+</ul></td>
+<td valign="top"><ul>
+<li>*SUMMARY LIST*</li>
+</ul></td>
+</tr>
+<tr>
+<td valign="top">Interactive Video</td>
+<td valign="top"><ul>
+<li> *H5P LIST* </li>
+</ul></td>
+<td valign="top">*OTHER PLATFORM*<ul>
+<li>*OTHER PLATFORM LIST*</li>
+</ul></td>
+<td valign="top"><ul>
+<li>*SUMMARY LIST*</li>
+</ul></td>
+</tr>
+
+<!-- Lorena -->
+<tr>
+<td valign="top">Fill in the blanks</td>
+<td valign="top"><ul>
+<li> *H5P LIST* </li>
+</ul></td>
+<td valign="top">*OTHER PLATFORM*<ul>
+<li>*OTHER PLATFORM LIST*</li>
+</ul></td>
+<td valign="top"><ul>
+<li>*SUMMARY LIST*</li>
+</ul></td>
+</tr>
+<tr>
+<td valign="top">Drag the words</td>
+<td valign="top"><ul>
+<li> *H5P LIST* </li>
+</ul></td>
+<td valign="top">*OTHER PLATFORM*<ul>
+<li>*OTHER PLATFORM LIST*</li>
+</ul></td>
+<td valign="top"><ul>
+<li>*SUMMARY LIST*</li>
+</ul></td>
+</tr>
+
+<!-- David -->
+<tr>
+<td valign="top">Interactive Book</td>
+<td valign="top"><ul>
+<li> *H5P LIST* </li>
+</ul></td>
+<td valign="top">*OTHER PLATFORM*<ul>
+<li>*OTHER PLATFORM LIST*</li>
+</ul></td>
+<td valign="top"><ul>
+<li>*SUMMARY LIST*</li>
+</ul></td>
+</tr>
+<tr>
+<td valign="top">Structure Strip</td>
+<td valign="top"><ul>
+<li> *H5P LIST* </li>
+</ul></td>
+<td valign="top">*OTHER PLATFORM*<ul>
+<li>*OTHER PLATFORM LIST*</li>
+</ul></td>
+<td valign="top"><ul>
+<li>*SUMMARY LIST*</li>
+</ul></td>
+</tr>
 </table>
 
 
