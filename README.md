@@ -27,7 +27,7 @@ You may also want to clone the [Marimo repository][marimo-repo].
 * Many professors and students preferred straightforward, simple, and common exercises like multiple choice, fill in the blank, and true or false
 * Professors also found more unique widgets to be useful for the specific courses that they teach
     * For example, the professor who teaches a Machine Learning course shares their opinion that it would be useful to see widgets where students can interact with the data, such as drawing decision boundaries.
-* Students overall chose more interactive and quick activities like Drag the Words or Sort the Paragraphs over ones that required more writing or detail like Essay 
+* Students overall chose more interactive and quick activities like Drag the Words or Sort the Paragraphs over ones that required more writing or detail like Essay
 * Professors also chose interactive activities but recommended against gamification and relying on too many images
 
 ### Suggested H5P Plugins and Comparisons to Other Implementations
@@ -54,7 +54,7 @@ Below are a few of the H5P plugins suggested by professors and students, along w
 <td valign="top">Canvas<ul>
 <li>All boxes are always white</li>
 <li>When the option is selected, only the radio button is filled in</li>
-</ul>  
+</ul>
 D2L
 <ul>
 <li>All boxes are initially white </li>
@@ -138,25 +138,38 @@ D2L
 <tr>
 <td valign="top">Course Presentation</td>
 <td valign="top"><ul>
-<li> *H5P LIST* </li>
+<li>Allows creating slideshows with minor customizations</li>
+<li>Ability to embed interactive modules such as quizzes, videos, pop-ups in simple drag-and-drop format</li>
+<li>Navigation control for jumping and restricting slides; support for branching paths</li>
+<li>Easy and intuitive interface</li>
 </ul></td>
-<td valign="top">*OTHER PLATFORM*<ul>
-<li>*OTHER PLATFORM LIST*</li>
+<td valign="top">reveal.js (Moodle plugin)<ul>
+<li>Requires HTML or Markdown for slide creation</li>
+<li>Minimal ability for interactivity unless custom code is added</li>
+<li>Supports vertical transitions on top of traditional horizontal transition, allows for in depth context addition and clearer branching logic</li>
+<li>Would be extremely difficult to use for users without prior coding background</li>
 </ul></td>
 <td valign="top"><ul>
-<li>*SUMMARY LIST*</li>
+<li>H5P is easy to use and great for building interactive presentations without the need for complex logic or coding knowledge</li>
+<li>reveal.js allows for more customization but is more suitable for those comfortable with coding</li>
+<li>H5P has limited granularity for feedback and lacks advanced customization</li>
 </ul></td>
 </tr>
 <tr>
 <td valign="top">Interactive Video</td>
 <td valign="top"><ul>
-<li> *H5P LIST* </li>
-</ul></td>
-<td valign="top">*OTHER PLATFORM*<ul>
-<li>*OTHER PLATFORM LIST*</li>
+<li>Embed modules at specific timestamps</li>
+<li>Auto-pause, navigation control (guiding based on quiz answer)</li>
+<li>Bookmark support for quick jumps</li>
+<li>Reusable across all platforms that supports H5P</li>
 </ul></td>
 <td valign="top"><ul>
-<li>*SUMMARY LIST*</li>
+<li>Platforms like Udemy, Coursera, etc. provide exercises paired with video content as well but lack true interactivity integration like H5P did with the video plugin</li>
+</ul></td>
+<td valign="top"><ul>
+<li>H5P provides interactive learning features such as other H5P plugins, which offers the users a great ecosystem</li>
+<li>H5P offers no video manipulation features, requiring the use of pre-edited videos</li>
+<li>Again H5P lacks granularity for feedback and lacks advanced customization capabilities, so educators could possibility lose out on important insights</li>
 </ul></td>
 </tr>
 
@@ -262,7 +275,7 @@ Moodle
 </table>
 
 ### Other recommended widgets:
-* Quiz (Question Set) 
+* Quiz (Question Set)
     * Useful in between lessons or at the end of modules to reinforce students’ understanding with different types of questions available (multiple choice, fill in the blanks, drag the words, etc.)
 * Cornell Notes
     * Useful for taking notes while watching a video or reading
