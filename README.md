@@ -245,9 +245,6 @@ Moodle
     * Similar to many students’ studying methods
 * True/False
     * Useful to test students’ knowledge, similar to Multiple Choice
-* Interactive Video 
-    * Useful if videos are already a part of the lesson module
-    * Allows students to interact and engage in the lesson (similar to when professors ask questions or let students work through problems during class) rather than passively listening (like with PCRS, for example)
 
 
 [anywidget]: https://anywidget.dev/
