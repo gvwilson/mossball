@@ -95,25 +95,40 @@ D2L
 <tr>
 <td valign="top">Branching Scenario</td>
 <td valign="top"><ul>
-<li> *H5P LIST* </li>
+<li> Can embed video, as well as other components like image, course presentation, interactive video </li>
+<li>On the top left corner, it shows the option that I selected in the previous question</li>
+<li>Whenever I select not the best / incorrect answer, then it shows the popup to retry the question</li>
+<li>On the top right corner, there is a “Proceed” button in which the user can skip the video and get the next question to answer</li>
 </ul></td>
-<td valign="top">*OTHER PLATFORM*<ul>
-<li>*OTHER PLATFORM LIST*</li>
+<td valign="top">Elucidat<ul>
+<li>Mostly similar to H5P component</li>
+<li>There is a navigation bar on the top right corner where you can check the list of contents</li>
+<li>(At least for this demo), we can see the overview of selections in the end</li>
 </ul></td>
 <td valign="top"><ul>
-<li>*SUMMARY LIST*</li>
+<li>There’s no big difference between plugins between different platforms</li>
+<li>H5P’s version supports an integration to various contents</li>
+<li>Both plugins show a quick feedback upon the selection</li>
+<li>Having “Proceed” or navigation button could make less boredom for users</li>
 </ul></td>
 </tr>
 <tr>
 <td valign="top">Chart</td>
 <td valign="top"><ul>
-<li> *H5P LIST* </li>
+<li>There’s a limitation of supporting only two types of charts: bar and pie chart</li>
+<li>Each element in the chart is not interactive, i.e. when hovering over the element, there is no popup</li>
+<li>For implementation aspect, user can add label and value to each data element, select background/font color for each data element</li>
+<li>But it requires to input data manually</li>
 </ul></td>
-<td valign="top">*OTHER PLATFORM*<ul>
-<li>*OTHER PLATFORM LIST*</li>
+<td valign="top">JSXGraph (Moodle’s plugin)<ul>
+<li>There are interactive tools that can manipulate the bars in the chart, move around the graph</li>
+<li>They have more chart types than H5P charts - Line, Spline, Multiple, Horizontal, Regression, etc.</li>
+<li>Except for dynamic data chart, a user can only hover the data elements in the context of interaction</li>
+
 </ul></td>
 <td valign="top"><ul>
-<li>*SUMMARY LIST*</li>
+<li>The chart widget from H5P is more for representation than interaction</li>
+<li>There are only two chart types supported in H5P while Moodle’s JSXGraph supports a variety of charts</li>
 </ul></td>
 </tr>
 
@@ -235,6 +250,8 @@ Moodle
     * Similar to many students’ studying methods
 * True/False
     * Useful to test students’ knowledge, similar to Multiple Choice
+* Gamification-related components
+    * useful to motivate students to accomplish learning
 
 
 [anywidget]: https://anywidget.dev/
