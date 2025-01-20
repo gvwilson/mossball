@@ -245,6 +245,8 @@ Moodle
     * Similar to many students’ studying methods
 * True/False
     * Useful to test students’ knowledge, similar to Multiple Choice
+* Gamification-related components
+    * useful to motivate students to accomplish learning
 
 
 [anywidget]: https://anywidget.dev/
