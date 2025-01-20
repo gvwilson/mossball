@@ -24,6 +24,11 @@ You may also want to clone the [Marimo repository][marimo-repo].
 
 ### Initial Feedback and General Findings
 
+* Many professors and students preferred straightforward, simple, and common exercises like multiple choice, fill in the blank, and true or false
+* Professors also found more unique widgets to be useful for the specific courses that they teach
+* Students overall chose more interactive and quick activities like Drag the Words or Sort the Paragraphs over ones that required more writing or detail like Essay 
+* Professors also chose interactive activities but recommended against gamification and relying on too many images
+
 ### Suggested H5P Plugins and Comparisons to Other Implementations
 
 Below are a few of the H5P plugins suggested by professors and students, along with some differences noted between the H5P versions and those from other online learning platforms:
