@@ -241,13 +241,22 @@ Moodle
 <tr>
 <td valign="top">Structure Strip</td>
 <td valign="top"><ul>
-<li> *H5P LIST* </li>
+<li> Includes information popups that explain each section, helping users understand what to do in each part of the structure strip. </li>
+<li> Allows users to instantly check their answers and provides feedback specific to their responses for each row. </li>
+<li> Enables users to copy their answers to the clipboard to save their work. </li>
 </ul></td>
-<td valign="top">*OTHER PLATFORM*<ul>
-<li>*OTHER PLATFORM LIST*</li>
+<td valign="top">Canvas<ul>
+<li> Includes a grading scheme for the assignment and individual sections. </li>
+<li> Allows modifications to row names and section details. </li>
+<li> Saves grades from the rubric for students. </li>
+<li> Enables editing of the title, sections, descriptions, and points for each row. </li>
+<li> Calculates the total grade by summing the points for each section. </li>
 </ul></td>
 <td valign="top"><ul>
-<li>*SUMMARY LIST*</li>
+<li> H5P’s instant feedback is helpful, but adding a grading system (points per row) like Canvas rubrics would improve assessment. </li>
+<li> H5P doesn’t allow editing row titles or number of rows, unlike Canvas rubrics, limiting customization. </li>
+<li> H5P only supports clipboard copying, but adding a PDF export option would improve usability. </li>
+<li> A rich text editor with formatting (e.g., bullet points, word count) in H5P would help users better structure their answers. </li>
 </ul></td>
 </tr>
 </table>
