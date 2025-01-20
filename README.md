@@ -26,6 +26,7 @@ You may also want to clone the [Marimo repository][marimo-repo].
 
 * Many professors and students preferred straightforward, simple, and common exercises like multiple choice, fill in the blank, and true or false
 * Professors also found more unique widgets to be useful for the specific courses that they teach
+    * For example, the professor who teaches a Machine Learning course shares their opinion that it would be useful to see widgets where students can interact with the data, such as drawing decision boundaries.
 * Students overall chose more interactive and quick activities like Drag the Words or Sort the Paragraphs over ones that required more writing or detail like Essay 
 * Professors also chose interactive activities but recommended against gamification and relying on too many images
 
@@ -250,8 +251,6 @@ Moodle
     * Similar to many students’ studying methods
 * True/False
     * Useful to test students’ knowledge, similar to Multiple Choice
-* Gamification-related components
-    * useful to motivate students to accomplish learning
 
 
 [anywidget]: https://anywidget.dev/
