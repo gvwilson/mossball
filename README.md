@@ -224,11 +224,18 @@ Moodle
 <li> Unique URLs for each page, allowing direct links to specific sections. </li>
 <li> Embedded YouTube videos for multimedia content. </li>
 </ul></td>
-<td valign="top">*OTHER PLATFORM*<ul>
-<li>*OTHER PLATFORM LIST*</li>
+<td valign="top">Genially<ul>
+<li> Embedding of content types such as maps, social networks, music, videos, and audio. </li>
+<li> Quizzes included in interactive books. Tools for creating graphics, charts, tables, and timelines. </li>
+<li> On-click interactive elements like lists, tables, timelines and dropdowns. </li>
+<li> Does not support drag-and-drop interactions. </li>
+<li> Does not provide unique URLs for individual pages. </li>
 </ul></td>
 <td valign="top"><ul>
-<li>*SUMMARY LIST*</li>
+<li> H5P offers more quiz types, instant grading, and retry options, while Genially’s quizzes are simpler and lack these features. </li>
+<li> Genially offers more multimedia embedding, while H5P is just interactive videos. </li>
+<li> H5P includes drag-and-drop features, while Genially offers on-click elements like dropdowns and expandable lists. </li>
+<li> Both H5P and Genially have similar interactive options, but Genially offers more tools for creating content like charts, timelines and graphs. </li>
 </ul></td>
 </tr>
 <tr>
