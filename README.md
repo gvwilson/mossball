@@ -69,23 +69,20 @@ D2L
 <td valign="top"><ul>
 <li>Each step is in a separate box with arrows on the right to swap the current box with the one above/below</li>
 <li>The box can also be dragged to the desired position and the rest of the boxes will be shifted accordingly</li>
-<li>The position that the selected step will be placed in is highlighted in a blue colour, making it clear and obvious where it will end up after dragging</li>
-<li>No clear drag and drop symbol or indication </li>
-<li>On hover, the cursor changes to the “move” cursor; while dragging, it becomes the “drop” cursor</li>
+<li>The step becomes blue once dragged and the box that it is held over gets a dotted border instead of a solid one</li>
+<li>No clear drag and drop symbol or indication</li>
 </ul></td>
 <td valign="top">D2L Creator+ (extra D2L package)<ul>
 <li>Also has the ability to drag the box similar to H5P, but has no arrows</li>
 <li>To the left of the box containing the step is a segment containing an extra description (e.g., “Step 1”) and a drop down selection — students can select which step to place in the current box rather than dragging</li>
-<li>The colour of the box remains white even while dragging, but the position that the step will be placed in is outlined in a blue dotted border (not as obvious as H5P)</li>
-<li>The draggable box contains a “drag dots” symbol, clearly indicating that the step can be moved </li>
-<li>On hover, the cursor changes to the “grab” cursor; while dragging, it becomes the “drop” cursor</li>
+<li>The colour of the box remains white, but the position that the step will be placed in is outlined in a thick blue dotted border (not as obvious as H5P)</li>
+<li>The draggable box contains a “drag dots” symbol</li>
 </ul></td>
 <td valign="top"><ul>
-<li>The dropdown feature of D2L’s widget is overall more convenient and less tedious compared to the H5P version with arrows</li>
-<li>The dropdown selection also allows the widget to be used like a matching exercise instead of only a sorting activity</li>
+<li>The dropdown feature from D2L is more convenient and less tedious compared to the H5P version with arrows</li>
+<li>The dropdown selection allows the widget to be used like a matching exercise instead of only a sorting activity</li>
 <li>Having the entire box be highlighted in a different colour rather than just the border can be helpful for the student to clearly identify where they will be placing the step</li>
 <li>The drag dots symbol is important to clearly indicate that the box can be dragged (with the H5P version, students may think that they can only use the arrows to reorder the steps)</li>
-<li>The cursor changing on hover and while moving is important to indicate that the box can dragged and dropped</li>
 </ul></td>
 </tr>
 
@@ -222,6 +219,20 @@ Moodle
 </ul></td>
 </tr>
 </table>
+
+### Other recommended widgets:
+* Quiz (Question Set) 
+    * Useful in between lessons or at the end of modules to reinforce students’ understanding with different types of questions available (multiple choice, fill in the blanks, drag the words, etc.)
+* Cornell Notes
+    * Useful for taking notes while watching a video or reading
+* Dialog Cards
+    * Useful for students to do a quick self-check of whether they understood the material
+    * Similar to many students’ studying methods
+* True/False
+    * Useful to test students’ knowledge, similar to Multiple Choice
+* Interactive Video 
+    * Useful if videos are already a part of the lesson module
+    * Allows students to interact and engage in the lesson (similar to when professors ask questions or let students work through problems during class) rather than passively listening (like with PCRS, for example)
 
 
 [anywidget]: https://anywidget.dev/
