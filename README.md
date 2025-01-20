@@ -218,7 +218,11 @@ Moodle
 <tr>
 <td valign="top">Interactive Book</td>
 <td valign="top"><ul>
-<li> *H5P LIST* </li>
+<li> Embedded course presentation slides within the interactive book. </li>
+<li> Quiz types include multiple-choice, drag-and-drop words, drag-and-drop images, and fill-in-the-blanks. </li>
+<li> Instant grading for quizzes, with results shown and retry options available. </li>
+<li> Unique URLs for each page, allowing direct links to specific sections. </li>
+<li> Embedded YouTube videos for multimedia content. </li>
 </ul></td>
 <td valign="top">*OTHER PLATFORM*<ul>
 <li>*OTHER PLATFORM LIST*</li>
