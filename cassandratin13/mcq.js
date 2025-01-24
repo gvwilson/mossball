@@ -1,3 +1,11 @@
+/**
+ * Creates an HTML element with the given attributes
+ * @param {String} tag The HTML tag of the element
+ * @param {Objects} attributes The attributes to apply to the element
+ * @param {String|Array} classNames The class(es) to apply to the element
+ * @param {Array} children The children to append to the element 
+ * @returns The created HTML element
+ */
 function createElement(tag, { classNames = "", children = [], ...attrs} = {}) {
     const element = document.createElement(tag);
     if (classNames) element.classList.add(...[].concat(classNames));
@@ -8,8 +16,13 @@ function createElement(tag, { classNames = "", children = [], ...attrs} = {}) {
     return element;
 }
 
-function createModal() {
-    let warningMessage = createElement("p", { textContent: "Warning: Question unanswered! \nPlease select an option to submit."});
+/**
+ * Creates a modal pop-up and an overlay that darkens the background and prevents anything else from being clicked
+ * @param {String} message The message shown in the modal
+ * @returns The modal and the overlay elements
+ */
+function createModal(message) {
+    let warningMessage = createElement("p", { textContent: message});
     let warning = createElement("div", { classNames: "modal-content", children: [warningMessage] });
     let okButton = createElement("button", { classNames: "okButton", textContent: "OK"});
     let modal = createElement("div", { classNames: "modal", children: [warning, okButton] });
@@ -22,11 +35,25 @@ function createModal() {
     return [modal, overlay];
 }
 
+/**
+ * Changes the modal and overlay's display attributes to make the model appear on screen
+ * @param {HTMLElement} modal The modal element to display
+ * @param {HTMLElement} overlay The overlay element to display
+ */
 function showModal(modal, overlay) {
     modal.style.display = "block";
     overlay.style.display = "block";
 }
 
+/**
+ * Checks whether the selected option is correct and shows the results on screen
+ * @param {Number} currOption The index of the currently selected option within the list of options
+ * @param {Number} correctOption The index of the correct option within the list of options
+ * @param {HTMLElement} el The widget element
+ * @param {HTMLElement} result The element displaying the result of the answered question
+ * @param {HTMLElement} mc The multiple question form element
+ * @param {HTMLElement} restart_button The button to try again
+ */
 function checkAnswer(currOption, correctOption, el, result, mc, restart_button) {  
     // Add an icon before the selected option 
     let selected = mc.children[currOption];
@@ -51,13 +78,21 @@ function checkAnswer(currOption, correctOption, el, result, mc, restart_button) 
     disableChoices(mc);
 }
 
-function disableChoices(form) {
-    for (const child of form.children) {
+/**
+ * Disable the options in the multiple choice form
+ * @param {HTMLElement} mc The multiple choice form
+ */
+function disableChoices(mc) {
+    for (const child of mc.children) {
         child.disabled = true;
         child.classList.add("disabled");
     }
 }
 
+/**
+ * Reset the multiple choice form so that no option is currently selected
+ * @param {HTMLElement} mc The multiple choice form
+ */
 function restart(mc) {
     Array.from(mc.children).forEach((child, index) => {
         child.disabled = false;
@@ -71,6 +106,13 @@ function restart(mc) {
     });
 }
 
+/**
+ * Create a container element for an option in the multiple choice form, containing a radio button and label
+ * @param {String} option The label for the option
+ * @param {Number} index The index of the option within the list of options
+ * @param {DOMWidgetModel} model The widget model
+ * @returns The container element
+ */
 function createOption(option, index, model) {
     let radio_button = createElement("input", { type: "radio", name: "choices", value: option });
     let label = createElement("label", { classNames: "label", innerHTML: option });
@@ -117,7 +159,7 @@ function render({ model, el }) {
         result.style.display = "none";
     });
 
-    let [modal, overlay] = createModal();
+    let [modal, overlay] = createModal("Warning: Question unanswered! \nPlease select an option to submit.");
 
     // Create radio button, label, and container for each option
     options.forEach((option, index) => {
@@ -142,6 +184,7 @@ function render({ model, el }) {
 export default { render };
 
 
+// SVG constants (TODO: Move these to a separate file and import)
 const checkmarkCircleSVG = `<svg viewBox="0 0 24 24" fill="none" 
                             xmlns="http://www.w3.org/2000/svg" class="checkmark-circle"
                             stroke="#ffffff"><g id="SVGRepo_bgCarrier" 
