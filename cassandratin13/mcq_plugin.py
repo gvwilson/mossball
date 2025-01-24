@@ -20,13 +20,13 @@ def _():
 
     mcQuestion = "What is the capital city of Ontario?"
     mcOptions = ["Ottawa", "Toronto", "Vancouver", "Montreal"]
-    correct = 1
+    answer = 1
 
-    MultipleChoice(question=mcQuestion, options=mcOptions, correctOption=correct)
+    MultipleChoice(question=mcQuestion, options=mcOptions, correctOption=answer)
     return (
         MultipleChoice,
+        answer,
         anywidget,
-        correct,
         mcOptions,
         mcQuestion,
         mo,
