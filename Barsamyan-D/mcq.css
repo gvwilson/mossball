@@ -1,0 +1,39 @@
+.mcq-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.mcq-question {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+.mcq-button {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.mcq-button:hover {
+    background-color: #f0f0f0;
+}
+
+.mcq-button.correct {
+    background-color: #e6ffe6;
+    border-color: #00cc00;
+}
+
+.mcq-button.incorrect {
+    background-color: #ffe6e6;
+    border-color: #ff0000;
+}
