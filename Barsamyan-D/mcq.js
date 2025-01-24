@@ -51,25 +51,10 @@ function render({ model, el }) {
     instructionElem.textContent = model.get("instruction");
     container.appendChild(instructionElem);
 
-    // Create modal
-    const modal = document.createElement("div");
-    modal.className = "mcq-modal";
-    const modalContent = document.createElement("div");
-    modalContent.className = "mcq-modal-content";
-    modalContent.innerHTML = `
-        <p>⚠️ Please select an answer first!</p>
-        <button class="mcq-modal-close">OK</button>
-    `;
-    modal.appendChild(modalContent);
-
     // Submit handler
     submitButton.addEventListener("click", () => {
-        if (model.get("selected") === -1) {
-            modal.style.display = "flex";
-        } else {
-            model.set("submitted", true);
-            model.save_changes();
-        }
+        model.set("submitted", true);
+        model.save_changes();
     });
 
     // Retry handler
@@ -83,11 +68,6 @@ function render({ model, el }) {
         retryButton.style.display = "none";
         submitButton.style.display = "inline-block";
         instructionElem.textContent = model.get("instruction");
-    });
-
-    // Modal close handler
-    modal.querySelector(".mcq-modal-close").addEventListener("click", () => {
-        modal.style.display = "none";
     });
 
     // Update UI on state changes
@@ -118,7 +98,7 @@ function render({ model, el }) {
         }
     });
 
-    container.append(choicesContainer, buttonContainer, modal);
+    container.append(choicesContainer, buttonContainer);
     buttonContainer.append(submitButton, retryButton);
     el.appendChild(container);
 }
