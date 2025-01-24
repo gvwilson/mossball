@@ -1,0 +1,30 @@
+{
+    "questions": [
+      {
+        "question": "What is the capital of France?",
+        "options": ["Berlin", "Madrid", "Paris", "Rome"],
+        "correct_answer": 2
+      },
+      {
+        "question": "Which programming language is known as the backbone of web development?",
+        "options": ["Python", "JavaScript", "C++", "Ruby"],
+        "correct_answer": 1
+      },
+      {
+        "question": "What is the largest planet in our solar system?",
+        "options": ["Earth", "Mars", "Jupiter", "Saturn"],
+        "correct_answer": 2
+      },
+      {
+        "question": "Which element has the chemical symbol 'O'?",
+        "options": ["Oxygen", "Gold", "Silver", "Osmium"],
+        "correct_answer": 0
+      },
+      {
+        "question": "What is the speed of light in vacuum?",
+        "options": ["300,000 km/s", "150,000 km/s", "75,000 km/s", "450,000 km/s"],
+        "correct_answer": 0
+      }
+    ]
+  }
+  
