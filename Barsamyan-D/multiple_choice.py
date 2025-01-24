@@ -17,7 +17,7 @@ def _(mo):
 
 
 @app.cell
-def _(__file__):
+def _():
     import anywidget
     import traitlets
 
@@ -29,28 +29,26 @@ def _(__file__):
         choices = traitlets.List().tag(sync=True)
         answer = traitlets.Int().tag(sync=True)
         selected = traitlets.Int(-1).tag(sync=True)
+        submitted = traitlets.Bool(False).tag(sync=True)
+        instruction = traitlets.Unicode().tag(sync=True)
+        is_correct = traitlets.Bool(False).tag(sync=True)
+
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.observe(self._validate_answer, names=["selected"])
+
+        def _validate_answer(self, change):
+            self.is_correct = (self.selected == self.answer)
 
     q1 = MultipleChoiceWidget(
         question="What is the chemical symbol for gold?",
         choices=["Fe", "Ag", "Au", "Pb"],
-        answer=2
+        answer=2,
+        instruction="Select an answer and click Submit"
     )
+
     q1
     return MultipleChoiceWidget, anywidget, q1, traitlets
-
-
-@app.cell
-def _(mo, q1):
-    # Display results
-    feedback = mo.md("Select an answer above")
-    if q1.selected != -1:
-        is_correct = q1.selected == q1.answer
-        feedback = mo.md(f"""
-        **Your answer:** {q1.choices[q1.selected]}  
-        {"✅ Correct!" if is_correct else "❌ Incorrect - Try again!"}
-        """)
-    feedback
-    return feedback, is_correct
 
 
 if __name__ == "__main__":
