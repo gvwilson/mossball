@@ -54,7 +54,7 @@ function showModal(modal, overlay) {
  * @param {HTMLElement} mc The multiple question form element
  * @param {HTMLElement} restart_button The button to try again
  */
-function checkAnswer(currOption, correctOption, el, result, mc, restart_button) {  
+function checkAnswer(currOption, correctOption, result, mc, restart_button) {  
     // Add an icon before the selected option 
     let selected = mc.children[currOption];
     let icon = createElement("div", { classNames: "icon" });
@@ -72,7 +72,6 @@ function checkAnswer(currOption, correctOption, el, result, mc, restart_button) 
         restart_button.disabled = false;
     }
     result.style.display = "block";
-    el.appendChild(restart_button);
 
     // Disable all options
     disableChoices(mc);
@@ -93,7 +92,7 @@ function disableChoices(mc) {
  * Reset the multiple choice form so that no option is currently selected
  * @param {HTMLElement} mc The multiple choice form
  */
-function restart(mc) {
+function restart(mc, model, result) {
     Array.from(mc.children).forEach((child, index) => {
         child.disabled = false;
         child.checked = false;
@@ -104,6 +103,11 @@ function restart(mc) {
             child.querySelector(".icon").remove();
         }
     });
+
+    model.set("currOption", -1); 
+    model.save_changes();
+    result.innerHTML = "";
+    result.style.display = "none";
 }
 
 /**
@@ -151,12 +155,8 @@ function render({ model, el }) {
     });
 
     restart_button.addEventListener("click", () => {
-        restart(mc);
-        model.set("currOption", -1); 
-        model.save_changes();
+        restart(mc, model, result);
         restart_button.disabled = true;
-        result.innerHTML = "";
-        result.style.display = "none";
     });
 
     let [modal, overlay] = createModal("Warning: Question unanswered! \nPlease select an option to submit.");
@@ -174,12 +174,12 @@ function render({ model, el }) {
             let currOption = model.get("currOption");
             let correctOption = model.get("correctOption");
             if (currOption < 0) showModal(modal, overlay);
-            else checkAnswer(currOption, correctOption, el, result, mc, restart_button);
+            else checkAnswer(currOption, correctOption, result, mc, restart_button);
         }
     });
 
     el.classList.add("mc");
-    el.append(...[question, mc, result, modal, overlay]);
+    el.append(...[question, mc, result, restart_button, modal, overlay]);
 }
 export default { render };
 
@@ -195,6 +195,7 @@ const checkmarkCircleSVG = `<svg viewBox="0 0 24 24" fill="none"
                             7.19458 16.6796 7.19594 16.2899 7.58731L10.5183 13.3838L7.19723 10.1089C6.80398 9.72117 6.17083 9.7256 
                             5.78305 10.1189L5.08092 10.8309C4.69314 11.2241 4.69758 11.8573 5.09083 12.2451L9.82912 16.9174C10.221 
                             17.3039 10.8515 17.301 11.2399 16.911L18.4158 9.70405Z" fill="#ffffff"></path> </g></svg>`;
+
 const checkmarkSVG = `<svg fill="#0a6000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" class="checkmark">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" 
                     stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>checkmark2</title> 
