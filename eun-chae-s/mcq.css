@@ -9,10 +9,18 @@
   input {
     margin-right: 10px;
   }
-}
 
-.incorrect {
-  border: 1px solid red;
+  li {
+    padding: 5px;
+  }
+
+  li.correct {
+    border: 1px solid green;
+  }
+
+  li.incorrect {
+    border: 1px solid red;
+  }
 }
 
 .submit {

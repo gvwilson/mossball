@@ -13,6 +13,7 @@ function render({ model, el }) {
 
     element.options.forEach((option, option_index) => {
       let item = document.createElement("li");
+      item.id = `option-${question_index}-${option_index}`;
       let radio = document.createElement("input");
       radio.type = "radio";
       radio.value = option;
@@ -54,12 +55,20 @@ function render({ model, el }) {
     let total_correct = 0;
     selection.forEach((option, question_index) => {
       let question = container.childNodes.item(question_index);
+      question.childNodes.item(1).childNodes.forEach((item) => {
+        item.className = "";
+      });
+
+      let option_item = question.childNodes.item(1).childNodes.item(option);
 
       if (option == questions[question_index].correct_answer) {
         total_correct += 1;
-        question.className = "question";
+        option_item.className = "correct";
+        // Enhancement idea: add icon
       } else {
-        question.className = "question incorrect";
+        option_item.className = "incorrect";
+        // Enhancement idea: add icon
+        // Enhancement idea: whether to show the correct answer as well
       }
     });
   });
