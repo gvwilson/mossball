@@ -121,7 +121,7 @@
     visibility: hidden;
 }
 
-/* Check button */
+/* Check button and results */
 .mc .mc-button {
     background-color: var(--med-blue);
     color: white;
@@ -154,6 +154,7 @@
     color: var(--med-blue);
 }
 
+/* Modal */
 .mc .modal {
     display: none;
     position: fixed;
