@@ -17,5 +17,4 @@ class MultipleChoiceWidget(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
     value = traitlets.Int(0).tag(sync=True)
-    title = traitlets.Unicode().tag(sync=True)
-    options = traitlets.List(traitlets.Dict()).tag(sync=True)
+    data = traitlets.Dict().tag(sync=True)

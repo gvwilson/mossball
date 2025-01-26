@@ -3,7 +3,7 @@ import confetti from "https://esm.sh/canvas-confetti@1";
 
 const createSubmitButton = () => {
 	let submitButton = document.createElement("button");
-	submitButton.classList.add("submit-btn");
+	submitButton.classList.add("primary-btn");
 	submitButton.type = "button";
 	submitButton.textContent = "Check";
 	return submitButton;
@@ -19,34 +19,38 @@ const createResetButton = () => {
 
 const createSolutionButton = () => {
 	let showSolutionButton = document.createElement("button");
-	showSolutionButton.classList.add("solution-btn");
+	showSolutionButton.classList.add("primary-btn");
 	showSolutionButton.type = "button";
 	showSolutionButton.textContent = "Show Solution";
 	return showSolutionButton;
 }
 
-const CLASS_STATES = [
-	"selected",
-	"correct",
-	"incorrect",
-	"disabled",
-	"disabled-correct",
-]
+const CLASS_STATES = {
+    SELECTED: "selected",
+    CORRECT: "correct",
+    INCORRECT: "incorrect",
+    DISABLED: "disabled",
+};
 
 /** @type {import("npm:@anywidget/types").Render<Model>} */
 function render({ model, el }) {
 	el.classList.add("multiple_choice");
+
 	let form = document.createElement("div");
 	form.classList.add("form-group");
 
-	let options = model.data.options;
-	let titleText = model.data.title;
+	const questionData = model.data.data;
+	const options = questionData.options;
+	const titleText = questionData.title;
+
+	const correct = questionData.correct;
 
 	let title = document.createElement("h2");
 	title.classList.add("title");
 	title.textContent = titleText;
 	el.appendChild(title);
 
+	// Adding options to the form
 	options.forEach((option) => {
 		let inputGroup = document.createElement("div");
 		inputGroup.classList.add("input-group");
@@ -55,15 +59,15 @@ function render({ model, el }) {
 		input.type = "radio";
 		input.name = "multiple_choice";
 		input.value = option.value;
-		input.id = `option${option.value}`;
+		input.id = `option-${option.value}`;
 
 		input.addEventListener("change", () => {
 			model.value = option.value;
-			inputGroup.classList.add("selected");
+			inputGroup.classList.add(CLASS_STATES.SELECTED);
 			// remove selected from other groups
 			Array.from(form.children).forEach((group) => {
 				if (group !== inputGroup) {
-					group.classList.remove("selected");
+					group.classList.remove(CLASS_STATES.SELECTED);
 				}
 			});
 		});
@@ -86,68 +90,73 @@ function render({ model, el }) {
 	let buttonGroup = document.createElement("div");
 	buttonGroup.classList.add("button-group");
 
-	let solutionButton = createSolutionButton();
-	solutionButton.addEventListener("click", () => {
+	// Show solution button handling
+	const handleShowSolution = () => {
 		// Reveal correct option
-		let correct = options.find((option) => option.correct).value;
-		let correctGroup = form.querySelector(`#option${correct}`).parentNode;
-		correctGroup.classList.add("correct");
+		let correctGroup = form.querySelector(`#option-${correct}`).parentNode;
+		correctGroup.classList.add(CLASS_STATES.CORRECT);
 
 		let inputGroups = Array.from(form.children);
 		inputGroups.forEach((group) => {
-			console.log(group);
-			group.classList.add("disabled");
+			group.classList.add(CLASS_STATES.DISABLED);
 		});
-	});
+	}
 
-	let submitButton = createSubmitButton();
-	submitButton.addEventListener("click", () => {
+	let solutionButton = createSolutionButton();
+	solutionButton.addEventListener("click", handleShowSolution);
+
+	// Submit button handling
+	const handleSubmit = () => {
 		let selected = form.querySelector(".selected");
-		let correct = options.find((option) => option.correct).value;
-
 		// if no option checked
 		if (selected === null) {
 			return;
 		}
-
 		if (model.value === correct) {
 			// Mark selected option as correct
 			if (selected) {
-				selected.classList.add("correct");
+				selected.classList.add(CLASS_STATES.CORRECT);
 			}
 			confetti();
 			buttonGroup.appendChild(resetButton);
-
-			let inputGroups = Array.from(form.children);
-			inputGroups.forEach((group) => {
-				if (group !== selected) {
-					group.classList.add("disabled");
-				}
-			});
 		} else {
-			buttonGroup.appendChild(solutionButton);
-			buttonGroup.appendChild(resetButton);
-
 			// mark selected option as wrong
 			if (selected) {
-				selected.classList.add("incorrect");
+				selected.classList.add(CLASS_STATES.INCORRECT);
 			}
+			buttonGroup.appendChild(solutionButton);
+			buttonGroup.appendChild(resetButton);
 		}
-	});
+		buttonGroup.removeChild(submitButton);
+		// Disable the other options
+		let inputGroups = Array.from(form.children);
+		inputGroups.forEach((group) => {
+			if (group !== selected) {
+				group.classList.add(CLASS_STATES.DISABLED);
+			}
+		});
+	}
 
-	let resetButton = createResetButton();
-	resetButton.addEventListener("click", () => {
+	let submitButton = createSubmitButton();
+	submitButton.addEventListener("click", handleSubmit);
+
+	// Reset button handling
+	const handleReset = () => {
 		model.value = null;
 		form.querySelector(".selected input").checked = false;
-
+		// Reset input states
 		Array.from(form.children).forEach((group) => {
-			group.classList.remove(...CLASS_STATES);
+			group.classList.remove(...Object.values(CLASS_STATES));
 		});
 		buttonGroup.removeChild(resetButton);
 		if (buttonGroup.contains(solutionButton)) {
 			buttonGroup.removeChild(solutionButton);
 		}
-	});
+		buttonGroup.appendChild(submitButton);
+	}
+
+	let resetButton = createResetButton();
+	resetButton.addEventListener("click", handleReset);
 
 	buttonGroup.appendChild(submitButton);
 
