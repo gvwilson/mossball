@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
+
+body, html {
+  height: 100%;
+  background: #222222;
+  font-family: 'Lato', sans-serif;
+}
+
+.container {
+  display: block;
+  position: relative;
+  margin: 40px auto;
+  height: auto;
+  width: 800px;
+  padding: 20px;
+}
+
+.question-wrapper h2 {
+  color: #FFFFFF;
+  font-size: 20px;
+  font-weight: 100;
+  margin-bottom: 25px;
+  line-height: 1.4;
+}
+
+.question-wrapper {
+  background: #2A2A2A;
+  border: 1px solid #333;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  padding: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.container ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+}
+
+ul li {
+  color: #AAAAAA;
+  display: block;
+  position: relative;
+  float: left;
+  width: 100%;
+  height: 80px;
+  border-bottom: 1px solid #333;
+}
+
+ul li:last-child {
+  border-bottom: none;
+}
+
+ul li input[type=radio] {
+  position: absolute;
+  visibility: hidden;
+}
+
+ul li label {
+  display: flex;
+  align-items: center;
+  position: relative;
+  font-weight: 300;
+  font-size: 1.35em;
+  padding: 0 25px 0 80px;
+  margin: 0;
+  height: 80px;
+  z-index: 9;
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+
+ul li:hover label {
+  color: #FFFFFF;
+}
+
+ul li .check {
+  display: block;
+  position: absolute;
+  border: 5px solid #AAAAAA;
+  border-radius: 100%;
+  height: 25px;
+  width: 25px;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  z-index: 5;
+  transition: all 0.25s linear;
+}
+
+ul li:hover .check {
+  border: 5px solid #FFFFFF;
+}
+
+ul li .check::before {
+  display: block;
+  position: absolute;
+  content: '';
+  border-radius: 100%;
+  height: 15px;
+  width: 15px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.25s linear;
+}
+
+ul li.selected .check {
+  border-color: #FFD700;
+}
+
+ul li.selected .check::before {
+  background: #FFD700;
+}
+
+ul li.selected label {
+  color: #FFD700;
+}
+
+ul li.correct .check {
+  border-color: #0DFF92;
+}
+
+ul li.correct .check::before {
+  background: #0DFF92;
+}
+
+ul li.correct label {
+  color: #0DFF92;
+}
+
+ul li.incorrect .check {
+  border-color: #FF0000;
+}
+
+ul li.incorrect .check::before {
+  background: #FF0000;
+}
+
+ul li.incorrect label {
+  color: #FF0000;
+}
+
+input[type=radio]:checked ~ label {
+  color: currentColor;
+}
+
+.submit-button {
+  display: block;
+  margin: 30px auto;
+  padding: 12px 30px;
+  background: #444;
+  border: none;
+  border-radius: 5px;
+  color: #FFFFFF;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+
+.submit-button:hover {
+  background: #666;
+}
+
+.alert {
+  box-sizing: border-box;
+  background-color: #BDFFE1;
+  width: 100%;
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 300;
+  padding: 20px 40px;
+  color: #333;
+}
+
+.alert h2 {
+  font-size: 22px;
+  color: #232323;
+  margin-top: 0;
+}
+
+.alert p {
+  line-height: 1.6em;
+  font-size: 18px;
+}
+
+.alert a {
+  color: #232323;
+  font-weight: bold;
+}
