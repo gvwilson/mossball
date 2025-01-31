@@ -1,0 +1,186 @@
+.stp {
+    --grey: #e2e2e2;
+    --light-grey: #eeeeee;
+    --light-blue: #c1dafd;
+    --lightest-blue: #d3e5ff;
+    --med-blue: #2858b3;
+    --dark-blue: #123767;
+    --darker-blue: #0c2654;
+    --green: #9ae9b3;
+    --dark-green: #0a6000;
+    --light-red: #ff9494;
+    --dark-red: #8f0000;
+    --font-size: 1.1rem;
+    --gap: 5px;
+}
+
+.stp .question {
+    font-size: var(--font-size);
+    padding: 2px;
+    margin-bottom: 1rem;
+}
+
+.stp .exerciseContainer {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: auto;
+}
+
+.stp .stepsContainer,
+.stp .textsContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.stp .stepsContainer {
+    width: calc(20% - var(--gap));
+}
+
+.stp .textsContainer {
+    width: calc(80% - var(--gap));
+}
+
+
+.stp .step {
+    display: flex;
+    align-items: center;
+    vertical-align: middle;
+    flex-shrink: 0;
+    height: 3rem;
+    padding: 1rem;
+    justify-content: center;
+    background-color: var(--light-grey);
+    margin: var(--gap);
+    border-radius: 5px;
+}
+
+.stp .arrow-button {
+    width: 18px;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-left: 5px;
+    background-color: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+
+    &:hover {
+        background-color: var(--lightest-blue);
+        transition: background-color 0.2s ease;
+    }
+}
+
+.stp option {
+    background-color: white;
+
+    &:hover {
+        background-color: var(--light-blue) !important;
+    }
+}
+
+
+.stp .container {
+    display: flex;
+    align-items: center;
+    vertical-align: middle;
+    width: 100%;
+    background-color: var(--grey);
+    height: 3rem;
+    padding: 0.5rem;
+    margin: var(--gap);
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+        border: 2px solid var(--dark-blue);
+        transition: border 0.1s ease;
+    }
+}
+
+.stp .draggable {
+    cursor: move;
+    background-color: var(--grey);
+}
+
+.stp .dragging  {
+    background-color: var(--light-blue);
+    border-width: 2px;
+    border-color: var(--dark-blue);
+    color: var(--darker-blue);
+    font-weight: bolder;
+    opacity: 1;
+}
+
+
+.stp .placeholder {
+    height: 3rem; 
+    border: 2px dotted var(--dark-blue);
+    background-color: var(--light-blue);
+    border-radius: 5px;
+    font-size: 0;
+    opacity: 1;
+}
+
+.stp .placeholder > .drag-icon {
+    visibility: hidden;
+}
+
+.stp .correct {
+    background-color: var(--green);
+    border-width: 0;
+    color: var(--dark-green);
+    font-weight: bolder;
+}
+
+.stp .incorrect {
+    background-color: var(--light-red);
+    border-width: 0;
+    color: var(--dark-red);
+    font-weight: bolder;
+}
+
+.stp .drag-icon {
+    width: 1.5rem;
+    margin-right: 0.5rem;
+    padding: 0;
+}
+
+.stp .result-icon {
+    width: 1rem;
+    margin-left: 0.3rem;
+    margin-right: 0.7rem;
+}
+
+.stp .disabled {
+    pointer-events: none;
+}
+
+/* Check button and results */
+.stp .form-button {
+    background-color: var(--med-blue);
+    color: white;
+    border-radius: 18px;
+    display: inline-flex;
+    padding: 0.4rem 1.6rem 0.4rem 1.5rem;
+    margin: 10px 0;
+
+    &:hover {
+        background-color: var(--dark-blue);
+        transition: background-color 0.2s ease;
+    }
+
+    &:disabled {
+        display: none;
+    }
+}
+
+.stp .checkmark-circle {
+    fill: white;
+    width: var(--font-size);
+    margin: auto;
+    margin-right: 8px;
+    display: block;
+}
