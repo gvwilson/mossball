@@ -72,7 +72,7 @@ function getDragAfterElem(container, y) {
 }
 
 
-function restart(textContainer) {
+function restart(textContainer, result) {
     Array.from(textContainer.children).forEach((child) => {
         let icon = child.firstChild;
         child.disabled = false;
@@ -83,9 +83,9 @@ function restart(textContainer) {
             child.classList.remove("correct");
         } else if (child.classList.contains("incorrect")) {
             child.classList.remove("incorrect");
-        }        
+        }
     });
-
+    result.style.display = "none";
 }
 
 
@@ -113,6 +113,33 @@ function render({ model, el }) {
         correctOrder[pos] = `text${index + 1}`;
     })
 
+    let options = []
+    texts.forEach((text, index) => {
+        let option = createElement("option", { value: `text${index + 1}`, textContent: text });
+        option.onfocus = function() { this.size = 3; };
+        option.onblur = function() { this.size = 0; };
+        option.onchange = function() { this.size = 1; this.blur(); };
+        options.push(option);
+    })
+
+    Array.from(stepsContainer.children).forEach((step, index) => {
+        let select = step.querySelector(".arrow-button");
+        for (const option of options) {
+            select.appendChild(option.cloneNode(true));
+        }
+        select.addEventListener("change", (event) => {
+            let selectedId = event.target.value;
+            let selectedContainer = el.querySelector(`#${selectedId}`);
+            let targetContainer = Array.from(textsContainer.children)[index];
+            if (index === sortedTexts.length - 1) {
+                textsContainer.appendChild(selectedContainer);
+            } else {
+                textsContainer.insertBefore(selectedContainer, targetContainer);
+            }
+            
+        })
+    })
+    
     textsContainer.addEventListener("dragover", (event) => {
         event.preventDefault();
         let afterElem = getDragAfterElem(textsContainer, event.clientY);
@@ -133,6 +160,8 @@ function render({ model, el }) {
         type: "submit"
     });
     
+    let result = createElement("div", { className: "result", style: "display: none;" });
+
     let restart_button = createElement("button", {
         classNames: "form-button",
         innerHTML: "Try again",
@@ -140,15 +169,16 @@ function render({ model, el }) {
     });
 
     restart_button.addEventListener("click", () => {
-        restart(textsContainer);
+        restart(textsContainer, result);
         restart_button.disabled = true;
         submitButton.disabled = false;
     });
 
     form.appendChild(submitButton);
+    
     form.addEventListener("submit", (event) => {
         event.preventDefault();
-        
+        let score = 0;
         if (!submitButton.disabled) {
             const draggableElements = el.querySelectorAll('.draggable');
 
@@ -160,6 +190,7 @@ function render({ model, el }) {
                 if (element.id == correctOrder[index]) {
                     element.classList.add("correct");
                     icon.innerHTML = checkmarkSVG;
+                    score++;
                 } else {
                     element.classList.add("incorrect");
                     restart_button.disabled = false;
@@ -169,10 +200,12 @@ function render({ model, el }) {
         }
         submitButton.disabled = true;
         restart_button.disabled = false;
+        result.innerHTML = `Score: ${score} / ${sortedTexts.length}`;
+        result.style.display = "block";
     });
 
     el.classList.add("stp");
-    el.append(...[question, form, restart_button]);
+    el.append(...[question, form, result, restart_button]);
 }
 export default { render };
 

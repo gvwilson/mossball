@@ -184,3 +184,10 @@
     margin-right: 8px;
     display: block;
 }
+
+.stp .result {
+    font-weight: bolder;
+    font-size: 1.3rem;
+    color: var(--med-blue);
+    margin-top: 1rem;
+}
