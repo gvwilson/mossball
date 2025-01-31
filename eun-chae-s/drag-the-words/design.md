@@ -18,3 +18,18 @@ After finishing the initial sketch of the plugin, I asked 4 students for their o
 
 ### Improvement
 Based on the feedback that I've received, I modified and created the mock-ups using Figma for the better understanding. You can visit [this link] to see the enhanced design.
+
+For these mockups, I asked ChatGPT to create two questions that are suitable for this question type:
+- **Question 1: Mathematics & Logic**
+    1. the derivative of $x^2$ is ______. (*$2x$*)
+    2. A _______ triangle has all three sides of equal length. (*equilateral*)
+    3. The sum of angles in a triangle is always _______ degrees. (*180*)
+    4. In probability, the sum of all possible outcomes must equal _______. (*1*)
+    5. The square root of 64 is _______. (*8*)
+
+
+- **Question 2: Operating System**
+
+    In a multitasking operating system, **[processes]** share the CPU by using **[scheduling algorithms]** such as Round Robin and First Come, First Served. The OS also manages **[memory allocation]**, ensuring that each process has access to the necessary **[resources]**. To prevent **[deadlocks]**, it employs techniques like resource ordering and **[preemption]**.
+
+
