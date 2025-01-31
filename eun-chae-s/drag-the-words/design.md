@@ -33,3 +33,14 @@ For these mockups, I asked ChatGPT to create two questions that are suitable for
     In a multitasking operating system, **[processes]** share the CPU by using **[scheduling algorithms]** such as Round Robin and First Come, First Served. The OS also manages **[memory allocation]**, ensuring that each process has access to the necessary **[resources]**. To prevent **[deadlocks]**, it employs techniques like resource ordering and **[preemption]**.
 
 
+### Possible limitations based on the current design
+1. The current design won't support the case when a word can be used for multiple times.
+2. 
+
+
+### Next Step
+As the current design only considers the student's perspective, it would be good to think about how instructors could create this question. Some of key considerations would be:
+
+1. how to upload questions & answers
+2. how to hide answers
+3. what kinds of configuration they can set (e.g. number of attempts)
