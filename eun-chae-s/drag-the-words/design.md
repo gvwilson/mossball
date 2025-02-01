@@ -9,7 +9,7 @@ Before starting the sketch, I first searched a few references, such as [H5P](htt
 1. the user opens the question for the first time
 2. the user drags the word(s)
 3. the user doesn't finish dragging all the words but try to submit their answers
-4. the user checks the result
+4. the user submits their answers and checks the result
 5. the user retries the question
 
 ### Feedback
@@ -44,3 +44,8 @@ As the current design only considers the student's perspective, it would be good
 1. how to upload questions & answers
 2. how to hide answers
 3. what kinds of configuration they can set (e.g. number of attempts)
+4. what kind of format should the data have
+
+
+<!-- Idea for database -->
+<!-- create word boxes based on the list of answer items -->

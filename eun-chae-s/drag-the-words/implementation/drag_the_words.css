@@ -1,0 +1,42 @@
+.drag-words-widget {
+  .instruction-text {
+    font-weight: 800;
+    margin: 10px;
+  }
+
+  .question {
+    margin: 20px;
+    .answer-box {
+      display: inline-block;
+      position: relative;
+      width: 5rem;
+      height: 1.5rem;
+      border: 1px solid black;
+      border-radius: 5px;
+      background-color: white;
+    }
+  }
+
+  .words-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    .word-box {
+      display: inline-block;
+      border: 1px solid black;
+      padding: 5px;
+      border-radius: 5px;
+      background-color: white;
+      cursor: pointer;
+    }
+
+    .word-box:hover {
+      background-color: orange;
+      color: white;
+    }
+  }
+}
