@@ -25,7 +25,7 @@ def _(anywidget, traitlets):
 def _(DragWordsWidget):
     data = {
         "instruction": "Drag the words to the correct positions",
-        "question": "In a multitasking operating system, {{VAR1}} share the CPU by using {{VAR2}} such as Round Robin and First Come, First Served. The OS also manages {{VAR3}}, ensuring that each process has access to the necessary {{VAR4}}. To prevent {{VAR5}}, it employs techniques like resource ordering and {{VAR6}}",
+        "question": "In a multitasking operating system, {{VAR1}} share the CPU by using {{VAR2}} such as Round Robin and First Come, First Served. The OS also manages {{VAR3}}, ensuring that each process has access to the necessary {{VAR4}}. To prevent {{VAR5}}, it employs techniques like resource ordering and {{VAR6}}.",
         "solution": ["processes", "scheduling algorithms", "memory allocation", "resources", "deadlocks", "preemption"]
     }
 

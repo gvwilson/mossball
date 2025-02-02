@@ -6,14 +6,29 @@
 
   .question {
     margin: 20px;
-    .answer-box {
+
+    div {
       display: inline-block;
       position: relative;
-      width: 5rem;
-      height: 1.5rem;
-      border: 1px solid black;
+      height: 100%;
+      margin: 2px;
       border-radius: 5px;
+      vertical-align: middle;
+    }
+
+    .blank {
+      width: 5rem;
+      padding: 0.75rem;
+      border: 1px solid black;
       background-color: white;
+    }
+
+    .filled {
+      width: auto;
+      height: 100%;
+      padding: 5px 10px 5px 10px;
+      background-color: #86bbd8;
+      color: white;
     }
   }
 
@@ -27,16 +42,40 @@
 
     .word-box {
       display: inline-block;
-      border: 1px solid black;
-      padding: 5px;
+      padding: 5px 10px 5px 10px;
       border-radius: 5px;
-      background-color: white;
+      background-color: #e9c46a;
+      color: black;
       cursor: pointer;
     }
 
     .word-box:hover {
-      background-color: orange;
+      background-color: #f4a261;
       color: white;
+    }
+
+    .word-box.selected {
+      background-color: #f4a261;
+      color: white;
+    }
+  }
+
+  .bottom-banner {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    margin: 10px;
+    .submit {
+      background-color: #264653;
+      color: white;
+      padding: 5px 10px 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .submit:hover {
+      border: 1px solid #264653;
+      color: #264653;
+      background-color: white;
     }
   }
 }
