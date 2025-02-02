@@ -24,8 +24,6 @@ function shuffleArray(array) {
         [shuffledArray[currIndex], shuffledArray[randIndex]] = [shuffledArray[randIndex], shuffledArray[currIndex]];
         [positions[currIndex], positions[randIndex]] = [positions[randIndex], positions[currIndex]];
     }
-    console.log("POSITIONS");
-    console.log(positions);
     return [shuffledArray, positions];
 }
 
@@ -116,29 +114,32 @@ function render({ model, el }) {
     let options = []
     texts.forEach((text, index) => {
         let option = createElement("option", { value: `text${index + 1}`, textContent: text });
-        option.onfocus = function() { this.size = 3; };
-        option.onblur = function() { this.size = 0; };
-        option.onchange = function() { this.size = 1; this.blur(); };
         options.push(option);
     })
-
+    
     Array.from(stepsContainer.children).forEach((step, index) => {
         let select = step.querySelector(".arrow-button");
         for (const option of options) {
             select.appendChild(option.cloneNode(true));
         }
+        
         select.addEventListener("change", (event) => {
             let selectedId = event.target.value;
             let selectedContainer = el.querySelector(`#${selectedId}`);
-            let targetContainer = Array.from(textsContainer.children)[index];
+            let allContainers = Array.from(textsContainer.children);
+
             if (index === sortedTexts.length - 1) {
                 textsContainer.appendChild(selectedContainer);
             } else {
-                textsContainer.insertBefore(selectedContainer, targetContainer);
+                let targetContainer = allContainers[index];
+                if (allContainers.indexOf(selectedContainer) < index) { // selected container is above target
+                    textsContainer.insertBefore(selectedContainer, targetContainer.nextSibling);
+                } else { // selected container is below target
+                    textsContainer.insertBefore(selectedContainer, targetContainer); 
+                }
             }
-            
-        })
-    })
+        });
+    });
     
     textsContainer.addEventListener("dragover", (event) => {
         event.preventDefault();
