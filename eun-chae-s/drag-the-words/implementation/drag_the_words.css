@@ -8,12 +8,20 @@
     margin: 20px;
 
     div {
-      display: inline-block;
+      display: inline-flex;
       position: relative;
       height: 100%;
       margin: 2px;
       border-radius: 5px;
       vertical-align: middle;
+      justify-content: flex-end;
+
+      svg {
+        display: inline-block;
+        justify-self: end;
+        width: 1rem;
+        color: white;
+      }
     }
 
     .blank {
@@ -30,6 +38,22 @@
       background-color: #86bbd8;
       color: white;
     }
+
+    div.correct {
+      border: none;
+      background-color: #2a9d8f;
+      color: white;
+    }
+
+    div.incorrect {
+      border: none;
+      background-color: #e76f51;
+      color: white;
+    }
+
+    .blank.incorrect {
+      padding: 0.5rem;
+    }
   }
 
   .words-container {
@@ -39,6 +63,9 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px;
 
     .word-box {
       display: inline-block;
@@ -72,10 +99,18 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    .submit:hover {
+    .submit:hover,
+    .retry:hover {
       border: 1px solid #264653;
       color: #264653;
       background-color: white;
+    }
+    .retry {
+      background-color: #ea8cff;
+      color: white;
+      padding: 5px 10px 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
     }
   }
 }
