@@ -10,15 +10,24 @@ app = marimo.App(width="medium")
 def __():
     import anywidget
     import traitlets
+    import pathlib
+
+    assets_dir = pathlib.Path(__file__).parent / "assets"
 
     class StructureStripWidget(anywidget.AnyWidget):
         _esm = "str.js"
         _css = "str.css"
-        
+
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.image_path = str(assets_dir / "london.jpg")
+            #self.set("image_path", self.image_path)
+            
         sections = traitlets.List().tag(sync=True)
         user_inputs = traitlets.Dict().tag(sync=True)
         title = traitlets.Unicode().tag(sync=True)
         description = traitlets.Unicode().tag(sync=True)
+        #image_path = traitlets.Unicode().tag(sync=True)
 
     structure_strip = StructureStripWidget(
         title="London Docklands Evaluation",

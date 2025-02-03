@@ -60,11 +60,17 @@ function render({ model, el }) {
     title.textContent = model.get("title");
     title.className = "structure-title";
 
+    //const image = document.createElement("img");
+    //image.src = model.get("image_path");
+    //image.alt = "London";
+    //image.className = "structure-image";
+
     const description = document.createElement("p");
     description.textContent = model.get("description");
     description.className = "structure-description";
 
     container.appendChild(title);
+    //container.appendChild(image);
     container.appendChild(description);
 
     // Create SINGLE modal instance
@@ -217,7 +223,7 @@ function render({ model, el }) {
     // Copy Button
     const copyBtn = document.createElement("button");
     copyBtn.className = "submit-btn";
-    copyBtn.textContent = "Copy All";
+    copyBtn.textContent = "Copy";
     copyBtn.addEventListener("click", () => {
         const allText = model.get("sections")
             .map(section => userInputs[section.id] || "")
