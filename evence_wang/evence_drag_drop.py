@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.10.17"
+__generated_with = "0.10.18"
 app = marimo.App(width="medium")
 
 
@@ -152,7 +152,7 @@ def _(__file__):
                 )
             return marimo.Html("".join(imgs))
 
-    uploader = FileUploader(multiple=True, to_disk=True)
+    uploader = FileUploader(multiple=False, to_disk=False)
     return (
         BytesIO,
         FileUploader,
@@ -179,7 +179,13 @@ def _(uploader):
 
 @app.cell
 def _(uploader):
-    uploader.contents(2, True)
+    uploader.names()
+    return
+
+
+@app.cell
+def _(uploader):
+    uploader.contents(0, True)
     return
 
 
