@@ -1,7 +1,63 @@
 function render({ model, el }) {
+
+    const styleSheet = document.createElement("style");
+    styleSheet.textContent = `
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 500px;
+            width: 90%;
+        }
+        .modal-content {
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s ease;
+        }
+        .modal-close:hover {
+            background: #3182ce;
+        }
+    `;
+    document.head.appendChild(styleSheet);
+    
     const container = document.createElement("div");
     container.className = "structure-strip";
     const userInputs = model.get("user_inputs") || {};
+
+    // Add title and description
+    const title = document.createElement("h2");
+    title.textContent = model.get("title");
+    title.className = "structure-title";
+
+    const description = document.createElement("p");
+    description.textContent = model.get("description");
+    description.className = "structure-description";
+
+    container.appendChild(title);
+    container.appendChild(description);
 
     // Create SINGLE modal instance
     let modalOverlay = document.querySelector(".modal-overlay");

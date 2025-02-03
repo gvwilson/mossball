@@ -17,8 +17,12 @@ def __():
         
         sections = traitlets.List().tag(sync=True)
         user_inputs = traitlets.Dict().tag(sync=True)
+        title = traitlets.Unicode().tag(sync=True)
+        description = traitlets.Unicode().tag(sync=True)
 
     structure_strip = StructureStripWidget(
+        title="Essay Structure",
+        description="Please fill out the sections below to complete your essay.",
         sections=[
             {
                 "id": "introduction",
