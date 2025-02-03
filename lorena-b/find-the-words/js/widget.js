@@ -100,6 +100,7 @@ function render({ model, el }) {
     if (e.target.classList.contains("grid-cell")) {
       isMouseDown = true;
       startCell = e.target;
+      let cellRect = startCell.getBoundingClientRect();
 
       // Initialize selection bar
       selectionBar = document.createElement("div");
@@ -164,7 +165,6 @@ function render({ model, el }) {
       const maxRow = Math.max(startRow, endRow);
 
       for (let row = minRow; row <= maxRow; row++) {
-        console.log(`row: ${row}, col: ${startCol}`);
         const cell = gridContainer.querySelector(
           `.grid-cell[data-row="${row}"][data-col="${startCol}"]`
         );
