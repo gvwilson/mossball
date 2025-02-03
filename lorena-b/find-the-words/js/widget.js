@@ -100,15 +100,15 @@ function render({ model, el }) {
     if (e.target.classList.contains("grid-cell")) {
       isMouseDown = true;
       startCell = e.target;
-      let cellRect = startCell.getBoundingClientRect();
+      // let cellRect = startCell.getBoundingClientRect();
 
       // Initialize selection bar
       selectionBar = document.createElement("div");
       selectionBar.className = "selection-bar";
       gridContainer.appendChild(selectionBar);
 
-      selectionBar.style.width = `${cellRect.width}px`;
-      selectionBar.style.height = `${cellRect.height}px`;
+      // selectionBar.style.width = `${cellRect.width}px`;
+      // selectionBar.style.height = `${cellRect.height}px`;
     }
   });
 
@@ -136,13 +136,13 @@ function render({ model, el }) {
       const minCol = Math.min(startCol, endCol);
       const maxCol = Math.max(startCol, endCol);
 
-      for (let col = minCol; col <= maxCol; col++) {
-        console.log(`row: ${startRow}, col: ${col}`);
-        const cell = gridContainer.querySelector(
-          `.grid-cell[data-row="${startRow}"][data-col="${col}"]`
-        );
-        // cell.classList.add("selected");
-      }
+      // for (let col = minCol; col <= maxCol; col++) {
+      //   console.log(`row: ${startRow}, col: ${col}`);
+      //   const cell = gridContainer.querySelector(
+      //     `.grid-cell[data-row="${startRow}"][data-col="${col}"]`
+      //   );
+      //   // cell.classList.add("selected");
+      // }
 
       const leftCell = gridContainer.querySelector(
         `.grid-cell[data-row="${startRow}"][data-col="${minCol}"]`
@@ -164,12 +164,12 @@ function render({ model, el }) {
       const minRow = Math.min(startRow, endRow);
       const maxRow = Math.max(startRow, endRow);
 
-      for (let row = minRow; row <= maxRow; row++) {
-        const cell = gridContainer.querySelector(
-          `.grid-cell[data-row="${row}"][data-col="${startCol}"]`
-        );
-        // cell.classList.add("selected");
-      }
+      // for (let row = minRow; row <= maxRow; row++) {
+      //   const cell = gridContainer.querySelector(
+      //     `.grid-cell[data-row="${row}"][data-col="${startCol}"]`
+      //   );
+      //   // cell.classList.add("selected");
+      // }
 
       const topCell = gridContainer.querySelector(
         `.grid-cell[data-row="${minRow}"][data-col="${startCol}"]`
