@@ -1,5 +1,4 @@
 function render({ model, el }) {
-
     const styleSheet = document.createElement("style");
     styleSheet.textContent = `
         .modal-overlay {
@@ -20,19 +19,25 @@ function render({ model, el }) {
             border-radius: 5px;
             max-width: 500px;
             width: 90%;
+            position: relative; /* Ensure the modal is the positioning context for the close button */
         }
-        .modal-content {
-            position: relative;
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem; /* Add space between the header and the content */
+        }
+        .modal-title {
+            font-size: 1.5rem; /* Larger font size for the title */
+            font-weight: bold;
+            margin: 0; /* Remove default margin */
         }
         .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
             padding: 0.5rem 1rem;
             background: #4299e1;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 999px;
             cursor: pointer;
             font-weight: 500;
             transition: background 0.2s ease;
@@ -40,9 +45,12 @@ function render({ model, el }) {
         .modal-close:hover {
             background: #3182ce;
         }
+        .modal-content {
+            margin-top: 1rem; /* Add space between the header and the content */
+        }
     `;
     document.head.appendChild(styleSheet);
-    
+
     const container = document.createElement("div");
     container.className = "structure-strip";
     const userInputs = model.get("user_inputs") || {};
@@ -64,30 +72,49 @@ function render({ model, el }) {
     if (!modalOverlay) {
         modalOverlay = document.createElement("div");
         modalOverlay.className = "modal-overlay";
-        
+
         const modal = document.createElement("div");
         modal.className = "modal";
-        
-        const modalContent = document.createElement("div");
-        modalContent.className = "modal-content";
-        
-        const modalText = document.createElement("p");
+
+        // Modal Header
+        const modalHeader = document.createElement("div");
+        modalHeader.className = "modal-header";
+
+        const modalTitle = document.createElement("h3");
+        modalTitle.className = "modal-title";
+
         const modalClose = document.createElement("button");
         modalClose.textContent = "Close";
         modalClose.className = "modal-close";
 
-        modalContent.append(modalText, modalClose);
-        modal.appendChild(modalContent);
+        modalHeader.append(modalTitle, modalClose);
+
+        // Modal Content
+        const modalContent = document.createElement("div");
+        modalContent.className = "modal-content";
+
+        const modalText = document.createElement("p");
+
+        modal.append(modalHeader, modalContent);
+        modalContent.appendChild(modalText);
         modalOverlay.appendChild(modal);
         document.body.appendChild(modalOverlay);
     }
 
     // Modal handler
     const handleModal = (content) => {
-        const [modalText, modalClose] = modalOverlay.querySelector(".modal-content").children;
-        modalText.innerHTML = content;
+        const modalTitle = modalOverlay.querySelector(".modal-title");
+        const modalText = modalOverlay.querySelector(".modal-content p");
+        const modalClose = modalOverlay.querySelector(".modal-close");
+
+        // Set the title and content
+        modalTitle.textContent = content.match(/<h3>(.*?)<\/h3>/)[1]; // Extract the title from the content
+        modalText.innerHTML = content.replace(/<h3>.*?<\/h3>/, ""); // Remove the title from the content
+
+        // Show the modal
         modalOverlay.style.display = "flex";
-        
+
+        // Close button handler
         modalClose.onclick = () => modalOverlay.style.display = "none";
         modalOverlay.onclick = (e) => {
             if (e.target === modalOverlay) modalOverlay.style.display = "none";
@@ -97,16 +124,15 @@ function render({ model, el }) {
     model.get("sections").forEach((section) => {
         const sectionDiv = document.createElement("div");
         sectionDiv.className = "structure-section";
-        
+
         // Left Column
         const leftCol = document.createElement("div");
         leftCol.className = "section-left";
-        
+
         const prompt = document.createElement("div");
         prompt.className = "section-prompt";
         prompt.innerHTML = `
             <strong>${section.label}</strong>
-            <div class="prompt-text">${section.prompt}</div>
         `;
 
         // Question Button
@@ -122,32 +148,30 @@ function render({ model, el }) {
         });
 
         leftCol.append(prompt, questionBtn);
-        
+
         // Right Column
         const rightCol = document.createElement("div");
         rightCol.className = "section-content";
-        
+
         const textarea = document.createElement("textarea");
-        textarea.placeholder = section.placeholder || "Enter your content...";
+        textarea.placeholder = "Enter your content...";
         textarea.rows = section.rows || 3;
-        
+
         if (section.max_length) {
             const counter = document.createElement("div");
             counter.className = "char-counter";
             counter.textContent = `0/${section.max_length}`;
-            
+
             const feedback = document.createElement("div");
             feedback.className = "feedback";
             feedback.style.display = "none";
 
             textarea.addEventListener("input", (e) => {
                 const text = e.target.value;
-                if (text.length > section.max_length) {
-                    e.target.value = text.substring(0, section.max_length);
-                }
+
                 counter.textContent = `${e.target.value.length}/${section.max_length}`;
                 userInputs[section.id] = e.target.value;
-                model.set("user_inputs", {...userInputs});
+                model.set("user_inputs", { ...userInputs });
                 model.save_changes();
                 feedback.style.display = "none";
             });
@@ -156,7 +180,7 @@ function render({ model, el }) {
         } else {
             textarea.addEventListener("input", (e) => {
                 userInputs[section.id] = e.target.value;
-                model.set("user_inputs", {...userInputs});
+                model.set("user_inputs", { ...userInputs });
                 model.save_changes();
             });
             rightCol.appendChild(textarea);
@@ -166,19 +190,23 @@ function render({ model, el }) {
         container.appendChild(sectionDiv);
     });
 
+    // Button Container
+    const buttonContainer = document.createElement("div");
+    buttonContainer.className = "button-container";
+
     // Submit Button
     const submitBtn = document.createElement("button");
     submitBtn.className = "submit-btn";
-    submitBtn.textContent = "Check Progress";
+    submitBtn.textContent = "Check";
     submitBtn.addEventListener("click", () => {
         model.get("sections").forEach((section, index) => {
             const text = userInputs[section.id] || "";
             const feedback = container.querySelectorAll(".feedback")[index];
-            
+
             if (section.max_length) {
                 const remaining = section.max_length - text.length;
-                feedback.textContent = remaining > 0 
-                    ? `✖ Need ${remaining} more characters`
+                feedback.textContent = remaining > 0
+                    ? `✖ Need at least ${remaining} more characters`
                     : "✔ Section complete!";
                 feedback.style.color = remaining > 0 ? "#dc3545" : "#28a745";
                 feedback.style.display = "block";
@@ -186,7 +214,26 @@ function render({ model, el }) {
         });
     });
 
-    container.appendChild(submitBtn);
+    // Copy Button
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "submit-btn";
+    copyBtn.textContent = "Copy All";
+    copyBtn.addEventListener("click", () => {
+        const allText = model.get("sections")
+            .map(section => userInputs[section.id] || "")
+            .join("\n\n");
+
+        navigator.clipboard.writeText(allText).then(() => {
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = "Copied!";
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+            }, 2000);
+        });
+    });
+
+    buttonContainer.append(submitBtn, copyBtn);
+    container.appendChild(buttonContainer);
     el.appendChild(container);
 }
 

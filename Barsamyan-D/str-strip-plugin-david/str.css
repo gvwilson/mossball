@@ -117,13 +117,18 @@
     text-align: right;
 }
 
+.button-container {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
 .submit-btn {
-    align-self: flex-start;
     padding: 0.8rem 1.5rem;
     background: #4299e1;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 999px;
     cursor: pointer;
     font-weight: 500;
     transition: background 0.2s ease;
