@@ -1,0 +1,106 @@
+.title {
+  margin-bottom: 10px;
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.grid {
+  border: #f0f0f0 2px solid;
+}
+
+.grid-cell {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.selection-bar {
+  position: absolute;
+  background-color: rgba(255, 255, 0, 0.508);
+  border-radius: 20px;
+  pointer-events: none;
+  transform-origin: left center;
+  transition: width 0.1s, height 0.1s, transform 0.1s;
+}
+
+.grid-cell.selected {
+  background-color: rgba(255, 255, 0, 0.759);
+}
+
+.word-bank {
+  display: inline-block;
+  flex-direction: column;
+  padding: 10px 20px;
+  background-color: aliceblue;
+  border: #f0f0f0 2px solid;
+}
+
+.main-area {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#word-title {
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.word {
+  margin-bottom: 5px;
+  font-size: 15px;
+}
+
+.bottom-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 10px;
+  width: 500px;
+  align-items: center;
+}
+
+.score-counter {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.timer {
+  display: flex;
+  flex-direction: row;
+  font-size: 16px;
+  align-items: center;
+  gap: 5px;
+}
+
+.end-button {
+  background-color: #ee4242;
+  width: auto;
+  padding: 5px 10px;
+  border-radius: 8px;
+  color: white;
+  font-size: 15px;
+}
+
+.end-button:hover {
+  background-color: #ff5e5e;
+  cursor: pointer;
+}
