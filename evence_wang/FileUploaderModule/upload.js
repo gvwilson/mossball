@@ -33,7 +33,6 @@ function render({ model, el }) {
     container.appendChild(fileList);
     container.appendChild(fileInput);
     el.appendChild(container);
-
     let isUploading = false;
 
     // Event handlers
@@ -195,6 +194,24 @@ function render({ model, el }) {
             fileItem.appendChild(leftSection);
             fileItem.appendChild(rightSection);
             fileList.appendChild(fileItem);
+
+            if (model.get("s3_enabled")) {
+                const s3Status = document.createElement("div");
+                s3Status.className = "s3-status";
+
+                if (file.s3_uploaded) {
+                    s3Status.textContent = `S3: ${file.s3_bucket}`;
+                    s3Status.setAttribute("data-status", "success");
+                } else if (file.s3_error) {
+                    s3Status.textContent = `S3 Error: ${file.s3_error}`;
+                    s3Status.setAttribute("data-status", "error");
+                } else {
+                    s3Status.textContent = "S3: Pending upload";
+                    s3Status.setAttribute("data-status", "pending");
+                }
+
+                leftSection.appendChild(s3Status);
+            }
         };
     }
 
@@ -206,6 +223,92 @@ function render({ model, el }) {
     model.on("change:files", renderFileList);
     model.on("change:status", () => {
         statusIcon.className = `status-icon ${model.get("status")}`;
+    });
+
+
+
+    const s3Dialog = document.createElement("div");
+    s3Dialog.className = "s3-dialog";
+    s3Dialog.innerHTML = `
+        <div class="s3-dialog-content">
+            <div class="s3-dialog-header">
+                <h3>S3 Configuration</h3>
+                <span class="s3-dialog-close">&times;</span>
+            </div>
+            <div class="s3-dialog-body">
+                <div class="s3-controls">
+                    <div class="bucket-select-container">
+                        <label>Select Bucket:</label>
+                        <select class="bucket-select">
+                            <option value="">Choose existing bucket...</option>
+                            ${model.get("s3_buckets").map(b => `<option value="${b}">${b}</option>`).join("")}
+                        </select>
+                    </div>
+                    <div class="bucket-divider">OR</div>
+                    <div class="new-bucket-container">
+                        <label>Create New Bucket:</label>
+                        <input type="text" class="new-bucket-input" placeholder="Enter bucket name" />
+                    </div>
+                    <button class="refresh-buckets">🔄 Refresh Buckets</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Create configuration button
+    const configButton = document.createElement("button");
+    configButton.className = "s3-config-button";
+    configButton.textContent = "⚙️ Configure S3";
+    configButton.style.display = model.get("s3_enabled") ? "block" : "none";
+
+    // Add elements to DOM
+    container.appendChild(configButton);
+    container.appendChild(s3Dialog);
+    el.appendChild(container);
+
+    // Dialog control logic
+    let isDialogOpen = false;
+
+    function toggleDialog() {
+        isDialogOpen = !isDialogOpen;
+        s3Dialog.style.display = isDialogOpen ? "flex" : "none";
+    }
+
+    // Event listeners for dialog
+    configButton.addEventListener("click", toggleDialog);
+
+    s3Dialog.querySelector(".s3-dialog-close").addEventListener("click", toggleDialog);
+
+    s3Dialog.addEventListener("click", (e) => {
+        if (e.target === s3Dialog) toggleDialog();
+    });
+
+    // Connect form elements to model
+    const bucketSelect = s3Dialog.querySelector(".bucket-select");
+    const newBucketInput = s3Dialog.querySelector(".new-bucket-input");
+    const refreshButton = s3Dialog.querySelector(".refresh-buckets");
+
+    bucketSelect.addEventListener("change", () => {
+        model.set("selected_bucket", bucketSelect.value);
+        model.save_changes();
+    });
+
+    newBucketInput.addEventListener("input", () => {
+        model.set("new_bucket_name", newBucketInput.value);
+        model.save_changes();
+    });
+
+    refreshButton.addEventListener("click", () => {
+        model.send({ method: "_refresh_buckets" });
+    });
+
+    // Update dialog when buckets change
+    model.on("change:s3_buckets", () => {
+        bucketSelect.innerHTML = `
+            <option value="">Choose existing bucket...</option>
+            ${model.get("s3_buckets").map(b => `<option value="${b}">${b}</option>`).join("")}
+        `;
+        bucketSelect.value = model.get("selected_bucket");
     });
 
     // Initial render
