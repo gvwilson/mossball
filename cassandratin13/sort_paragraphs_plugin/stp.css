@@ -56,10 +56,12 @@
 
 .stp .stepsContainer {
     width: calc(10% - var(--gap));
+    min-width: 5%;
 }
 
 .stp .textsContainer {
     width: calc(90% - var(--gap));
+    max-width: 95%;
 }
 
 
@@ -77,8 +79,10 @@
 }
 
 .stp .dropdown {
-    display: inline-block;
+    display: block;
     position: relative;
+    margin-left: auto;
+    max-width: 100%;
 }
 
 .stp .arrow-button {
@@ -109,8 +113,9 @@
 .stp .option-list {
     display: none;
     position: absolute;
-    min-width: max-content;
-    max-width: 300px;
+    top: 1rem;
+    right: 0;
+    min-width: max-content; 
     overflow: auto;
     z-index: 999;
     border: 1px solid #d0d0d0;
