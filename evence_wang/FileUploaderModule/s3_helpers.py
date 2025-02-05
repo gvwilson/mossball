@@ -7,9 +7,11 @@ def refresh_buckets(self):
     try:
         response = self.s3.list_buckets()
         self.s3_buckets = [b['Name'] for b in response['Buckets']]
+        return True, ''
     except Exception as e:
-        print(f"Error fetching buckets: {e}")
+        err = f'Error fetching buckets: {e}'
         self.s3_buckets = []
+        return False, err
 
 def create_bucket(self, bucket_name):
     """
@@ -19,17 +21,14 @@ def create_bucket(self, bucket_name):
         self.s3.create_bucket(
             Bucket=bucket_name,
             CreateBucketConfiguration={
-                'LocationConstraint': self.s3.meta.region_name
+                'LocationConstraint': 'ca-central-1',
             }
         )
         self._refresh_buckets()
-        return True
-    except self.s3.exceptions.BucketAlreadyExists:
-        print(f"Bucket {bucket_name} already exists")
-        return False
+        return True, ''
     except Exception as e:
-        print(f"Error creating bucket {bucket_name}: {e}")
-        return False
+        err = f'Error creating bucket {bucket_name}: {e}'
+        return False, err
 
 def upload_to_s3(self, file_data, bucket_name):
     """
@@ -38,17 +37,9 @@ def upload_to_s3(self, file_data, bucket_name):
     if not self.s3_enabled:
         return
 
-    bucket_name = self.selected_bucket or self.new_bucket_name
     if not bucket_name:
         raise ValueError("No bucket selected or specified")
 
-    # Create bucket if a new bucket name is provided
-    if not self.selected_bucket and self.new_bucket_name:
-        if not self._create_bucket(self.new_bucket_name):
-            raise RuntimeError("Failed to create bucket")
-        bucket_name = self.new_bucket_name
-
-    # Get file content
     content = (base64.b64decode(file_data["content"])
                if file_data["content"]
                else open(file_data["path"], "rb").read())
@@ -63,3 +54,52 @@ def upload_to_s3(self, file_data, bucket_name):
     except Exception as e:
         print(f"Error uploading to S3: {e}")
         raise
+
+
+def delete_from_s3(self, file_name, bucket_name):
+    """
+    Delete a file from S3 bucket
+    """
+    if not self.s3_enabled:
+        return False
+
+    try:
+        self.s3.delete_object(
+            Bucket=bucket_name,
+            Key=file_name
+        )
+        return True
+    except Exception as e:
+        print(f"Error deleting {file_name} from S3 bucket {bucket_name}: {e}")
+        return False
+
+
+def get_from_s3(self, file_names, bucket_name=None):
+    """
+    Retrieve file content from S3 bucket
+    """
+    if not self.s3_enabled:
+        raise ValueError("S3 is not enabled")
+
+    bucket_name = bucket_name or self.selected_bucket
+    if not bucket_name:
+        raise ValueError("No bucket selected or specified")
+
+    if isinstance(file_names, str):
+        try:
+            response = self.s3.get_object(Bucket=bucket_name, Key=file_names)
+            return response['Body'].read()
+        except Exception as e:
+            print(f"Error retrieving {file_names} from S3: {e}")
+            return None
+
+    contents = []
+    for file_name in file_names:
+        try:
+            response = self.s3.get_object(Bucket=bucket_name, Key=file_name)
+            contents.append(response['Body'].read())
+        except Exception as e:
+            print(f"Error retrieving {file_name} from S3: {e}")
+            contents.append(None)
+
+    return contents

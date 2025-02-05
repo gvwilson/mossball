@@ -15,6 +15,8 @@ from FileUploaderModule.s3_helpers import (
     create_bucket,
     refresh_buckets,
     upload_to_s3,
+    get_from_s3,
+    delete_from_s3,
 )
 
 load_dotenv()
@@ -25,7 +27,6 @@ class FileUploader(anywidget.AnyWidget):
     s3_enabled = traitlets.Bool(os.getenv("S3_UPLOAD_ENABLED", "0").lower() == "1").tag(sync=True)
     s3_buckets = traitlets.List(traitlets.Unicode(), default_value=[]).tag(sync=True)
     selected_bucket = traitlets.Unicode("").tag(sync=True)
-    new_bucket_name = traitlets.Unicode("").tag(sync=True)
 
     _widget_dir = pathlib.Path(__file__).parent
     _module_dir = _widget_dir
@@ -52,6 +53,7 @@ class FileUploader(anywidget.AnyWidget):
             raise ValueError("Cloud storage is not enabled")
         self.cloud_only = cloud_only and self.s3_enabled
 
+        self.on_msg(self._handle_frontend_msg)
         self.observe(self._handle_file_deletions, names=["files"])
         self.observe(self._process_files, names=["files"])
 
@@ -59,6 +61,31 @@ class FileUploader(anywidget.AnyWidget):
     _refresh_buckets = refresh_buckets
     _create_bucket = create_bucket
     _upload_to_s3 = upload_to_s3
+    _get_from_s3 = get_from_s3
+    _delete_from_s3 = delete_from_s3
+
+
+    def _handle_frontend_msg(self, _, content, buffers):
+        """
+        Handle incoming messages from the frontend.
+        """
+        method = content.get("method", "")
+
+        if method == "create_bucket":
+            bucket_name = content.get("bucket_name", "").strip()
+            if bucket_name:
+                success, err_msg = self._create_bucket(bucket_name)
+                if not success:
+                    self.send({"method": "bucket_creation_error", "message": err_msg})
+                else:
+                    self.send({"method": "bucket_creation_success"})
+
+        elif method == "refresh_buckets":
+            success, err_msg = self._refresh_buckets()
+            if not success:
+                self.send({"method": "bucket_refresh_error", "message": err_msg})
+            else:
+                self.send({"method": "bucket_refresh_success"})
 
 
     def _handle_file_deletions(self, change):
@@ -70,13 +97,22 @@ class FileUploader(anywidget.AnyWidget):
         new_files = {f["id"]: f for f in change["new"]}
 
         for file_id, file_data in old_files.items():
-            if file_id not in new_files and "path" in file_data:
-                try:
-                    path = pathlib.Path(file_data["path"])
-                    if path.exists():
-                        path.unlink()
-                except Exception as e:
-                    print(f"Error deleting file {file_data['path']}: {e}")
+            if file_id not in new_files:
+                # Local deletion
+                if "path" in file_data:
+                    try:
+                        path = pathlib.Path(file_data["path"])
+                        if path.exists():
+                            path.unlink()
+                    except Exception as e:
+                        print(f"Error deleting file {file_data['path']}: {e}")
+
+                # Cloud deletion
+                if file_data.get('s3_uploaded') and 's3_bucket' in file_data:
+                    self._delete_from_s3(
+                        file_name=file_data['name'],
+                        bucket_name=file_data['s3_bucket']
+                    )
 
 
     def _ensure_temp_dir(self):
@@ -100,8 +136,8 @@ class FileUploader(anywidget.AnyWidget):
             if file_data.get("content") and file_data.get("status") == 'complete':
                 content = base64.b64decode(file_data["content"])
 
-                # Force to disk if file is larger than 5MB
                 if not self.cloud_only:
+                    # Force to disk if file is larger than 5MB
                     if self.to_disk or file_data["size"] >= 5 * 1024 * 1024:
                         _, ext = os.path.splitext(file_data["name"])
                         path = self._save_to_disk(
@@ -117,9 +153,9 @@ class FileUploader(anywidget.AnyWidget):
                 # New S3 upload logic
                 if self.s3_enabled:
                     try:
-                        self._upload_to_s3(file_data)
+                        self._upload_to_s3(file_data, self.selected_bucket)
                         processed_file['s3_uploaded'] = True
-                        processed_file['s3_bucket'] = self.selected_bucket or self.new_bucket_name
+                        processed_file['s3_bucket'] = self.selected_bucket
                     except Exception as e:
                         processed_file['s3_uploaded'] = False
                         processed_file['s3_error'] = str(e)
@@ -128,6 +164,10 @@ class FileUploader(anywidget.AnyWidget):
 
         self.unobserve(self._process_files, names=["files"])
         self.files = new_files
+        # Erase content to save memory if cloud_only
+        if self.cloud_only:
+            for file_data in self.files:
+                file_data.update({'content': None})
         self.observe(self._process_files, names=["files"])
 
 
@@ -141,9 +181,17 @@ class FileUploader(anywidget.AnyWidget):
 
     def contents(self, idx=None, display=False):
         def get_content(file_data):
-            content = (base64.b64decode(file_data["content"])
-                        if file_data["content"]
-                        else open(file_data["path"], "rb").read())
+            if self.cloud_only:
+                content = self._get_from_s3(file_data["name"], file_data.get("s3_bucket"))
+                if not content:
+                    return None
+            else:
+                if not file_data['content']:
+                    return None
+
+                content = (base64.b64decode(file_data["content"])
+                            if file_data["content"]
+                            else open(file_data["path"], "rb").read())
 
             if not display:
                 return content

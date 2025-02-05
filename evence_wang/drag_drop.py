@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.10.18"
+__generated_with = "0.11.0"
 app = marimo.App(width="medium")
 
 
@@ -8,7 +8,7 @@ app = marimo.App(width="medium")
 def _():
     from FileUploaderModule.FileUploader import FileUploader
 
-    uploader = FileUploader(multiple=True, to_disk=False, cloud_only=True)
+    uploader = FileUploader(multiple=False, to_disk=True, cloud_only=True)
     return FileUploader, uploader
 
 

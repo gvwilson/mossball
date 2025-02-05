@@ -2,7 +2,6 @@
     margin-top: 15px;
     width: 100%;
 }
-
 .file-item {
     display: flex;
     justify-content: space-between;
@@ -13,53 +12,44 @@
     border-radius: 6px;
     transition: all 0.2s ease;
 }
-
 .file-item:hover {
     background: #f0f0f0;
 }
-
 .file-left {
     flex: 1;
     margin-right: 15px;
 }
-
 .file-name {
     display: block;
     margin-bottom: 4px;
     font-size: 0.9em;
     color: #333;
 }
-
 .file-progress {
     height: 4px;
     background: #e0e0e0;
     border-radius: 2px;
     overflow: hidden;
 }
-
 .file-right {
     display: flex;
     align-items: center;
     gap: 10px;
 }
-
 .file-status {
     width: 20px;
     height: 20px;
     border-radius: 50%;
 }
-
 .file-status.uploading {
     border: 2px solid #2196F3;
     border-top-color: transparent;
     animation: spin 1s linear infinite;
 }
-
 .file-status.complete {
     background: #4CAF50;
     position: relative;
 }
-
 .file-status.complete::after {
     content: '';
     position: absolute;
@@ -71,7 +61,6 @@
     border-width: 0 2px 2px 0;
     transform: translate(-50%, -60%) rotate(45deg);
 }
-
 .delete-btn {
     background: none;
     border: none;
@@ -80,17 +69,14 @@
     color: #666;
     transition: all 0.2s ease;
 }
-
 .delete-btn:hover {
     color: #ff4444;
     transform: scale(1.1);
 }
-
 .upload-container {
     max-width: 400px;
     margin: 20px auto;
 }
-
 .drop-zone {
     border: 2px dashed #cccccc;
     border-radius: 10px;
@@ -100,63 +86,46 @@
     transition: all 0.3s ease;
     position: relative;
 }
-
 .drop-zone.dragover {
     border-color: #2196F3;
     background-color: rgba(33, 150, 243, 0.1);
 }
-
 .upload-text {
     pointer-events: none;
 }
-
 .main-text {
     display: block;
     font-size: 1.2em;
     font-weight: bold;
     margin-bottom: 8px;
 }
-
 .sub-text {
     color: #666;
     font-size: 0.9em;
 }
-
-.progress-bar {
-    height: 4px;
-    background: #eee;
-    margin-top: 15px;
-    border-radius: 2px;
-    overflow: hidden;
-}
-
 .progress-fill {
     height: 100%;
     background: #2196F3;
     width: 0%;
     transition: width 0.3s ease;
 }
-
 .status-icon {
     width: 40px;
     height: 40px;
     margin: 0 auto 15px;
     transition: all 0.3s ease;
 }
-
 .status-icon.uploading {
     border: 3px solid #2196F3;
     border-radius: 50%;
     border-top-color: transparent;
     animation: spin 1s linear infinite;
 }
-
 .status-icon.complete {
     background: #4CAF50;
     border-radius: 50%;
     position: relative;
 }
-
 .status-icon.complete::after {
     content: '';
     position: absolute;
@@ -168,21 +137,20 @@
     border-width: 0 3px 3px 0;
     transform: translate(-50%, -60%) rotate(45deg);
 }
-
 .s3-config-button {
-    background: #f0f0f0;
-    border: 1px solid #ccc;
+    background: #1a1a1a;
+    border: 1px solid #333;
     border-radius: 4px;
     padding: 8px 15px;
     margin-bottom: 15px;
     cursor: pointer;
     transition: all 0.2s ease;
+    color: #ffffff;
 }
-
 .s3-config-button:hover {
-    background: #e0e0e0;
+    background: #333;
+    border-color: #444;
 }
-
 .s3-dialog {
     display: none;
     position: fixed;
@@ -190,109 +158,222 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
-
 .s3-dialog-content {
     background: #1a1a1a;
-    padding: 20px;
+    padding: 25px;
     border-radius: 8px;
     width: 90%;
     max-width: 400px;
     position: relative;
     color: white;
+    border: 1px solid #333;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
-
 .s3-dialog-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 15px;
 }
-
+.s3-dialog-header h3 {
+    margin: 0;
+    color: #ffffff;
+}
 .s3-dialog-close {
     font-size: 24px;
     cursor: pointer;
     padding: 0 8px;
+    color: #ffffff;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
 }
-
 .s3-dialog-close:hover {
-    color: #666;
+    opacity: 1;
 }
-
 .s3-controls {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
-
 .bucket-select-container, .new-bucket-container {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
 }
-
-.bucket-divider {
-    text-align: center;
-    position: relative;
-    margin: 10px 0;
+.bucket-select-container label,
+.new-bucket-container label {
+    color: #ffffff;
+    font-size: 0.9em;
 }
-
-.bucket-divider::before, .bucket-divider::after {
-    content: "";
-    flex: 1;
-    border-bottom: 1px solid #ddd;
+.bucket-select-container select,
+.new-bucket-container input {
+    background: #262626;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 8px;
+    color: #ffffff;
+    width: 100%;
 }
-
-.bucket-divider::before {
-    margin-right: 10px;
+.bucket-select-container select:focus,
+.new-bucket-container input:focus {
+    outline: none;
+    border-color: #4a4a4a;
 }
-
-.bucket-divider::after {
-    margin-left: 10px;
-}
-
 .refresh-buckets {
     align-self: flex-start;
     padding: 8px 15px;
-    background: #1a1a1a;
-    border: 1px solid #ddd;
+    background: #262626;
+    border: 1px solid #333;
     border-radius: 4px;
     cursor: pointer;
+    color: #ffffff;
+    transition: all 0.2s ease;
 }
-
 .refresh-buckets:hover {
-    background: #f0f0f0;
+    background: #333;
+    border-color: #444;
 }
-
-/* Update existing file item S3 status */
 .s3-status {
     font-size: 0.8em;
-    padding: 3px 6px;
+    padding: 3px 8px;
     border-radius: 4px;
-    background: #1a1a1a;
     margin-top: 4px;
     display: inline-block;
 }
-
 .s3-status[data-status="success"] {
-    background: #e8f5e9;
-    color: #2e7d32;
+    background: #1a4721;
+    color: #a5d6a7;
 }
-
 .s3-status[data-status="error"] {
-    background: #ffebee;
-    color: #c62828;
+    background: #621b16;
+    color: #ef9a9a;
 }
-
 .s3-status[data-status="pending"] {
-    background: #fff3e0;
-    color: #ef6c00;
+    background: #4a3506;
+    color: #ffe082;
 }
-
+.card-container {
+    perspective: 1000px;
+    width: 100%;
+    min-height: 250px;
+}
+.flip-card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+.flip-card.flipped {
+    transform: rotateY(180deg);
+}
+.flip-card-front {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: rotateY(0deg);
+    backface-visibility: hidden;
+    padding: 20px;
+}
+.flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: rotateY(180deg);
+    backface-visibility: hidden;
+    padding: 20px;
+}
+.flip-button-container {
+    margin-top: 20px;
+    text-align: center;
+}
+.flip-to-create,
+.flip-to-select,
+.create-bucket-btn {
+    background: #262626;
+    color: white;
+    border: 1px solid #333;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.flip-to-create:hover,
+.flip-to-select:hover,
+.create-bucket-btn:hover {
+    background: #333;
+    border-color: #444;
+}
+.confirmation-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+}
+.confirmation-content {
+    background: #1a1a1a;
+    padding: 25px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    color: white;
+    border: 1px solid #333;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+.confirmation-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+.confirm-yes,
+.confirm-no {
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.confirm-yes {
+    background: #2e7d32;
+    color: white;
+    border: 1px solid #1b5e20;
+}
+.confirm-no {
+    background: #c62828;
+    color: white;
+    border: 1px solid #b71c1c;
+}
+.confirm-yes:hover {
+    background: #1b5e20;
+}
+.confirm-no:hover {
+    background: #b71c1c;
+}
+.message-container {
+    margin: 10px 0;
+    min-height: 24px;
+}
+.error-message {
+    color: #ef5350;
+    font-size: 0.9em;
+}
+.success-message {
+    color: #66bb6a;
+    font-size: 0.9em;
+}
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
