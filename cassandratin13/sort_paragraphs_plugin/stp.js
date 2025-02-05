@@ -28,8 +28,9 @@ function shuffleArray(array) {
 }
 
 function createRow(text, stepNum, el) {
-    let arrow = createElement("select", { classNames: "arrow-button", innerHTML: dropdownSVG });
-    let step = createElement("div", { classNames: "step", textContent: `Step ${stepNum}`, children: [arrow]});
+    let arrow = createElement("button", { classNames: "arrow-button", innerHTML: dropdownSVG });
+    let dropdown = createElement("div", { classNames: "dropdown", children: [arrow] });
+    let step = createElement("div", { classNames: "step", textContent: `${stepNum}`, children: [dropdown] });
     let container = createElement("div", { classNames: ["container", "draggable"], textContent: text, draggable: "true", id: `text${stepNum}`});
 
     let icon = createElement("div", { classNames: "drag-icon", innerHTML: dragSVG });
@@ -70,25 +71,45 @@ function getDragAfterElem(container, y) {
 }
 
 
-function restart(textContainer, result) {
+function restart(textContainer, stepsContainer, result, reset) {
     Array.from(textContainer.children).forEach((child) => {
         let icon = child.firstChild;
         child.disabled = false;
         child.classList.remove("disabled");
         icon.innerHTML = dragSVG;
         icon.classList.remove("result-icon");
-        if (child.classList.contains("correct")) {
-            child.classList.remove("correct");
-        } else if (child.classList.contains("incorrect")) {
-            child.classList.remove("incorrect");
+        if (reset) {
+            if (child.classList.contains("correct")) {
+                child.classList.remove("correct");
+            } else if (child.classList.contains("incorrect")) {
+                child.classList.remove("incorrect");
+            }
+        } else {
+            if (child.classList.contains("incorrect")) {
+                child.classList.remove("incorrect");
+            } else {
+                child.disabled = true;
+                child.classList.remove("draggable");
+            }
         }
+        
     });
     result.style.display = "none";
+
+    Array.from(stepsContainer.children).forEach((step) => {
+        step.querySelector(".arrow-button").disabled = false;
+    });
 }
 
 
 function render({ model, el }) {
+    let title = createElement("h1", { classNames: "title", textContent: "Sort the Paragraphs"});
+    let description = createElement("h1", { classNames: "description", textContent: "Drag & drop or select to sort"});
     let question = createElement("p", { classNames: "question", innerHTML: model.get("question")});
+    let reset = model.get("reset");
+    let instructionSummary = createElement("summary", { textContent: "Instructions for Sorting the Paragraphs"});
+    let instructionText = createElement("p", { innerHTML: "Dragging instructions: Drag any sequence item on the right into its correct position. <br> Dropdown instructions: Click the dropdown button next to a sequence number to place a sequence item into the corresponding position."})
+    let instruction = createElement("details", { classNames: "instruction", children: [instructionSummary, instructionText] });
     let stepsContainer = createElement("div", { classNames: "stepsContainer" });
     let textsContainer = createElement("div", { classNames: "textsContainer" });
     let exerciseContainer = createElement("div", { classNames: "exerciseContainer", children: [stepsContainer, textsContainer] });
@@ -113,40 +134,55 @@ function render({ model, el }) {
 
     let options = []
     texts.forEach((text, index) => {
-        let option = createElement("option", { value: `text${index + 1}`, textContent: text });
+        let option = createElement("button", { classNames: "option", value: `text${index + 1}`, textContent: text });
         options.push(option);
     })
-    
-    Array.from(stepsContainer.children).forEach((step, index) => {
-        let select = step.querySelector(".arrow-button");
-        for (const option of options) {
-            select.appendChild(option.cloneNode(true));
-        }
-        
-        select.addEventListener("change", (event) => {
-            let selectedId = event.target.value;
-            let selectedContainer = el.querySelector(`#${selectedId}`);
-            let allContainers = Array.from(textsContainer.children);
 
-            if (index === sortedTexts.length - 1) {
-                textsContainer.appendChild(selectedContainer);
-            } else {
-                let targetContainer = allContainers[index];
-                if (allContainers.indexOf(selectedContainer) < index) { // selected container is above target
-                    textsContainer.insertBefore(selectedContainer, targetContainer.nextSibling);
-                } else { // selected container is below target
-                    textsContainer.insertBefore(selectedContainer, targetContainer); 
+    Array.from(stepsContainer.children).forEach((step, index) => {
+        let dropdown = step.querySelector(".dropdown");
+        let optionsList = createElement("div", { classNames: "option-list" });
+        
+        for (const option of options) {
+            let clonedOption = option.cloneNode(true);
+            clonedOption.addEventListener("click", () => {
+                let selectedContainer = el.querySelector(`#${clonedOption.value}`);
+                let allContainers = Array.from(textsContainer.children);
+
+                if (index === sortedTexts.length - 1) {
+                    textsContainer.appendChild(selectedContainer);
+                } else {
+                    let targetContainer = allContainers[index];
+                    if (allContainers.indexOf(selectedContainer) < index) { // selected container is above target
+                        textsContainer.insertBefore(selectedContainer, targetContainer.nextSibling);
+                    } else { // selected container is below target
+                        textsContainer.insertBefore(selectedContainer, targetContainer); 
+                    }
                 }
-            }
+
+                optionsList.style.display = "none";
+            })
+            optionsList.appendChild(clonedOption);
+        }
+        dropdown.appendChild(optionsList);
+
+        let arrowButton = dropdown.querySelector(".arrow-button");
+        arrowButton.addEventListener("click", () => {
+            optionsList.style.display = optionsList.style.display === "block" ? "none" : "block";
         });
+        el.addEventListener("click", (event) => {
+            if (!optionsList.contains(event.target) && !arrowButton.contains(event.target)) {
+                optionsList.style.display = "none";
+            }
+        })
     });
+
     
     textsContainer.addEventListener("dragover", (event) => {
         event.preventDefault();
         let afterElem = getDragAfterElem(textsContainer, event.clientY);
         let draggable = el.querySelector(".dragging");
 
-        if (!draggable) return;
+        // if (!draggable) return;
 
         if (afterElem) {
             textsContainer.insertBefore(draggable, afterElem);
@@ -170,14 +206,14 @@ function render({ model, el }) {
     });
 
     restart_button.addEventListener("click", () => {
-        restart(textsContainer, result);
+        restart(textsContainer, stepsContainer, result, reset);
         restart_button.disabled = true;
         submitButton.disabled = false;
     });
 
     form.appendChild(submitButton);
     
-    form.addEventListener("submit", (event) => {
+    submitButton.addEventListener("click", (event) => {
         event.preventDefault();
         let score = 0;
         if (!submitButton.disabled) {
@@ -199,14 +235,24 @@ function render({ model, el }) {
                 }
             });
         }
+
         submitButton.disabled = true;
-        restart_button.disabled = false;
+        if (score === sortedTexts.length) {
+            restart_button.disabled = true;
+            
+        } else {
+            restart_button.disabled = false;
+        }
+        Array.from(stepsContainer.children).forEach((step) => {
+            step.querySelector(".arrow-button").disabled = true;
+        });
+        
         result.innerHTML = `Score: ${score} / ${sortedTexts.length}`;
         result.style.display = "block";
     });
 
     el.classList.add("stp");
-    el.append(...[question, form, result, restart_button]);
+    el.append(...[title, description, instruction, question, form, result, restart_button]);
 }
 export default { render };
 
@@ -239,4 +285,4 @@ const xMarkSVG = `<svg fill="#8f0000" viewBox="0 0 32 32" version="1.1" xmlns="h
 
 const dragSVG = `<svg viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M9.5 8C10.3284 8 11 7.32843 11 6.5C11 5.67157 10.3284 5 9.5 5C8.67157 5 8 5.67157 8 6.5C8 7.32843 8.67157 8 9.5 8ZM9.5 14C10.3284 14 11 13.3284 11 12.5C11 11.6716 10.3284 11 9.5 11C8.67157 11 8 11.6716 8 12.5C8 13.3284 8.67157 14 9.5 14ZM11 18.5C11 19.3284 10.3284 20 9.5 20C8.67157 20 8 19.3284 8 18.5C8 17.6716 8.67157 17 9.5 17C10.3284 17 11 17.6716 11 18.5ZM15.5 8C16.3284 8 17 7.32843 17 6.5C17 5.67157 16.3284 5 15.5 5C14.6716 5 14 5.67157 14 6.5C14 7.32843 14.6716 8 15.5 8ZM17 12.5C17 13.3284 16.3284 14 15.5 14C14.6716 14 14 13.3284 14 12.5C14 11.6716 14.6716 11 15.5 11C16.3284 11 17 11.6716 17 12.5ZM15.5 20C16.3284 20 17 19.3284 17 18.5C17 17.6716 16.3284 17 15.5 17C14.6716 17 14 17.6716 14 18.5C14 19.3284 14.6716 20 15.5 20Z" fill="#121923"></path> </g></svg>`
 
-const dropdownSVG = `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M4.29289 8.29289C4.68342 7.90237 5.31658 7.90237 5.70711 8.29289L12 14.5858L18.2929 8.29289C18.6834 7.90237 19.3166 7.90237 19.7071 8.29289C20.0976 8.68342 20.0976 9.31658 19.7071 9.70711L12.7071 16.7071C12.3166 17.0976 11.6834 17.0976 11.2929 16.7071L4.29289 9.70711C3.90237 9.31658 3.90237 8.68342 4.29289 8.29289Z" fill="#000000"></path> </g></svg>`
+const dropdownSVG = `<svg viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M4.29289 8.29289C4.68342 7.90237 5.31658 7.90237 5.70711 8.29289L12 14.5858L18.2929 8.29289C18.6834 7.90237 19.3166 7.90237 19.7071 8.29289C20.0976 8.68342 20.0976 9.31658 19.7071 9.70711L12.7071 16.7071C12.3166 17.0976 11.6834 17.0976 11.2929 16.7071L4.29289 9.70711C3.90237 9.31658 3.90237 8.68342 4.29289 8.29289Z" fill="#000000"></path> </g></svg>`
