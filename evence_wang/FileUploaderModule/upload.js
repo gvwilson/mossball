@@ -378,7 +378,10 @@ function render({ model, el }) {
 
     dropZone.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
     dropZone.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', e => handleFiles(e.target.files));
+    fileInput.addEventListener('change', e => {
+        handleFiles(e.target.files);
+        e.target.value = "";
+    });
     model.on("change:files", renderFileList);
     model.on("change:status", () => {
         statusIcon.className = `status-icon ${model.get("status")}`;

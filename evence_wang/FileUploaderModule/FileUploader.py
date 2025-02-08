@@ -9,6 +9,7 @@ import fitz
 from PIL import Image, ImageOps
 import marimo
 import boto3
+from uuid import uuid4
 from dotenv import load_dotenv
 
 from FileUploaderModule.s3_helpers import (
@@ -48,6 +49,8 @@ class FileUploader(anywidget.AnyWidget):
         self.s3 = boto3.client('s3') if self.s3_enabled else None
         if self.s3_enabled:
             self._refresh_buckets()
+            # When the user selects a bucket, fetch its file list.
+            self.observe(self._on_bucket_change, names=["selected_bucket"])
 
         if cloud_only and not self.s3_enabled:
             raise ValueError("Cloud storage is not enabled")
@@ -63,7 +66,6 @@ class FileUploader(anywidget.AnyWidget):
     _upload_to_s3 = upload_to_s3
     _get_from_s3 = get_from_s3
     _delete_from_s3 = delete_from_s3
-
 
     def _handle_frontend_msg(self, _, content, buffers):
         """
@@ -87,18 +89,17 @@ class FileUploader(anywidget.AnyWidget):
             else:
                 self.send({"method": "bucket_refresh_success"})
 
-
     def _handle_file_deletions(self, change):
         if "old" not in change:
             return
 
-        # Find removed files that had disk storage
+        # Find removed files that had disk storage or were fetched from S3
         old_files = {f["id"]: f for f in change["old"]}
         new_files = {f["id"]: f for f in change["new"]}
 
         for file_id, file_data in old_files.items():
             if file_id not in new_files:
-                # Local deletion
+                # Local deletion if applicable
                 if "path" in file_data:
                     try:
                         path = pathlib.Path(file_data["path"])
@@ -107,18 +108,16 @@ class FileUploader(anywidget.AnyWidget):
                     except Exception as e:
                         print(f"Error deleting file {file_data['path']}: {e}")
 
-                # Cloud deletion
+                # Cloud deletion for S3 files
                 if file_data.get('s3_uploaded') and 's3_bucket' in file_data:
                     self._delete_from_s3(
                         file_name=file_data['name'],
                         bucket_name=file_data['s3_bucket']
                     )
 
-
     def _ensure_temp_dir(self):
         if not self._temp_dir.exists():
             self._temp_dir.mkdir(parents=True)
-
 
     def _save_to_disk(self, generated_id, content, extension=""):
         self._ensure_temp_dir()
@@ -127,7 +126,6 @@ class FileUploader(anywidget.AnyWidget):
         with open(path, "wb") as f:
             f.write(content)
         return str(path)
-
 
     def _process_files(self, change):
         new_files = []
@@ -170,14 +168,11 @@ class FileUploader(anywidget.AnyWidget):
                 file_data.update({'content': None})
         self.observe(self._process_files, names=["files"])
 
-
     def sizes(self):
         return [f["size"] for f in self.files]
 
-
     def names(self):
         return [f["name"] for f in self.files]
-
 
     def contents(self, idx=None, display=False):
         def get_content(file_data):
@@ -190,8 +185,8 @@ class FileUploader(anywidget.AnyWidget):
                     return None
 
                 content = (base64.b64decode(file_data["content"])
-                            if file_data["content"]
-                            else open(file_data["path"], "rb").read())
+                           if file_data["content"]
+                           else open(file_data["path"], "rb").read())
 
             if not display:
                 return content
@@ -210,7 +205,6 @@ class FileUploader(anywidget.AnyWidget):
         else:
             return [get_content(f) for f in self.files]
 
-
     def _display_image(self, content, file_type, max_width=800):
         img = Image.open(io.BytesIO(content))
         img = ImageOps.exif_transpose(img)
@@ -227,7 +221,6 @@ class FileUploader(anywidget.AnyWidget):
         b64 = base64.b64encode(img_bytes).decode('utf-8')
         return marimo.md(f'![Uploaded Image](data:{file_type};base64,{b64})')
 
-
     def _display_pdf(self, content):
         doc = fitz.open(stream=content, filetype="pdf")
         imgs = []
@@ -242,3 +235,48 @@ class FileUploader(anywidget.AnyWidget):
                 )
             )
         return marimo.Html("".join(imgs))
+
+    #
+    # New Methods to fetch and list files in the selected S3 bucket
+    #
+    def _on_bucket_change(self, change):
+        """
+        When the 'selected_bucket' trait changes, automatically fetch the list
+        of files in the chosen bucket and update the widget's file list.
+        """
+        new_bucket = change["new"]
+        if new_bucket:
+            s3_files = self._list_files(new_bucket)
+            self.files = s3_files
+        else:
+            # If no bucket is selected, clear the file list.
+            self.files = []
+
+    def _list_files(self, bucket_name):
+        """
+        Retrieve the list of objects in the specified S3 bucket.
+        Only the metadata is fetched (not the file content) so that when
+        a file is requested, _get_from_s3 is used to obtain its contents.
+        Each file entry will include an 'id' (with an 's3-' prefix), 'name',
+        'size', and the S3 flags needed for deletion.
+        """
+        try:
+            response = self.s3.list_objects_v2(Bucket=bucket_name)
+            s3_files = []
+            if "Contents" in response:
+                for obj in response["Contents"]:
+                    file_name = obj["Key"]
+                    s3_files.append({
+                        "id": str(uuid4()),
+                        "name": file_name,
+                        "size": obj.get("Size", 0),
+                        "s3_uploaded": True,
+                        "s3_bucket": bucket_name,
+                        "status": "complete",
+                        "progress": 100,
+                        "content": ""
+                    })
+            return s3_files
+        except Exception as e:
+            print(f"Error listing files in bucket {bucket_name}: {e}")
+            return []

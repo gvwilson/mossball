@@ -8,7 +8,7 @@ app = marimo.App(width="medium")
 def _():
     from FileUploaderModule.FileUploader import FileUploader
 
-    uploader = FileUploader(multiple=False, to_disk=True, cloud_only=True)
+    uploader = FileUploader(multiple=True, to_disk=True, cloud_only=True)
     return FileUploader, uploader
 
 
