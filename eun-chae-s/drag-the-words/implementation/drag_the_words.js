@@ -12,6 +12,7 @@ function shuffleArray(array) {
 // Status of all answer blanks + currently dragging word
 let draggedWord = null;
 let answerStatus = {};
+let solution = [];
 
 function dragWord(event) {
   event.dataTransfer.clearData();
@@ -75,6 +76,14 @@ function clearAnswers(solution) {
   });
 }
 
+function showSolution(solution) {
+  Object.keys(answerStatus).forEach((answerID) => {
+    var idx = answerStatus[answerID][0];
+    answerStatus[answerID][1].innerText = solution[idx];
+    answerStatus[answerID][1].className = "revealed";
+  });
+}
+
 // main render function
 function render({ model, el }) {
   let container = document.createElement("div");
@@ -88,18 +97,22 @@ function render({ model, el }) {
   // question text
   let question = document.createElement("div");
   question.className = "question";
-  // replace {{VAR*}} with the box
+  // replace {{solution}} with the box
   const question_text = model.get("data")["question"];
   question.innerHTML = "";
   let lastIndex = 0;
   let matchIndex = 0;
-  question_text.replace(/\{\{VAR\d\}\}/gi, (match, offset) => {
+  question_text.replace(/\{\{(.*?)\}\}/gi, (match, p1, offset) => {
+    // console.log(
+    //   `What's the match ${match}, p1 ${p1}, offset ${offset}, lastIndex ${lastIndex}, matchIndex ${matchIndex}`
+    // );
     if (lastIndex !== offset) {
       let spanText = document.createElement("span");
       spanText.innerText = question_text.substring(lastIndex, offset);
       question.appendChild(spanText);
     }
 
+    solution.push(p1);
     const answerBox = createAnswerBox(matchIndex);
     question.appendChild(answerBox);
     lastIndex = offset + match.length;
@@ -113,7 +126,6 @@ function render({ model, el }) {
   }
 
   // word boxes
-  const solution = model.get("data")["solution"];
   let box_container = document.createElement("div");
   box_container.className = "words-container";
   const random_order = shuffleArray(solution);
@@ -134,20 +146,38 @@ function render({ model, el }) {
   submit_button.innerHTML = "Submit";
   submit_button.className = "submit";
 
+  let show_solution_button = document.createElement("button");
+  show_solution_button.innerHTML = "Show Solution";
+  show_solution_button.className = "show-solution";
+
   let retry_button = document.createElement("button");
   retry_button.innerHTML = "Retry";
   retry_button.className = "retry";
 
   submit_button.addEventListener("click", () => {
-    checkAnswers(model.get("data")["solution"]);
+    checkAnswers(solution);
     button_container.removeChild(submit_button);
+    button_container.appendChild(show_solution_button);
     button_container.appendChild(retry_button);
   });
 
   retry_button.addEventListener("click", () => {
-    clearAnswers(model.get("data")["solution"]);
+    clearAnswers(solution);
     button_container.removeChild(retry_button);
+    if (button_container.contains(show_solution_button)) {
+      button_container.removeChild(show_solution_button);
+    }
     button_container.appendChild(submit_button);
+    if (!container.contains(box_container)) {
+      container.appendChild(box_container);
+    }
+  });
+
+  show_solution_button.addEventListener("click", () => {
+    showSolution(solution);
+    button_container.removeChild(show_solution_button);
+    button_container.removeChild(retry_button);
+    container.removeChild(box_container);
   });
 
   button_container.appendChild(submit_button);

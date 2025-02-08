@@ -15,8 +15,8 @@ def _():
 @app.cell
 def _(anywidget, traitlets):
     class DragWordsWidget(anywidget.AnyWidget):
-        _esm = "drag_the_words.js"
-        _css = "drag_the_words.css"
+        _esm = "./drag_the_words.js"
+        _css = "./drag_the_words.css"
         data = traitlets.Dict({}).tag(sync=True)
     return (DragWordsWidget,)
 
@@ -25,8 +25,7 @@ def _(anywidget, traitlets):
 def _(DragWordsWidget):
     data = {
         "instruction": "Drag the words to the correct positions",
-        "question": "In a multitasking operating system, {{VAR1}} share the CPU by using {{VAR2}} such as Round Robin and First Come, First Served. The OS also manages {{VAR3}}, ensuring that each process has access to the necessary {{VAR4}}. To prevent {{VAR5}}, it employs techniques like resource ordering and {{VAR6}}.",
-        "solution": ["processes", "scheduling algorithms", "memory allocation", "resources", "deadlocks", "preemption"]
+        "question": "In a multitasking operating system, {{processes}} share the CPU by using {{scheduling algorithms}} such as Round Robin and First Come, First Served. The OS also manages {{memory allocation}}, ensuring that each process has access to the necessary {{resources}}. To prevent {{deadlocks}}, it employs techniques like resource ordering and {{preemption}}."
     }
 
     DragWordsWidget(data=data)
