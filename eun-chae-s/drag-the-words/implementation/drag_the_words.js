@@ -13,6 +13,7 @@ function shuffleArray(array) {
 let draggedWord = null;
 let answerStatus = {};
 let solution = [];
+let wordCount = {};
 
 function dragWord(event) {
   event.dataTransfer.clearData();
@@ -22,13 +23,32 @@ function dragWord(event) {
 
 function dropWord(event) {
   event.preventDefault();
-  event.target.innerText = draggedWord.innerText;
-  event.target.className = "filled";
+
   if (answerStatus[event.target.id][2] !== undefined) {
     answerStatus[event.target.id][2].className = "word-box";
+    wordCount[event.target.innerText][1] -= 1;
+    answerStatus[event.target.id][2].setAttribute("draggable", true);
+    answerStatus[event.target.id][2].style.cursor = "pointer";
+    // console.log(
+    //   "count decreased for",
+    //   event.target.innerText,
+    //   wordCount[event.target.innerText]
+    // );
   }
+
+  event.target.innerText = draggedWord.innerText;
+  event.target.className = "filled";
   answerStatus[event.target.id][2] = draggedWord;
-  draggedWord.className += " selected";
+  wordCount[event.target.innerText][1] += 1;
+  if (
+    wordCount[event.target.innerText][0] ===
+    wordCount[event.target.innerText][1]
+  ) {
+    draggedWord.className += " selected";
+    draggedWord.setAttribute("draggable", false);
+    draggedWord.style.cursor = "default";
+  }
+  console.log("after dropping the word", wordCount);
 }
 
 function createAnswerBox(index) {
@@ -63,17 +83,20 @@ function clearAnswers(solution) {
     var idx = answerStatus[answerID][0];
     if (!answerStatus[answerID][1].innerText.includes(solution[idx])) {
       answerStatus[answerID][1].className = "blank";
-      answerStatus[answerID][1].innerHTML = "";
       if (answerStatus[answerID][2] !== undefined) {
+        wordCount[answerStatus[answerID][2].innerText][1] -= 1;
         answerStatus[answerID][2].className = "word-box";
+        answerStatus[answerID][2].setAttribute("draggable", true);
+        answerStatus[answerID][2].style.cursor = "pointer";
       }
-
+      answerStatus[answerID][1].innerHTML = "";
       answerStatus[answerID][2] = undefined;
     } else {
       answerStatus[answerID][1].className = "filled correct";
       answerStatus[answerID][1].innerHTML = solution[idx];
     }
   });
+  // console.log("Retry: wordcount", wordCount);
 }
 
 function showSolution(solution) {
@@ -103,9 +126,6 @@ function render({ model, el }) {
   let lastIndex = 0;
   let matchIndex = 0;
   question_text.replace(/\{\{(.*?)\}\}/gi, (match, p1, offset) => {
-    // console.log(
-    //   `What's the match ${match}, p1 ${p1}, offset ${offset}, lastIndex ${lastIndex}, matchIndex ${matchIndex}`
-    // );
     if (lastIndex !== offset) {
       let spanText = document.createElement("span");
       spanText.innerText = question_text.substring(lastIndex, offset);
@@ -113,6 +133,11 @@ function render({ model, el }) {
     }
 
     solution.push(p1);
+    if (p1 in wordCount) {
+      wordCount[p1][0] += 1;
+    } else {
+      wordCount[p1] = [1, 0];
+    }
     const answerBox = createAnswerBox(matchIndex);
     question.appendChild(answerBox);
     lastIndex = offset + match.length;
@@ -128,7 +153,14 @@ function render({ model, el }) {
   // word boxes
   let box_container = document.createElement("div");
   box_container.className = "words-container";
-  const random_order = shuffleArray(solution);
+  console.log(wordCount);
+  // // get
+  // wordCount = solution.reduce((acc, word) => {
+  //   acc[word] = [(acc[word]?.[0] || 0) + 1, 0];
+  //   return acc;
+  // }, {});
+
+  const random_order = shuffleArray(Object.keys(wordCount));
   random_order.forEach((element, idx) => {
     // TODO: define this element as a new element
     let word = document.createElement("div");

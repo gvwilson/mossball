@@ -32,5 +32,16 @@ def _(DragWordsWidget):
     return (data,)
 
 
+@app.cell
+def _(DragWordsWidget):
+    data2 = {
+        "instruction": "Drag the words to the correct positions",
+        "question": "1. Plants need {{light}} for photosynthesis.\n2. Boiling {{water}} produces steam.\n 3. The sun provides {{light}} and {{heat}} to Earth.\n 4. Hydroelectric dams generate {{energy}} from flowing {{water}}.\n 5. Fire releases {{heat}} and {{light}}."
+    }
+
+    DragWordsWidget(data=data2)
+    return (data2,)
+
+
 if __name__ == "__main__":
     app.run()
