@@ -101,6 +101,9 @@ class S3DialogManager {
         });
         this.bucketSelect.addEventListener("change", () => {
             this.model.set("selected_bucket", this.bucketSelect.value);
+            if (this.bucketSelect.value !== "") {
+                this.messageContainer.innerHTML = '<div class="success-message">Bucket selected successfully!</div>';
+            }
             this.model.save_changes();
         });
         this.dialog.querySelector(".create-bucket-btn").addEventListener("click", () => {
