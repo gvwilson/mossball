@@ -38,7 +38,9 @@ def upload_to_s3(self, file_data, bucket_name):
         return
 
     if not bucket_name:
-        raise ValueError("No bucket selected or specified")
+        if self.cloud_only:
+            raise ValueError("No bucket selected or specified")
+        return False
 
     content = (base64.b64decode(file_data["content"])
                if file_data["content"]
@@ -51,6 +53,7 @@ def upload_to_s3(self, file_data, bucket_name):
             Body=content,
             ContentType=file_data.get("type", "application/octet-stream")
         )
+        return True
     except Exception as e:
         print(f"Error uploading to S3: {e}")
         raise
@@ -83,7 +86,9 @@ def get_from_s3(self, file_names, bucket_name=None):
 
     bucket_name = bucket_name or self.selected_bucket
     if not bucket_name:
-        raise ValueError("No bucket selected or specified")
+        if self.cloud_only:
+            raise ValueError("No bucket selected or specified")
+        return None
 
     if isinstance(file_names, str):
         try:

@@ -38,6 +38,7 @@ class FileUploader(anywidget.AnyWidget):
     status = traitlets.Unicode("waiting").tag(sync=True)
     multiple = traitlets.Bool(False).tag(sync=True)
     to_disk = traitlets.Bool(False).tag(sync=True)
+    cloud_only = traitlets.Bool(False).tag(sync=True)
 
     def __init__(self, multiple=False, to_disk=False, cloud_only=False):
         super().__init__()
@@ -46,10 +47,11 @@ class FileUploader(anywidget.AnyWidget):
         self._temp_dir = pathlib.Path("temp")
         self._ensure_temp_dir()
 
+        self._bucket_switch_in_progress = False
+
         self.s3 = boto3.client('s3') if self.s3_enabled else None
         if self.s3_enabled:
             self._refresh_buckets()
-            # When the user selects a bucket, fetch its file list.
             self.observe(self._on_bucket_change, names=["selected_bucket"])
 
         if cloud_only and not self.s3_enabled:
@@ -73,6 +75,14 @@ class FileUploader(anywidget.AnyWidget):
         """
         method = content.get("method", "")
 
+        if method == "switch_bucket":
+            new_bucket = content.get("new_bucket", "")
+            self._bucket_switch_in_progress = True
+            self.files = []
+            self.selected_bucket = new_bucket
+            self._bucket_switch_in_progress = False
+            return
+
         if method == "create_bucket":
             bucket_name = content.get("bucket_name", "").strip()
             if bucket_name:
@@ -93,13 +103,11 @@ class FileUploader(anywidget.AnyWidget):
         if "old" not in change:
             return
 
-        # Find removed files that had disk storage or were fetched from S3
         old_files = {f["id"]: f for f in change["old"]}
         new_files = {f["id"]: f for f in change["new"]}
 
         for file_id, file_data in old_files.items():
             if file_id not in new_files:
-                # Local deletion if applicable
                 if "path" in file_data:
                     try:
                         path = pathlib.Path(file_data["path"])
@@ -108,12 +116,12 @@ class FileUploader(anywidget.AnyWidget):
                     except Exception as e:
                         print(f"Error deleting file {file_data['path']}: {e}")
 
-                # Cloud deletion for S3 files
-                if file_data.get('s3_uploaded') and 's3_bucket' in file_data:
+                if file_data.get('s3_uploaded') and 's3_bucket' in file_data and not self._bucket_switch_in_progress:
                     self._delete_from_s3(
                         file_name=file_data['name'],
                         bucket_name=file_data['s3_bucket']
                     )
+
 
     def _ensure_temp_dir(self):
         if not self._temp_dir.exists():
@@ -151,9 +159,9 @@ class FileUploader(anywidget.AnyWidget):
                 # New S3 upload logic
                 if self.s3_enabled:
                     try:
-                        self._upload_to_s3(file_data, self.selected_bucket)
-                        processed_file['s3_uploaded'] = True
-                        processed_file['s3_bucket'] = self.selected_bucket
+                        if self._upload_to_s3(file_data, self.selected_bucket):
+                            processed_file['s3_uploaded'] = True
+                            processed_file['s3_bucket'] = self.selected_bucket
                     except Exception as e:
                         processed_file['s3_uploaded'] = False
                         processed_file['s3_error'] = str(e)
@@ -181,12 +189,12 @@ class FileUploader(anywidget.AnyWidget):
                 if not content:
                     return None
             else:
-                if not file_data['content']:
-                    return None
+                content = self._get_from_s3(file_data["name"], file_data.get("s3_bucket"))
 
-                content = (base64.b64decode(file_data["content"])
-                           if file_data["content"]
-                           else open(file_data["path"], "rb").read())
+                if not content:
+                    content = (base64.b64decode(file_data["content"])
+                            if file_data["content"]
+                            else open(file_data["path"], "rb").read())
 
             if not display:
                 return content
@@ -236,30 +244,15 @@ class FileUploader(anywidget.AnyWidget):
             )
         return marimo.Html("".join(imgs))
 
-    #
-    # New Methods to fetch and list files in the selected S3 bucket
-    #
     def _on_bucket_change(self, change):
-        """
-        When the 'selected_bucket' trait changes, automatically fetch the list
-        of files in the chosen bucket and update the widget's file list.
-        """
         new_bucket = change["new"]
         if new_bucket:
             s3_files = self._list_files(new_bucket)
             self.files = s3_files
         else:
-            # If no bucket is selected, clear the file list.
             self.files = []
 
     def _list_files(self, bucket_name):
-        """
-        Retrieve the list of objects in the specified S3 bucket.
-        Only the metadata is fetched (not the file content) so that when
-        a file is requested, _get_from_s3 is used to obtain its contents.
-        Each file entry will include an 'id' (with an 's3-' prefix), 'name',
-        'size', and the S3 flags needed for deletion.
-        """
         try:
             response = self.s3.list_objects_v2(Bucket=bucket_name)
             s3_files = []
@@ -274,7 +267,8 @@ class FileUploader(anywidget.AnyWidget):
                         "s3_bucket": bucket_name,
                         "status": "complete",
                         "progress": 100,
-                        "content": ""
+                        "content": "",
+                        "fetched": True
                     })
             return s3_files
         except Exception as e:

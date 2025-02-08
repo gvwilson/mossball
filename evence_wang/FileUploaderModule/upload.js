@@ -4,6 +4,7 @@ class S3DialogManager {
         this.isDialogOpen = false;
         this.isFlipped = false;
         this.container = container;
+        this.pendingBucket = null;
         this.createDialogElements();
         this.initializeEventListeners();
         this.updateBucketList();
@@ -60,6 +61,20 @@ class S3DialogManager {
             </div>
         `;
 
+        this.switchBucketModal = document.createElement("div");
+        this.switchBucketModal.className = "confirmation-modal switch-bucket-modal";
+        this.switchBucketModal.innerHTML = `
+            <div class="confirmation-content">
+                <h3>Confirm Bucket Switch</h3>
+                <p>Switching buckets will clear all current files locally.<br>
+                   Are you sure you want to switch to <span class="new-bucket-name"></span>?</p>
+                <div class="confirmation-buttons">
+                    <button class="switch-confirm-yes">Yes, Switch</button>
+                    <button class="switch-confirm-no">Cancel</button>
+                </div>
+            </div>
+        `;
+
         this.confirmationModal = document.createElement("div");
         this.confirmationModal.className = "confirmation-modal";
         this.confirmationModal.innerHTML = `
@@ -75,6 +90,7 @@ class S3DialogManager {
 
         this.container.appendChild(this.configButton);
         this.container.appendChild(this.dialog);
+        this.container.appendChild(this.switchBucketModal);
         this.container.appendChild(this.confirmationModal);
 
         this.flipCard = this.dialog.querySelector(".flip-card");
@@ -99,13 +115,25 @@ class S3DialogManager {
             this.messageContainer.innerHTML = "";
             this.newBucketInput.value = "";
         });
+
         this.bucketSelect.addEventListener("change", () => {
-            this.model.set("selected_bucket", this.bucketSelect.value);
-            if (this.bucketSelect.value !== "") {
-                this.messageContainer.innerHTML = '<div class="success-message">Bucket selected successfully!</div>';
+            const newBucket = this.bucketSelect.value;
+            const currentBucket = this.model.get("selected_bucket");
+            if (currentBucket !== newBucket && this.model.get("files").length > 0) {
+                this.pendingBucket = newBucket;
+                this.showSwitchBucketConfirmation(newBucket);
+            } else {
+                if (currentBucket !== newBucket) {
+                    this.model.set("files", []);
+                }
+                this.model.set("selected_bucket", newBucket);
+                if (newBucket !== "") {
+                    this.messageContainer.innerHTML = '<div class="success-message">Bucket selected successfully!</div>';
+                }
+                this.model.save_changes();
             }
-            this.model.save_changes();
         });
+
         this.dialog.querySelector(".create-bucket-btn").addEventListener("click", () => {
             const bucketName = this.newBucketInput.value.trim();
             if (!bucketName) {
@@ -122,6 +150,22 @@ class S3DialogManager {
             const bucketName = this.newBucketInput.value.trim();
             this.model.send({ method: "create_bucket", bucket_name: bucketName });
             this.hideConfirmation();
+        });
+
+        this.confirmationModal.querySelector(".confirm-no").addEventListener("click", () => {
+            this.hideConfirmation();
+        });
+
+        this.switchBucketModal.querySelector(".switch-confirm-yes").addEventListener("click", () => {
+            this.model.send({ method: "switch_bucket", new_bucket: this.pendingBucket });
+            this.messageContainer.innerHTML = '<div class="success-message">Bucket switched successfully!</div>';
+            this.pendingBucket = null;
+            this.hideSwitchBucketConfirmation();
+        });
+        this.switchBucketModal.querySelector(".switch-confirm-no").addEventListener("click", () => {
+            this.bucketSelect.value = this.model.get("selected_bucket");
+            this.pendingBucket = null;
+            this.hideSwitchBucketConfirmation();
         });
 
         this.model.on("msg:custom", (content) => {
@@ -143,9 +187,6 @@ class S3DialogManager {
             }
         });
 
-        this.confirmationModal.querySelector(".confirm-no").addEventListener("click", () => {
-            this.hideConfirmation();
-        });
         this.model.on("change:s3_buckets", () => this.updateBucketList());
     }
 
@@ -174,6 +215,15 @@ class S3DialogManager {
 
     hideConfirmation() {
         this.confirmationModal.style.display = "none";
+    }
+
+    showSwitchBucketConfirmation(newBucket) {
+        this.switchBucketModal.style.display = "flex";
+        this.switchBucketModal.querySelector(".new-bucket-name").textContent = newBucket;
+    }
+
+    hideSwitchBucketConfirmation() {
+        this.switchBucketModal.style.display = "none";
     }
 
     updateBucketList() {
@@ -238,6 +288,22 @@ function render({ model, el }) {
             dropZone.classList.remove('dragover');
         });
     }
+
+    dropZone.addEventListener('click', () => {
+        if (model.get("cloud_only") && !model.get("selected_bucket")) {
+            alert("Please select a bucket before uploading files.");
+            return;
+        }
+        fileInput.click();
+    });
+
+    dropZone.addEventListener('drop', e => {
+        if (model.get("cloud_only") && !model.get("selected_bucket")) {
+            alert("Please select a bucket before uploading files.");
+            return;
+        }
+        handleFiles(e.dataTransfer.files);
+    });
 
     async function handleFiles(rawFiles) {
         if (isUploading) return;
@@ -358,7 +424,7 @@ function render({ model, el }) {
             fileItem.appendChild(leftSection);
             fileItem.appendChild(rightSection);
             fileList.appendChild(fileItem);
-            if (model.get("s3_enabled")) {
+            if (model.get("s3_enabled") && model.get("selected_bucket")) {
                 const s3Status = document.createElement("div");
                 s3Status.className = "s3-status";
                 if (file.s3_uploaded) {
@@ -376,9 +442,12 @@ function render({ model, el }) {
         }
     }
 
-    dropZone.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
-    dropZone.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', e => {
+        if (model.get("cloud_only") && !model.get("selected_bucket")) {
+            alert("Please select a bucket before uploading files.");
+            e.target.value = "";
+            return;
+        }
         handleFiles(e.target.files);
         e.target.value = "";
     });
