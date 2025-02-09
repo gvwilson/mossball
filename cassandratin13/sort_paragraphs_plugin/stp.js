@@ -25,22 +25,31 @@ function createElement(tag, { classNames = "", children = [], ...attrs} = {}) {
 function shuffleArray(array) {
     let positions = [...Array(array.length).keys()];
     let shuffledArray = [...array];
+
     for (let currIndex = 0; currIndex < array.length; currIndex++) {
         let randIndex = Math.floor(Math.random() * currIndex);
         [shuffledArray[currIndex], shuffledArray[randIndex]] = [shuffledArray[randIndex], shuffledArray[currIndex]];
         [positions[currIndex], positions[randIndex]] = [positions[randIndex], positions[currIndex]];
     }
+
     return [shuffledArray, positions];
 }
 
-function createRow(text, stepNum) {
+/**
+ * Create a textbox for sorting, containing the given text and ID number that corresponds to
+ * the textbox's position in the array after being shuffled
+ * @param {String} text The text displayed in the text box container
+ * @param {Number} idNum The number that will be used to identify the textbox
+ * @returns The textbox container
+ */
+function createRow(text, idNum) {
     let arrow = createElement("button", { classNames: "arrow-button", innerHTML: dropdownSVG });
     let dropdown = createElement("div", { classNames: "dropdown", children: [arrow] });
     let container = createElement("div", { 
         classNames: ["container", "draggable"], 
         textContent: text, 
         draggable: "true", 
-        id: `text${stepNum}`,
+        id: `text${idNum}`,
         children: [dropdown]
     });
 
@@ -49,9 +58,6 @@ function createRow(text, stepNum) {
 
     container.addEventListener("dragstart", (event) => {
         container.classList.add("dragging");
-        // var img = new Image();
-        // img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
-        // event.dataTransfer.setDragImage(img, 0, 0);
         setTimeout(() => {
             container.classList.add("placeholder");
         }, 0);
@@ -61,10 +67,14 @@ function createRow(text, stepNum) {
         container.classList.remove("dragging", "placeholder");
     });
 
-
     return container;
 }
 
+/**
+ * Create dropdown options given the array of texts to select, which will be duplicated for each dropdown
+ * @param {Array} texts Array of text options in the dropdown
+ * @returns The array of button elements
+ */
 function createOptions(texts) {
     let options = []
     texts.forEach((text, index) => {
@@ -74,6 +84,12 @@ function createOptions(texts) {
     return options;
 }
 
+/**
+ * Create a header container with the title of the widget, instructions, and the question
+ * @param {DOMWidgetModel} model The widget model
+ * @param {HTMLElement} el The widget element
+ * @returns Elements for the title, instructions, and question
+ */
 function createHeader(model, el) {
     let title = createElement("h1", { classNames: "title", textContent: "Sort the Paragraphs"});
     let description = createElement("h1", { classNames: "description", textContent: "Drag & drop or select to sort"});
@@ -84,12 +100,18 @@ function createHeader(model, el) {
     return [title, instructions, question]
 }
 
+/**
+ * Create the info i button and the pop up container with the instruction details
+ * @param {HTMLElement} el The widget element
+ * @returns The container element for instructions and extra information
+ */
 function createInfoContainer(el) {
     let info = `Drag the sequence items on the right into their correct positions. <br> 
                 Alternatively, click the dropdown button to the right to select a sequence item to place in the current position.`
     let infoI = createElement("button", { classNames: "info-i", textContent: "i" });
     let infoText = createElement("div", { classNames: "info-text", innerHTML: info });
 
+    // Display/hide the information box with instruction details
     infoI.addEventListener("click", () => {
         if (infoText.classList.contains("show")) {
             infoText.classList.remove("show");
@@ -98,6 +120,7 @@ function createInfoContainer(el) {
         }
     });
     
+    // Hide the information box if anywhere within the widget but outside the info element is clicked
     el.addEventListener("click", (event) => {
         if (!infoI.contains(event.target) && !infoText.contains(event.target)) {
             infoText.classList.remove("show");
@@ -108,8 +131,16 @@ function createInfoContainer(el) {
     return infoContainer;
 }
 
+/**
+ * Create a unique dropdown element with the given options for the given container
+ * @param {HTMLElement} container The container to which the dropdown will be added
+ * @param {Array} options The array of button elements to put into the dropdown list
+ * @param {HTMLElement} textsContainer The container with all the textboxes
+ * @returns Elements for the dropdown list and arrow button for the container
+ */
 function createDropdown(container, options, textsContainer) {
     let dropdown = container.querySelector(".dropdown");
+    console.log(dropdown);
     let optionsList = createElement("div", { classNames: "option-list" });
 
     // Clone the list of options to make separate dropdowns for each text box
@@ -129,17 +160,31 @@ function createDropdown(container, options, textsContainer) {
     return [optionsList, arrowButton]    
 }
 
+/**
+ * Create a dropdown arrow button with the dropdown list of options
+ * @param {HTMLElement} dropdown The element containing the arrow button and dropdown list
+ * @param {HTMLElement} textsContainer The container with all the textboxes 
+ * @param {HTMLElement} optionsList Array of dropdown list elements
+ * @returns The arrow button element
+ */
 function createDropdownArrow(dropdown, textsContainer, optionsList) {
     let arrowButton = dropdown.querySelector(".arrow-button");
     arrowButton.addEventListener("click", () => {
+        // Resize the dropdown list width to be relative to the width of the textbox
         let textsWidth = textsContainer.getBoundingClientRect().width;
-        optionsList.style.width = `${textsWidth * 0.5}px`;
-        optionsList.style.maxWidth = `${textsWidth}px`;
+        optionsList.style.minWidth = `${textsWidth * 0.5}px`;
+        optionsList.style.maxWidth = `${textsWidth * 0.95}px`;
         optionsList.style.display = optionsList.style.display === "block" ? "none" : "block";
     });
     return arrowButton;
 }
 
+/**
+ * Event listener function for when the dropdown arrow of the given container is clicked
+ * @param {HTMLElement} selectedContainer The container corresponding to the option selected from the dropdown
+ * @param {HTMLElement} textsContainer The container with all the textboxes 
+ * @param {HTMLElement} container The container whose dropdown arrow has been clicked
+ */
 function dropdownClick(selectedContainer, textsContainer, container) {
     let allContainers = Array.from(textsContainer.children);
     let index = allContainers.indexOf(container);
@@ -155,7 +200,13 @@ function dropdownClick(selectedContainer, textsContainer, container) {
     }
 }
 
-// Get the closest element that comes right after the container being dragged
+/**
+ * Retrieve the closest element that comes right after the container being dragged. The dragged container
+ * will be placed above this closest element
+ * @param {HTMLElement} container The textbox element that is being dragged
+ * @param {Number} y The y position of the mouse
+ * @returns The closest textbox below container's current position
+ */
 function getDragAfterElem(container, y) {
     let draggableElems = [...container.children].filter(child =>
         child.classList.contains("draggable") && !child.classList.contains("dragging")
@@ -176,19 +227,32 @@ function getDragAfterElem(container, y) {
     return closest;
 }
 
+/**
+ * Event listener function for when a textbox is dragged over another
+ * @param {Event} event The dragover event
+ * @param {HTMLElement} textsContainer The container with all the textboxes 
+ */
 function dragOver(event, textsContainer) {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
     let draggable = textsContainer.querySelector(".dragging");
 
+    // Get the container that is below the current dragged textbox
     let afterElem = getDragAfterElem(textsContainer, event.clientY);
-    if (afterElem) {
+    if (afterElem) { 
         textsContainer.insertBefore(draggable, afterElem);
-    } else {
+    } else { // no container below, add the dragged textbox to the end
         textsContainer.appendChild(draggable);
     }
 }
 
+/**
+ * Create the submit and restart buttons, and add event listeners for when they are clicked
+ * @param {HTMLElement} result The element containing the resulting score after submission
+ * @param {HTMLElement} textsContainer The container with all the textboxes 
+ * @param {Array} correctOrder The correct order of the shuffled IDs belonging to the textboxes
+ * @returns The two button elements
+ */
 function createFormButtons(result, textsContainer, correctOrder) {
     let submitButton = createElement("button", {
         classNames: "form-button",
@@ -204,9 +268,7 @@ function createFormButtons(result, textsContainer, correctOrder) {
 
     submitButton.addEventListener("click", (event) => {
         event.preventDefault();
-        let score = submit(textsContainer, restartButton, correctOrder, submitButton); 
-        result.innerHTML = `Score: ${score} / ${correctOrder.length}`;
-        result.style.display = "block";       
+        submit(textsContainer, restartButton, submitButton, correctOrder, result);   
     });
 
     restartButton.addEventListener("click", () => {
@@ -218,32 +280,55 @@ function createFormButtons(result, textsContainer, correctOrder) {
     return [submitButton, restartButton];
 }
 
+/**
+ * Event listener function for clicking the restart button.
+ * Resets the style of the textbox to the format before submission and hides the result element.
+ * @param {HTMLElement} textsContainer The container with all the textboxes 
+ * @param {HTMLElement} result The element containing the resulting score after submission
+ */
 function restart(textsContainer, result) {
     let containers = Array.from(textsContainer.children);
+
     containers.forEach((child) => {
         let icon = child.firstChild;
         child.disabled = false;
         child.classList.remove("disabled");
+
         if (child.classList.contains("correct")) {
             child.classList.remove("correct");
         } else if (child.classList.contains("incorrect")) {
             child.classList.remove("incorrect");
         }
+
         child.querySelector(".arrow-button").disabled = false;
         icon.innerHTML = dragSVG;
         icon.classList.remove("result-icon");
     });
+
     result.style.display = "none";
 }
 
-function submit(textsContainer, restartButton, correctOrder, submitButton) {
+/**
+ * Event listener function for clicking the submit button.
+ * Highlights the correct and incorrect answers and calculates the score.
+ * @param {HTMLElement} textsContainer The container with all the textboxes 
+ * @param {HTMLElement} restartButton The restart button element
+ * @param {HTMLElement} submitButton The submit button element
+ * @param {Array} correctOrder The correct order of the shuffled IDs belonging to the textboxes
+ * @returns The number of correctly placed texts in the sequence
+ */
+function submit(textsContainer, restartButton, submitButton, correctOrder, result) {
     let score = 0;
+
     if (!submitButton.disabled) {
         Array.from(textsContainer.children).forEach((element, index) => {
             element.disabled = true;
             element.classList.add("disabled");
+
+            // Change the dragging icon to be a checkmark or x mark
             let icon = element.firstChild;
             icon.classList.add("result-icon");
+
             if (element.id == correctOrder[index]) {
                 element.classList.add("correct");
                 icon.innerHTML = checkmarkSVG;
@@ -256,14 +341,14 @@ function submit(textsContainer, restartButton, correctOrder, submitButton) {
         });
     }
 
-    submitButton.disabled = true;
     if (score === correctOrder.length) {
         restartButton.disabled = true;
     } else {
         restartButton.disabled = false;
     }
-
-    return score;
+    submitButton.disabled = true;
+    result.innerHTML = `Score: ${score} / ${correctOrder.length}`;
+    result.style.display = "block";      
 }
 
 function render({ model, el }) {
