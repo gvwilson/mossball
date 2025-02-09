@@ -1,11 +1,3 @@
-/**
- * Creates an HTML element with the given attributes
- * @param {String} tag The HTML tag of the element
- * @param {Objects} attributes The attributes to apply to the element
- * @param {String|Array} classNames The class(es) to apply to the element
- * @param {Array} children The children to append to the element 
- * @returns The created HTML element
- */
 function createElement(tag, { classNames = "", children = [], ...attrs} = {}) {
     const element = document.createElement(tag);
     if (classNames) element.classList.add(...[].concat(classNames));
@@ -16,13 +8,8 @@ function createElement(tag, { classNames = "", children = [], ...attrs} = {}) {
     return element;
 }
 
-/**
- * Creates a modal pop-up and an overlay that darkens the background and prevents anything else from being clicked
- * @param {String} message The message shown in the modal
- * @returns The modal and the overlay elements
- */
-function createModal(message) {
-    let warningMessage = createElement("p", { textContent: message});
+function createModal() {
+    let warningMessage = createElement("p", { textContent: "Warning: Question unanswered! \nPlease select an option to submit."});
     let warning = createElement("div", { classNames: "modal-content", children: [warningMessage] });
     let okButton = createElement("button", { classNames: "okButton", textContent: "OK"});
     let modal = createElement("div", { classNames: "modal", children: [warning, okButton] });
@@ -35,26 +22,12 @@ function createModal(message) {
     return [modal, overlay];
 }
 
-/**
- * Changes the modal and overlay's display attributes to make the model appear on screen
- * @param {HTMLElement} modal The modal element to display
- * @param {HTMLElement} overlay The overlay element to display
- */
 function showModal(modal, overlay) {
     modal.style.display = "block";
     overlay.style.display = "block";
 }
 
-/**
- * Checks whether the selected option is correct and shows the results on screen
- * @param {Number} currOption The index of the currently selected option within the list of options
- * @param {Number} correctOption The index of the correct option within the list of options
- * @param {HTMLElement} el The widget element
- * @param {HTMLElement} result The element displaying the result of the answered question
- * @param {HTMLElement} mc The multiple question form element
- * @param {HTMLElement} restart_button The button to try again
- */
-function checkAnswer(currOption, correctOption, result, mc, restart_button) {  
+function checkAnswer(currOption, correctOption, el, result, mc, restart_button) {  
     // Add an icon before the selected option 
     let selected = mc.children[currOption];
     let icon = createElement("div", { classNames: "icon" });
@@ -72,27 +45,20 @@ function checkAnswer(currOption, correctOption, result, mc, restart_button) {
         restart_button.disabled = false;
     }
     result.style.display = "block";
+    el.appendChild(restart_button);
 
     // Disable all options
     disableChoices(mc);
 }
 
-/**
- * Disable the options in the multiple choice form
- * @param {HTMLElement} mc The multiple choice form
- */
-function disableChoices(mc) {
-    for (const child of mc.children) {
+function disableChoices(form) {
+    for (const child of form.children) {
         child.disabled = true;
         child.classList.add("disabled");
     }
 }
 
-/**
- * Reset the multiple choice form so that no option is currently selected
- * @param {HTMLElement} mc The multiple choice form
- */
-function restart(mc, model, result) {
+function restart(mc) {
     Array.from(mc.children).forEach((child, index) => {
         child.disabled = false;
         child.checked = false;
@@ -103,20 +69,8 @@ function restart(mc, model, result) {
             child.querySelector(".icon").remove();
         }
     });
-
-    model.set("currOption", -1); 
-    model.save_changes();
-    result.innerHTML = "";
-    result.style.display = "none";
 }
 
-/**
- * Create a container element for an option in the multiple choice form, containing a radio button and label
- * @param {String} option The label for the option
- * @param {Number} index The index of the option within the list of options
- * @param {DOMWidgetModel} model The widget model
- * @returns The container element
- */
 function createOption(option, index, model) {
     let radio_button = createElement("input", { type: "radio", name: "choices", value: option });
     let label = createElement("label", { classNames: "label", innerHTML: option });
@@ -136,10 +90,9 @@ function createOption(option, index, model) {
     return container;
 }
 
-function render({ model, el }) {
+function createMCQ({ model, el }, mcq, options, answer, currOption) {
     // Create question, form, and buttons
-    let question = createElement("p", { classNames: "question",innerHTML: model.get("question")});
-    let options = model.get("options");
+    let question = createElement("p", { classNames: "question", innerHTML: mcq});
     let mc = createElement("form", { action: "javascript:void(0);"})
     let submitButton = createElement("button", {
         classNames: "mc-button",
@@ -155,11 +108,15 @@ function render({ model, el }) {
     });
 
     restart_button.addEventListener("click", () => {
-        restart(mc, model, result);
+        restart(mc);
+        model.set("currOption", -1); 
+        model.save_changes();
         restart_button.disabled = true;
+        result.innerHTML = "";
+        result.style.display = "none";
     });
 
-    let [modal, overlay] = createModal("Warning: Question unanswered! \nPlease select an option to submit.");
+    let [modal, overlay] = createModal();
 
     // Create radio button, label, and container for each option
     options.forEach((option, index) => {
@@ -171,20 +128,89 @@ function render({ model, el }) {
     mc.addEventListener("submit", (event) => {
         event.preventDefault();
         if (!submitButton.disabled) {
-            let currOption = model.get("currOption");
-            let correctOption = model.get("correctOption");
             if (currOption < 0) showModal(modal, overlay);
-            else checkAnswer(currOption, correctOption, result, mc, restart_button);
+            else checkAnswer(currOption, answer, el, result, mc, restart_button);
         }
     });
 
     el.classList.add("mc");
-    el.append(...[question, mc, result, restart_button, modal, overlay]);
+    el.append(...[question, mc, result, modal, overlay]);
+}
+
+function render({ model, el }) {
+    let questions = model.get("questions");
+    let options = model.get("options");
+    let answers = model.get("answers");
+    let currOptions = model.get("currOptions");
+
+    for (let i = 0; i < questions.length; i++) {
+        createMCQ({ model, el }, questions[i], options[i], answers[i], currOptions[i]);
+    }
 }
 export default { render };
 
+// function createMCQ({ model, el }, question, options, answer, currOption) {
+//     // Create question, form, and buttons
+//     let question = createElement("p", { classNames: "question", innerHTML: question});
+//     let mc = createElement("form", { action: "javascript:void(0);"})
+//     let submitButton = createElement("button", {
+//         classNames: "mc-button",
+//         innerHTML: checkmarkCircleSVG + "Check",
+//         type: "submit"
+//     });
+    
+//     let result = createElement("div", { className: "result", style: "display: none;" });
+//     let restart_button = createElement("button", {
+//         classNames: "mc-button",
+//         innerHTML: "Try again",
+//         disabled: true
+//     });
 
-// SVG constants (TODO: Move these to a separate file and import)
+//     restart_button.addEventListener("click", () => {
+//         restart(mc);
+//         model.set("currOption", -1); 
+//         model.save_changes();
+//         restart_button.disabled = true;
+//         result.innerHTML = "";
+//         result.style.display = "none";
+//     });
+
+//     let [modal, overlay] = createModal();
+
+//     // Create radio button, label, and container for each option
+//     options.forEach((option, index) => {
+//         let container = createOption(option, index, model);
+//         mc.appendChild(container);
+//     });
+
+//     mc.appendChild(submitButton);
+//     mc.addEventListener("submit", (event) => {
+//         event.preventDefault();
+//         if (!submitButton.disabled) {
+//             if (currOption < 0) showModal(modal, overlay);
+//             else checkAnswer(currOption, answer, el, result, mc, restart_button);
+//         }
+//     });
+
+//     el.classList.add("mc");
+//     el.append(...[question, mc, result, modal, overlay]);
+// }
+
+// function render({ model, el }) {
+//     let questions = model.get("questions");
+//     let options = model.get("options");
+//     let answers = model.get("answers");
+//     let currOptions = model.get("currOptions");
+
+//     for (let i = 0; i < questions.length; i++) {
+//         createMCQ({ model, el }, questions[i], options[i], answers[i], currOptions[i]);
+//     }
+// }
+// export default { render };
+
+
+
+
 const checkmarkCircleSVG = `<svg viewBox="0 0 24 24" fill="none" 
                             xmlns="http://www.w3.org/2000/svg" class="checkmark-circle"
                             stroke="#ffffff"><g id="SVGRepo_bgCarrier" 
@@ -195,7 +221,6 @@ const checkmarkCircleSVG = `<svg viewBox="0 0 24 24" fill="none"
                             7.19458 16.6796 7.19594 16.2899 7.58731L10.5183 13.3838L7.19723 10.1089C6.80398 9.72117 6.17083 9.7256 
                             5.78305 10.1189L5.08092 10.8309C4.69314 11.2241 4.69758 11.8573 5.09083 12.2451L9.82912 16.9174C10.221 
                             17.3039 10.8515 17.301 11.2399 16.911L18.4158 9.70405Z" fill="#ffffff"></path> </g></svg>`;
-
 const checkmarkSVG = `<svg fill="#0a6000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" class="checkmark">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" 
                     stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>checkmark2</title> 

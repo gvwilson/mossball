@@ -31,7 +31,7 @@ function shuffleArray(array) {
         [shuffledArray[currIndex], shuffledArray[randIndex]] = [shuffledArray[randIndex], shuffledArray[currIndex]];
         [positions[currIndex], positions[randIndex]] = [positions[randIndex], positions[currIndex]];
     }
-
+    
     return [shuffledArray, positions];
 }
 
@@ -58,6 +58,9 @@ function createRow(text, idNum) {
 
     container.addEventListener("dragstart", (event) => {
         container.classList.add("dragging");
+        // var img = new Image();
+        // img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+        // event.dataTransfer.setDragImage(img, 0, 0);
         setTimeout(() => {
             container.classList.add("placeholder");
         }, 0);
