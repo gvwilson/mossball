@@ -55,22 +55,35 @@ function render({ model, el }) {
     container.className = "structure-strip";
     const userInputs = model.get("user_inputs") || {};
 
+    const imageContainer = document.createElement("div");
+    imageContainer.className = "image-container";
+
     // Add title and description
     const title = document.createElement("h2");
     title.textContent = model.get("title");
     title.className = "structure-title";
 
-    //const image = document.createElement("img");
-    //image.src = model.get("image_path");
-    //image.alt = "London";
-    //image.className = "structure-image";
+    const image = document.createElement("img");
+    image.src = model.get("image_path");
+    image.alt = "London";
+    image.className = "structure-image";
+
+    const toggleBtn = document.createElement("button");
+    toggleBtn.className = "toggle-size-btn";
+    toggleBtn.textContent = "+";
+
+    toggleBtn.addEventListener("click", () => {
+        imageContainer.classList.toggle("enlarged");
+        toggleBtn.textContent = imageContainer.classList.contains("enlarged") ? "-" : "+";
+    });
 
     const description = document.createElement("p");
     description.textContent = model.get("description");
     description.className = "structure-description";
 
+    imageContainer.append(image, toggleBtn);
     container.appendChild(title);
-    //container.appendChild(image);
+    container.appendChild(imageContainer);
     container.appendChild(description);
 
     // Create SINGLE modal instance
@@ -166,7 +179,7 @@ function render({ model, el }) {
         if (section.max_length) {
             const counter = document.createElement("div");
             counter.className = "char-counter";
-            counter.textContent = `0/${section.max_length}`;
+            counter.textContent = `Number of characters: 0`;
 
             const feedback = document.createElement("div");
             feedback.className = "feedback";
@@ -175,7 +188,7 @@ function render({ model, el }) {
             textarea.addEventListener("input", (e) => {
                 const text = e.target.value;
 
-                counter.textContent = `${e.target.value.length}/${section.max_length}`;
+                counter.textContent = `Number of characters: ${e.target.value.length}`;
                 userInputs[section.id] = e.target.value;
                 model.set("user_inputs", { ...userInputs });
                 model.save_changes();
