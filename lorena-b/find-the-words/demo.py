@@ -11,7 +11,12 @@ def _():
     data = {
         "title": "Select the words in the grid below:",
         "words": ["Apple", "Orange", "Banana", "Pineapple"],
-        "config": {}  # TODO: support configurations
+        "instructions": "Click and drag the words on the grid to select them",
+        "config": {
+            "gridWidth": 15,
+            "gridHeight": 15,
+            "timed": True,
+        } 
     }
 
     WordSearch(data=data)
