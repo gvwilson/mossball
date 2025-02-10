@@ -143,7 +143,6 @@ function createInfoContainer(el) {
  */
 function createDropdown(container, options, textsContainer) {
     let dropdown = container.querySelector(".dropdown");
-    console.log(dropdown);
     let optionsList = createElement("div", { classNames: "option-list" });
 
     // Clone the list of options to make separate dropdowns for each text box

@@ -75,7 +75,6 @@
     top: 50%;
     transform: translate(8px, -50%);
     opacity: 0; 
-    overflow: hidden;
     transition: opacity 0.2s ease;
 }
 
@@ -91,7 +90,7 @@
     transform: translateY(-50%);
     border-top: 10px solid transparent; 
     border-bottom: 10px solid transparent;
-    border-right: 10px solid var(--light-blue);;
+    border-right: 10px solid var(--light-blue);
 }
 
 .stp .question {
