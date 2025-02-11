@@ -82,6 +82,7 @@
     opacity: 1;
 }
 
+/* Triangle attached to the info speech bubble */
 .stp .info-text::before {
     content: "";
     position: absolute;
@@ -99,11 +100,12 @@
     margin-bottom: 1rem;
 }
 
+/* Text boxes and elements inside */
 .stp .main-container {
     width: 100%;
 }
 
-.stp .textsContainer {
+.stp .texts-container {
     width: 100%;    
     display: flex;
     flex-wrap: wrap;
@@ -172,7 +174,7 @@
     }
 }
 
-
+/* Individual text box */
 .stp .container {
     display: flex;
     align-items: center;
@@ -205,7 +207,6 @@
     font-weight: bolder;
     opacity: 1;
 }
-
 
 .stp .placeholder {
     min-height: 3rem; 

@@ -357,7 +357,7 @@ function render({ model, el }) {
     // Create the header and container for the draggable text boces
     let [title, instructions, question] = createHeader(model, el);
 
-    let textsContainer = createElement("div", { classNames: "textsContainer" });
+    let textsContainer = createElement("div", { classNames: "texts-container" });
     let form = createElement("form", { classNames: "main-container", action: "javascript:void(0);", children: [textsContainer]});
     let texts = []; // strings for the text boxes
 
