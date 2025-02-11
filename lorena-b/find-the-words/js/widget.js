@@ -3,6 +3,7 @@ import CONSTANTS from "./constants";
 import ICONS from "./icons";
 import { generateGrid, renderGrid } from "./grid";
 import tippy from "https://esm.sh/tippy.js@6";
+import Timer from "./timer";
 
 function render({ model, el }) {
   let container = document.createElement("div");
@@ -54,7 +55,7 @@ function render({ model, el }) {
   rightColumn.className = "right-column";
   mainArea.appendChild(rightColumn);
 
-  const { gridWidth, gridHeight } = data.config;
+  const { gridWidth, gridHeight, barColor } = data.config;
 
   let gridContainer = document.createElement("div");
   gridContainer.className = "grid";
@@ -74,7 +75,6 @@ function render({ model, el }) {
   let wordTitle = document.createElement("h4");
   wordTitle.innerText = CONSTANTS.SEARCH_COPY;
   wordTitle.id = "word-title";
-  wordTitle.innerHTML += ICONS.SearchIcon;
   wordBank.appendChild(wordTitle);
 
   words.forEach((word) => {
@@ -89,51 +89,66 @@ function render({ model, el }) {
   bottomWrapper.className = "bottom-wrapper";
   leftColumn.appendChild(bottomWrapper);
 
-  let timer = document.createElement("div");
-  timer.className = "timer";
-  timer.innerHTML = ICONS.TimerIcon + "0:00";
-  bottomWrapper.appendChild(timer);
+  const { timed, countdown } = data.config.gameMode;
 
-  let isTimerStarted = false;
-  let timerInterval = null;
-  let time = 0;
+  if (timed) {
+    leftColumn.style.position = "relative";
+    let startGameOverlay = document.createElement("div");
+    startGameOverlay.className = "start-game-overlay";
+    leftColumn.appendChild(startGameOverlay);
 
-  const startTimer = () => {
-    if (isTimerStarted) {
-      return;
-    }
-    isTimerStarted = true;
-    timerInterval = setInterval(() => {
-      time++;
-      let minutes = Math.floor(time / 60);
-      let seconds = time % 60;
-      timer.innerHTML =
-        ICONS.TimerIcon + `${minutes}:${seconds.toString().padStart(2, "0")}`;
-    }, 1000);
-  };
+    let startGameButton = document.createElement("button");
+    startGameButton.className = "start-game-button";
+    startGameButton.innerText = CONSTANTS.START_GAME_COPY;
+    startGameOverlay.appendChild(startGameButton);
 
-  const resetTimer = () => {
-    isTimerStarted = false;
-    clearInterval(timerInterval);
-    timerInterval = null;
-    time = 0;
-    timer.innerHTML = ICONS.TimerIcon + "0:00";
-  };
+    startGameButton.addEventListener("click", () => {
+      startGameOverlay.style.display = "none";
+      timer.start(() => {
+        resetGameState();
+        alert("Time's up!");
+      });
+    });
 
-  const stopTimer = () => {
-    isTimerStarted = false;
-    clearInterval(timerInterval);
-    timerInterval = null;
-  };
+    startGameOverlay.style.top = `${gridContainer.offsetTop}px`;
+    startGameOverlay.style.left = `${gridContainer.offsetLeft}px`;
+    startGameOverlay.style.width = gridContainer.style.width;
+    startGameOverlay.style.height = gridContainer.style.height;
+  }
 
-  gridContainer.addEventListener("mousedown", () => {
-    startTimer();
-  });
+  const timerMode = timed ? "COUNTDOWN" : "COUNTUP";
+  const initialTime = timed ? countdown : 0;
+
+  let timer = new Timer(initialTime, timerMode);
+  let timerElement = timer.createTimerElement();
+  bottomWrapper.appendChild(timerElement);
 
   let endButton = document.createElement("button");
   endButton.className = "end-button";
   endButton.innerText = CONSTANTS.END_BUTTON_COPY;
   bottomWrapper.appendChild(endButton);
+
+  const resetGameState = () => {
+    // Reset game state
+    gridContainer.querySelectorAll(".selection-svg").forEach((bar) => {
+      bar.remove();
+    });
+    wordBank.querySelectorAll(".word.found").forEach((word) => {
+      word.classList.remove("found");
+      word.querySelector(".checkmark")?.remove();
+    });
+    wordBank.querySelectorAll(".word.unfound").forEach((word) => {
+      word.classList.remove("unfound");
+      word.querySelector(".incorrect")?.remove();
+    });
+
+    // if start overlay exists, show it
+    if (leftColumn.querySelector(".start-game-overlay")) {
+      leftColumn.querySelector(".start-game-overlay").style.display = "flex";
+    }
+    updateScore();
+    timer.reset();
+  };
 
   endButton.addEventListener("click", () => {
     gridContainer.querySelectorAll(".grid-cell").forEach((cell) => {
@@ -152,20 +167,7 @@ function render({ model, el }) {
 
     setTimeout(() => {
       window.alert("Game over! Click OK to reset.");
-      // Reset game state
-      gridContainer.querySelectorAll(".selection-svg").forEach((bar) => {
-        bar.remove();
-      });
-      wordBank.querySelectorAll(".word.found").forEach((word) => {
-        word.classList.remove("found");
-        word.querySelector(".checkmark")?.remove();
-      });
-      wordBank.querySelectorAll(".word.unfound").forEach((word) => {
-        word.classList.remove("unfound");
-        word.querySelector(".incorrect")?.remove();
-      });
-      updateScore();
-      resetTimer();
+      resetGameState();
     }, 0);
   });
 
@@ -186,18 +188,22 @@ function render({ model, el }) {
   let svgOverlay = null;
   let startCell = null;
 
+  const initSvgOverlay = () => {
+    // Initialize selection overlay
+    svgOverlay = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svgOverlay.classList.add("selection-svg");
+    gridContainer.appendChild(svgOverlay);
+  };
+
   gridContainer.addEventListener("mousedown", (e) => {
+    timer.start(() => {
+      resetGameState();
+      alert("Time's up!");
+    });
     if (e.target.classList.contains("grid-cell")) {
       isMouseDown = true;
       startCell = e.target;
-
-      // Initialize selection overlay
-      svgOverlay = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "svg"
-      );
-      svgOverlay.classList.add("selection-svg");
-      gridContainer.appendChild(svgOverlay);
+      initSvgOverlay();
     }
   });
 
@@ -233,9 +239,9 @@ function render({ model, el }) {
 
     return foundWord;
   };
-  
+
   const getSelectedCells = (startCell, endCell) => {
-    const containerRect = container.getBoundingClientRect();
+    const containerRect = gridContainer.getBoundingClientRect();
     const startRect = startCell.getBoundingClientRect();
     const endRect = endCell.getBoundingClientRect();
 
@@ -260,9 +266,17 @@ function render({ model, el }) {
     // Update path
     const pathD = `M ${pathStartX} ${pathStartY} L ${pathEndX} ${pathEndY}`;
     selectionPath.setAttribute("d", pathD);
-    selectionPath.setAttribute("stroke", "rgba(255, 255, 0, 0.4)");
+    selectionPath.setAttribute(
+      "stroke",
+      barColor || CONSTANTS.DEFAULT_BAR_COLOR
+    );
+    selectionPath.setAttribute("stroke-opacity", "0.4");
     selectionPath.setAttribute("stroke-width", `${startRect.height}px`);
     selectionPath.setAttribute("stroke-linecap", "round");
+    selectionPath.dataset.startRow = startCell.dataset.row;
+    selectionPath.dataset.startCol = startCell.dataset.col;
+    selectionPath.dataset.endRow = endCell.dataset.row;
+    selectionPath.dataset.endCol = endCell.dataset.col;
 
     // Handle cell selection based on direction
     let direction = getSelectedDirection(startCell, endCell);
@@ -425,9 +439,8 @@ function render({ model, el }) {
     const allWordsFound =
       wordBank.querySelectorAll(".word.found").length === words.length;
     if (allWordsFound) {
-      const finalTime = timer.innerText.replace(ICONS.TimerIcon, "");
-      alert("Congratulations! You found all the words in " + finalTime + "!");
-      stopTimer();
+      alert("Congratulations! You found all the words!");
+      timer.stop();
     }
   });
 

@@ -13,14 +13,23 @@ def _():
         "words": ["Apple", "Orange", "Banana", "Pineapple"],
         "instructions": "Click and drag the words on the grid to select them",
         "config": {
-            "gridWidth": 15,
+            "gridWidth": 15,  # dimensions must fit the longest word
             "gridHeight": 15,
-            "timed": True,
-        } 
+            "gameMode": {
+                "timed": True,
+                "countdown": 60,  # in seconds, ignored if timed is false
+            },
+            "barColor": "green",  # accept any valid css color
+        },
     }
 
     WordSearch(data=data)
     return WordSearch, data
+
+
+@app.cell
+def _():
+    return
 
 
 if __name__ == "__main__":

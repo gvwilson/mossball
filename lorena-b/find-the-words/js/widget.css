@@ -8,6 +8,34 @@
   font-size: 18px;
 }
 
+/**
+* Start game overlay and button
+**/
+
+.start-game-overlay {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  z-index: 100;
+}
+
+.start-game-button {
+  background-color: #4c9b4d;
+  width: auto;
+  padding: 5px 10px;
+  border-radius: 8px;
+  color: white;
+  font-size: 15px;
+}
+
+.start-game-button:hover {
+  background-color: #4a884b;
+  cursor: pointer;
+}
+
 .grid {
   border: #f0f0f0 2px solid;
   user-select: none;
@@ -15,6 +43,7 @@
   -webkit-touch-callout: none;
   -webkit-user-drag: none;
   touch-action: none;
+  position: relative;
 }
 
 .grid-cell {
@@ -26,10 +55,8 @@
 }
 
 .selection-path.found-word {
-  stroke: rgba(255, 255, 0, 0.5);
   pointer-events: none;
 }
-
 
 .selection-svg {
   position: absolute;
