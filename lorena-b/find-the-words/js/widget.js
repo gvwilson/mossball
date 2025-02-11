@@ -1,7 +1,7 @@
 import "./widget.css";
 import CONSTANTS from "./constants";
 import ICONS from "./icons";
-import { generateGrid, renderGrid } from "./grid";
+import Grid from "./grid";
 import tippy from "https://esm.sh/tippy.js@6";
 import Timer from "./timer";
 
@@ -63,9 +63,10 @@ function render({ model, el }) {
   gridContainer.style.height = gridHeight * CONSTANTS.CELL_SIZE + 10 + "px";
   leftColumn.appendChild(gridContainer);
 
-  let words = data.words;
-  let grid = generateGrid(gridWidth, gridHeight, words);
-  renderGrid(grid, gridContainer);
+  const words = data.words;
+  const grid = new Grid(words, gridWidth, gridHeight);
+  const gridElement = grid.createGridElement(gridContainer);
+  gridContainer.appendChild(gridElement);
 
   let wordBank = document.createElement("div");
   wordBank.className = "word-bank";

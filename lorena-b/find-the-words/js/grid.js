@@ -1,14 +1,9 @@
 /**
  * @file grid.js
- * @description Functions to generate and render the word search grid.
+ * @description Grid class and utils to generate and render the word search grid.
  */
 
 import CONSTANTS from "./constants";
-
-const getRandomLetter = () => {
-  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-};
 
 const DIRECTIONS = [
   [0, 1], // Vertical
@@ -16,6 +11,68 @@ const DIRECTIONS = [
   [1, 1], // Diagonal down
   //   [1, -1], // Diagonal up
 ];
+
+class Grid {
+  constructor(words, width, height) {
+    this.words = words;
+    this.width = width || CONSTANTS.GRID_WIDTH;
+    this.height = height || CONSTANTS.GRID_HEIGHT;
+    this.grid = this.generateGrid(width, height, words);
+  }
+
+  generateGrid(width, height, words) {
+    let grid = Array(height)
+      .fill()
+      .map(() => Array(width).fill(""));
+
+    // Place each word
+    for (const word of words) {
+      const direction =
+        DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
+      if (!placeWord(grid, word, direction)) {
+        console.warn(`Could not place word: ${word}`);
+      }
+    }
+
+    // Fill remaining spaces with random letters
+    for (let i = 0; i < height; i++) {
+      for (let j = 0; j < width; j++) {
+        if (grid[i][j] === "") {
+          grid[i][j] = getRandomLetter();
+        }
+      }
+    }
+
+    return grid;
+  }
+
+  createGridElement(gridContainer) {
+    const gridTable = document.createElement("table");
+    gridTable.classList.add("grid-table");
+    gridContainer.innerHTML = "";
+    this.grid.forEach((row, rowIndex) => {
+      let gridRow = document.createElement("tr");
+      gridRow.className = "grid-row";
+      row.forEach((col, colIndex) => {
+        let gridCell = document.createElement("td");
+        gridCell.className = "grid-cell";
+        gridCell.innerText = col;
+        gridCell.dataset.row = rowIndex;
+        gridCell.dataset.col = colIndex;
+        gridCell.style.width = CONSTANTS.CELL_SIZE + "px";
+        gridCell.style.height = CONSTANTS.CELL_SIZE + "px";
+        gridRow.appendChild(gridCell);
+      });
+      gridTable.appendChild(gridRow);
+    });
+    return gridTable;
+  }
+}
+
+const getRandomLetter = () => {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+};
 
 const calculateSpacingScore = (grid, row, col, dy, dx, wordLength) => {
   let spacingScore = 0;
@@ -116,51 +173,4 @@ const placeWord = (grid, word, direction) => {
   return false;
 };
 
-const generateGrid = (width, height, words) => {
-  let grid = Array(height)
-    .fill()
-    .map(() => Array(width).fill(""));
-
-  // Place each word
-  for (const word of words) {
-    const direction = DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
-    if (!placeWord(grid, word, direction)) {
-      console.warn(`Could not place word: ${word}`);
-    }
-  }
-
-  // Fill remaining spaces with random letters
-  for (let i = 0; i < height; i++) {
-    for (let j = 0; j < width; j++) {
-      if (grid[i][j] === "") {
-        grid[i][j] = getRandomLetter();
-      }
-    }
-  }
-
-  return grid;
-};
-
-const renderGrid = (grid, gridContainer) => {
-  const gridTable = document.createElement("table");
-  gridTable.className = "grid-table";
-  gridContainer.innerHTML = "";
-  grid.forEach((row, rowIndex) => {
-    let gridRow = document.createElement("tr");
-    gridRow.className = "grid-row";
-    row.forEach((col, colIndex) => {
-      let gridCell = document.createElement("td");
-      gridCell.className = "grid-cell";
-      gridCell.innerText = col;
-      gridCell.dataset.row = rowIndex;
-      gridCell.dataset.col = colIndex;
-      gridCell.style.width = CONSTANTS.CELL_SIZE + "px";
-      gridCell.style.height = CONSTANTS.CELL_SIZE + "px";
-      gridRow.appendChild(gridCell);
-    });
-    gridTable.appendChild(gridRow);
-  });
-  gridContainer.appendChild(gridTable);
-};
-
-export { generateGrid, renderGrid };
+export default Grid;
