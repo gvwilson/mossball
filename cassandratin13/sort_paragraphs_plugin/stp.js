@@ -56,11 +56,8 @@ function createRow(text, idNum) {
     let icon = createElement("div", { classNames: "drag-icon", innerHTML: dragSVG });
     container.insertBefore(icon, container.firstChild);
 
-    container.addEventListener("dragstart", (event) => {
+    container.addEventListener("dragstart", () => {
         container.classList.add("dragging");
-        // var img = new Image();
-        // img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
-        // event.dataTransfer.setDragImage(img, 0, 0);
         setTimeout(() => {
             container.classList.add("placeholder");
         }, 0);
