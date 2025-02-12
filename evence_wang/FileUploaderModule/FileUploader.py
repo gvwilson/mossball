@@ -34,6 +34,7 @@ class FileUploader(anywidget.AnyWidget):
     _esm = _module_dir / "upload.js"
     _css = _module_dir / "upload.css"
 
+    # Values to be synced with the frontend
     files = traitlets.List(traitlets.Dict()).tag(sync=True)
     status = traitlets.Unicode("waiting").tag(sync=True)
     multiple = traitlets.Bool(False).tag(sync=True)
@@ -62,13 +63,14 @@ class FileUploader(anywidget.AnyWidget):
         self.observe(self._handle_file_deletions, names=["files"])
         self.observe(self._process_files, names=["files"])
 
-    # S3 methods
+    # S3 methods defined in s3_helpers.py
     _refresh_buckets = refresh_buckets
     _create_bucket = create_bucket
     _upload_to_s3 = upload_to_s3
     _get_from_s3 = get_from_s3
     _delete_from_s3 = delete_from_s3
 
+    # Frontend message handler for function calls and returns
     def _handle_frontend_msg(self, _, content, buffers):
         """
         Handle incoming messages from the frontend.
@@ -99,6 +101,7 @@ class FileUploader(anywidget.AnyWidget):
             else:
                 self.send({"method": "bucket_refresh_success"})
 
+    # Use monitored changes to handle file deletions
     def _handle_file_deletions(self, change):
         if "old" not in change:
             return
@@ -135,6 +138,7 @@ class FileUploader(anywidget.AnyWidget):
             f.write(content)
         return str(path)
 
+    # Backend processing of newly uploaded files
     def _process_files(self, change):
         new_files = []
         for file_data in change["new"]:
@@ -168,6 +172,7 @@ class FileUploader(anywidget.AnyWidget):
 
             new_files.append(processed_file)
 
+        # Unobserve to avoid infinite loop
         self.unobserve(self._process_files, names=["files"])
         self.files = new_files
         # Erase content to save memory if cloud_only
@@ -182,6 +187,7 @@ class FileUploader(anywidget.AnyWidget):
     def names(self):
         return [f["name"] for f in self.files]
 
+    # Display file contents in Python notebook, either printing raw content or rendering based on file type
     def contents(self, idx=None, display=False):
         def get_content(file_data):
             if self.cloud_only:
@@ -213,6 +219,7 @@ class FileUploader(anywidget.AnyWidget):
         else:
             return [get_content(f) for f in self.files]
 
+    # Rendering images and PDFs in Python notebook
     def _display_image(self, content, file_type, max_width=800):
         img = Image.open(io.BytesIO(content))
         img = ImageOps.exif_transpose(img)
@@ -244,6 +251,7 @@ class FileUploader(anywidget.AnyWidget):
             )
         return marimo.Html("".join(imgs))
 
+    # Fetch files within bucket from S3
     def _on_bucket_change(self, change):
         new_bucket = change["new"]
         if new_bucket:
@@ -259,6 +267,7 @@ class FileUploader(anywidget.AnyWidget):
             if "Contents" in response:
                 for obj in response["Contents"]:
                     file_name = obj["Key"]
+                    # Populate metadata for fetched files, do not store content
                     s3_files.append({
                         "id": str(uuid4()),
                         "name": file_name,

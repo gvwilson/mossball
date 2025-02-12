@@ -1,3 +1,4 @@
+// This is the class for the S3 window that pops up when the user clicks the "Configure S3" button
 class S3DialogManager {
     constructor(container, model) {
         this.model = model;
@@ -8,13 +9,22 @@ class S3DialogManager {
         this.createDialogElements();
         this.initializeEventListeners();
         this.updateBucketList();
+        this.updateSelectedBucketText();
     }
 
+    // This defines what the actual window looks like (and its flip side for creating the bucket)
+    // And the two modals
+        // One for confirming the creation of a bucket
+        // The other for confirming the switch of a bucket
     createDialogElements() {
         this.configButton = document.createElement("button");
         this.configButton.className = "s3-config-button";
         this.configButton.textContent = "⚙️ Configure S3";
         this.configButton.style.display = this.model.get("s3_enabled") ? "block" : "none";
+
+        this.selectedBucketDisplay = document.createElement("span");
+        this.selectedBucketDisplay.className = "s3-selected-bucket";
+        this.updateSelectedBucketText();
 
         this.dialog = document.createElement("div");
         this.dialog.className = "s3-dialog";
@@ -61,6 +71,7 @@ class S3DialogManager {
             </div>
         `;
 
+        // Modals for confirming bucket creation and bucket switch
         this.switchBucketModal = document.createElement("div");
         this.switchBucketModal.className = "confirmation-modal switch-bucket-modal";
         this.switchBucketModal.innerHTML = `
@@ -82,13 +93,19 @@ class S3DialogManager {
                 <h4>Confirm Bucket Creation</h4>
                 <p>Are you sure you want to create bucket: <span class="bucket-name-confirm"></span>?</p>
                 <div class="confirmation-buttons">
-                    <button class="confirm-yes">Yes, Create</button>
-                    <button class="confirm-no">Cancel</button>
+                    <button class="creation-confirm-yes">Yes, Create</button>
+                    <button class="creation-confirm-no">Cancel</button>
                 </div>
             </div>
         `;
 
-        this.container.appendChild(this.configButton);
+        // Group the Configure S3 button with the selected bucket text
+        const s3ConfigContainer = document.createElement("div");
+        s3ConfigContainer.className = "s3-config-container";
+        s3ConfigContainer.appendChild(this.configButton);
+        s3ConfigContainer.appendChild(this.selectedBucketDisplay);
+
+        this.container.appendChild(s3ConfigContainer);
         this.container.appendChild(this.dialog);
         this.container.appendChild(this.switchBucketModal);
         this.container.appendChild(this.confirmationModal);
@@ -106,6 +123,7 @@ class S3DialogManager {
         this.dialog.addEventListener("click", (e) => {
             if (e.target === this.dialog) this.closeDialog();
         });
+        // Flipping the window
         this.dialog.querySelector(".flip-to-create").addEventListener("click", () => {
             this.flipCard.classList.add("flipped");
             this.messageContainer.innerHTML = "";
@@ -116,6 +134,7 @@ class S3DialogManager {
             this.newBucketInput.value = "";
         });
 
+        // Bucket selection
         this.bucketSelect.addEventListener("change", () => {
             const newBucket = this.bucketSelect.value;
             const currentBucket = this.model.get("selected_bucket");
@@ -134,6 +153,9 @@ class S3DialogManager {
             }
         });
 
+        this.model.on("change:selected_bucket", () => this.updateSelectedBucketText());
+
+        // Button for creating a new bucket
         this.dialog.querySelector(".create-bucket-btn").addEventListener("click", () => {
             const bucketName = this.newBucketInput.value.trim();
             if (!bucketName) {
@@ -142,17 +164,20 @@ class S3DialogManager {
             }
             this.showConfirmation(bucketName);
         });
+
+        // Some handlers send messages to the Python backend and triggers a function call
         this.dialog.querySelector(".refresh-buckets").addEventListener("click", () => {
             this.model.send({ method: "refresh_buckets" });
         });
 
-        this.confirmationModal.querySelector(".confirm-yes").addEventListener("click", () => {
+        // Confirmation button handlers for creating a bucket and switching a bucket
+        this.confirmationModal.querySelector(".creation-confirm-yes").addEventListener("click", () => {
             const bucketName = this.newBucketInput.value.trim();
             this.model.send({ method: "create_bucket", bucket_name: bucketName });
             this.hideConfirmation();
         });
 
-        this.confirmationModal.querySelector(".confirm-no").addEventListener("click", () => {
+        this.confirmationModal.querySelector(".creation-confirm-no").addEventListener("click", () => {
             this.hideConfirmation();
         });
 
@@ -168,6 +193,7 @@ class S3DialogManager {
             this.hideSwitchBucketConfirmation();
         });
 
+        // Show messages from the Python backend, separating cases to prevent messages from overriding each other
         this.model.on("msg:custom", (content) => {
             const isCreatingBucket = this.flipCard.classList.contains("flipped");
 
@@ -188,6 +214,11 @@ class S3DialogManager {
         });
 
         this.model.on("change:s3_buckets", () => this.updateBucketList());
+    }
+
+    updateSelectedBucketText() {
+        const bucket = this.model.get("selected_bucket");
+        this.selectedBucketDisplay.textContent = `Selected Bucket: ${bucket ? bucket : "N/A"}`;
     }
 
     toggleDialog() {
@@ -235,6 +266,7 @@ class S3DialogManager {
     }
 }
 
+// This is the actual uploader module
 function render({ model, el }) {
     const container = document.createElement("div");
     container.className = "upload-container";
@@ -275,6 +307,7 @@ function render({ model, el }) {
         e.stopPropagation();
     }
 
+    // Drag and drop event listeners
     for (const eventName of ['dragenter', 'dragover']) {
         dropZone.addEventListener(eventName, e => {
             preventDefaults(e);
@@ -289,6 +322,7 @@ function render({ model, el }) {
         });
     }
 
+    // For cloud_only option, the user must select a bucket before uploading
     dropZone.addEventListener('click', () => {
         if (model.get("cloud_only") && !model.get("selected_bucket")) {
             alert("Please select a bucket before uploading files.");
@@ -305,6 +339,8 @@ function render({ model, el }) {
         handleFiles(e.dataTransfer.files);
     });
 
+    // This is the function that actuall handles the upload of files
+    // Updating the metadata, as well as the progress bar
     async function handleFiles(rawFiles) {
         if (isUploading) return;
         isUploading = true;
@@ -385,6 +421,8 @@ function render({ model, el }) {
         model.save_changes();
     }
 
+    // This is the function that renders the file list (uploading, uploaded, and error)
+    // as well as functionality for deletion
     function renderFileList() {
         fileList.innerHTML = '';
         for (const file of model.get("files")) {
@@ -442,6 +480,7 @@ function render({ model, el }) {
         }
     }
 
+    // Do the same as DropZone to prevent upload if no bucket chosen while cloud_only is true
     fileInput.addEventListener('change', e => {
         if (model.get("cloud_only") && !model.get("selected_bucket")) {
             alert("Please select a bucket before uploading files.");

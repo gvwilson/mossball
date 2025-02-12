@@ -137,20 +137,6 @@
     border-width: 0 3px 3px 0;
     transform: translate(-50%, -60%) rotate(45deg);
 }
-.s3-config-button {
-    background: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 4px;
-    padding: 8px 15px;
-    margin-bottom: 15px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: #ffffff;
-}
-.s3-config-button:hover {
-    background: #333;
-    border-color: #444;
-}
 .s3-dialog {
     display: none;
     position: fixed;
@@ -339,27 +325,33 @@
     margin-top: 20px;
     justify-content: flex-end;
 }
-.confirm-yes,
-.confirm-no {
+.creation-confirm-yes,
+.creation-confirm-no,
+.switch-confirm-yes,
+.switch-confirm-no {
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
-.confirm-yes {
+.creation-confirm-yes,
+.switch-confirm-yes {
     background: #2e7d32;
     color: white;
     border: 1px solid #1b5e20;
 }
-.confirm-no {
+.creation-confirm-no,
+.switch-confirm-no {
     background: #c62828;
     color: white;
     border: 1px solid #b71c1c;
 }
-.confirm-yes:hover {
+.creation-confirm-yes:hover,
+.switch-confirm-yes:hover {
     background: #1b5e20;
 }
-.confirm-no:hover {
+.creation-confirm-no:hover,
+.switch-confirm-no:hover {
     background: #b71c1c;
 }
 .message-container {
@@ -374,6 +366,42 @@
     color: #66bb6a;
     font-size: 0.9em;
 }
+.s3-config-button {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 8px 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #ffffff;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+.s3-config-button:hover {
+    background: #333;
+    border-color: #444;
+}
+.s3-config-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+.s3-config-container > .s3-config-button {
+    margin-bottom: 0;
+}
+.s3-selected-bucket {
+    font-size: 1em;
+    color: #ffffff;
+    text-align: right;
+    margin: 0;
+    line-height: 1;
+    align-self: center;
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
