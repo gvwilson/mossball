@@ -9,7 +9,7 @@ const DIRECTIONS = [
   [0, 1], // Vertical
   [1, 0], // Horizontal
   [1, 1], // Diagonal down
-  //   [1, -1], // Diagonal up
+  [1, -1], // Diagonal up
 ];
 
 class Grid {

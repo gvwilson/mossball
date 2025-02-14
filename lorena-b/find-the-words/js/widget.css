@@ -8,6 +8,10 @@
   font-size: 18px;
 }
 
+.left-column {
+  position: relative;
+}
+
 /**
 * Start game overlay and button
 **/

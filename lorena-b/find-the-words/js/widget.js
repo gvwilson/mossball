@@ -2,106 +2,76 @@ import "./widget.css";
 import CONSTANTS from "./constants";
 import ICONS from "./icons";
 import Grid from "./grid";
-import tippy from "https://esm.sh/tippy.js@6";
 import Timer from "./timer";
+import { createElement, setupLayout } from "./utils";
 
 function render({ model, el }) {
-  let container = document.createElement("div");
-  container.className = "container";
-  el.appendChild(container);
+  // extract params from model
+  const DATA = model.data.data;
 
-  let data = model.data.data;
+  const { leftColumn, rightColumn } = setupLayout(el, DATA);
+  const { gridWidth, gridHeight, barColor } = DATA.config;
 
-  let gameContainer = document.createElement("div");
-  gameContainer.className = "game-container";
-  container.appendChild(gameContainer);
-
-  let title = document.createElement("h2");
-  title.className = "title";
-  title.innerHTML = data.title;
-
-  const helpTooltip = document.createElement("div");
-  helpTooltip.id = "help-tooltip";
-  helpTooltip.innerHTML = ICONS.HelpIcon;
-
-  title.appendChild(helpTooltip);
-  gameContainer.appendChild(title);
-
-  tippy(helpTooltip, {
-    content: data.instructions,
-    interactive: true,
-    arrow: true,
-    popperOptions: {
-      modifiers: [
-        {
-          name: "arrow",
-          options: {
-            element: ".tippy-arrow",
-          },
-        },
-      ],
-    },
+  let gridContainer = createElement("div", {
+    className: "grid",
+    style: `width: ${gridWidth * CONSTANTS.CELL_SIZE}px; height: ${
+      gridHeight * CONSTANTS.CELL_SIZE + CONSTANTS.CELL_PADDING
+    }px;`,
   });
-
-  let mainArea = document.createElement("div");
-  mainArea.className = "main-area";
-  gameContainer.appendChild(mainArea);
-
-  let leftColumn = document.createElement("div");
-  leftColumn.className = "left-column";
-  mainArea.appendChild(leftColumn);
-
-  let rightColumn = document.createElement("div");
-  rightColumn.className = "right-column";
-  mainArea.appendChild(rightColumn);
-
-  const { gridWidth, gridHeight, barColor } = data.config;
-
-  let gridContainer = document.createElement("div");
-  gridContainer.className = "grid";
-  gridContainer.style.width = gridWidth * CONSTANTS.CELL_SIZE + "px";
-  gridContainer.style.height = gridHeight * CONSTANTS.CELL_SIZE + 10 + "px";
   leftColumn.appendChild(gridContainer);
 
-  const words = data.words;
-  const grid = new Grid(words, gridWidth, gridHeight);
+  const WORDS = DATA.words;
+
+  // Initalize the playing grid and word bank
+  const grid = new Grid(WORDS, gridWidth, gridHeight);
   const gridElement = grid.createGridElement(gridContainer);
   gridContainer.appendChild(gridElement);
 
-  let wordBank = document.createElement("div");
-  wordBank.className = "word-bank";
-  wordBank.style.height = gridHeight * CONSTANTS.CELL_SIZE + 10 + "px";
+  let bottomWrapper = createElement("div", { className: "bottom-wrapper" });
+  leftColumn.appendChild(bottomWrapper);
+
+  let wordBank = createElement("div", {
+    className: "word-bank",
+    style: `height: ${
+      gridHeight * CONSTANTS.CELL_SIZE + CONSTANTS.CELL_PADDING
+    }px;`,
+  });
+
+  let wordTitle = createElement("h4", {
+    innerText: CONSTANTS.SEARCH_COPY,
+    id: "word-title",
+  });
+
+  wordBank.appendChild(wordTitle);
   rightColumn.appendChild(wordBank);
 
-  let wordTitle = document.createElement("h4");
-  wordTitle.innerText = CONSTANTS.SEARCH_COPY;
-  wordTitle.id = "word-title";
-  wordBank.appendChild(wordTitle);
-
-  words.forEach((word) => {
-    let wordElement = document.createElement("div");
-    wordElement.className = "word";
-    wordElement.id = word.toLowerCase();
-    wordElement.innerText = word;
+  WORDS.forEach((word) => {
+    let wordElement = createElement("div", {
+      className: "word",
+      id: word.toLowerCase(),
+      innerText: word,
+    });
     wordBank.appendChild(wordElement);
   });
 
-  let bottomWrapper = document.createElement("div");
-  bottomWrapper.className = "bottom-wrapper";
-  leftColumn.appendChild(bottomWrapper);
+  const { timed, countdown } = DATA.config.gameMode;
 
-  const { timed, countdown } = data.config.gameMode;
-
-  if (timed) {
-    leftColumn.style.position = "relative";
-    let startGameOverlay = document.createElement("div");
-    startGameOverlay.className = "start-game-overlay";
-    leftColumn.appendChild(startGameOverlay);
-
-    let startGameButton = document.createElement("button");
-    startGameButton.className = "start-game-button";
-    startGameButton.innerText = CONSTANTS.START_GAME_COPY;
+  const setupStartGameOverlay = () => {
+    let startGameOverlay = createElement("div", {
+      className: "start-game-overlay",
+      style: {
+        top: `${gridContainer.offsetTop}px`,
+        left: `${gridContainer.offsetLeft}px`,
+        width: gridContainer.style.width,
+        height: gridContainer.style.height,
+      },
+    });
+    let startGameButton = createElement("button", {
+      className: "start-game-button",
+      innerText: CONSTANTS.START_GAME_COPY,
+    });
     startGameOverlay.appendChild(startGameButton);
+    leftColumn.appendChild(startGameOverlay);
 
     startGameButton.addEventListener("click", () => {
       startGameOverlay.style.display = "none";
@@ -110,11 +80,11 @@ function render({ model, el }) {
         alert("Time's up!");
       });
     });
+  };
 
-    startGameOverlay.style.top = `${gridContainer.offsetTop}px`;
-    startGameOverlay.style.left = `${gridContainer.offsetLeft}px`;
-    startGameOverlay.style.width = gridContainer.style.width;
-    startGameOverlay.style.height = gridContainer.style.height;
+  // if gamemode is timed, then show an overlay over the grid to start the game
+  if (timed) {
+    setupStartGameOverlay();
   }
 
   const timerMode = timed ? "COUNTDOWN" : "COUNTUP";
@@ -122,46 +92,64 @@ function render({ model, el }) {
 
   let timer = new Timer(initialTime, timerMode);
   let timerElement = timer.createTimerElement();
-  bottomWrapper.appendChild(timerElement);
 
-  let endButton = document.createElement("button");
-  endButton.className = "end-button";
-  endButton.innerText = CONSTANTS.END_BUTTON_COPY;
+  let endButton = createElement("button", {
+    className: "end-button",
+    innerText: CONSTANTS.END_BUTTON_COPY,
+  });
+
+  bottomWrapper.appendChild(timerElement);
   bottomWrapper.appendChild(endButton);
 
+  const WORD_STATES = {
+    FOUND: "found",
+    UNFOUND: "unfound",
+    INCORRECT: ".incorrect",
+    CHECKMARK: ".checkmark",
+  };
+
+  const showStartOverlay = () => {
+    // if start overlay exists (timed mode), show it
+    let startOverlay = leftColumn.querySelector(".start-game-overlay");
+    if (startOverlay) {
+      startOverlay.style.display = "flex";
+    }
+  };
+
+  const resetWordBank = () => {
+    // Reset word bank
+    wordBank.querySelectorAll(".word").forEach((word) => {
+      word.classList.remove(WORD_STATES.FOUND);
+      word.classList.remove(WORD_STATES.UNFOUND);
+      // remove the icons
+      word.querySelector(WORD_STATES.CHECKMARK)?.remove();
+      word.querySelector(WORD_STATES.INCORRECT)?.remove();
+    });
+  };
+
   const resetGameState = () => {
-    // Reset game state
+    // Remove selection bars from grid
     gridContainer.querySelectorAll(".selection-svg").forEach((bar) => {
       bar.remove();
     });
-    wordBank.querySelectorAll(".word.found").forEach((word) => {
-      word.classList.remove("found");
-      word.querySelector(".checkmark")?.remove();
-    });
-    wordBank.querySelectorAll(".word.unfound").forEach((word) => {
-      word.classList.remove("unfound");
-      word.querySelector(".incorrect")?.remove();
-    });
-
-    // if start overlay exists, show it
-    if (leftColumn.querySelector(".start-game-overlay")) {
-      leftColumn.querySelector(".start-game-overlay").style.display = "flex";
-    }
+    resetWordBank();
+    showStartOverlay();
     updateScore();
     timer.reset();
   };
 
-  endButton.addEventListener("click", () => {
+  const handleEndButton = () => {
     gridContainer.querySelectorAll(".grid-cell").forEach((cell) => {
       cell.classList.remove("selected");
     });
     // mark unfound words
     wordBank.querySelectorAll(".word").forEach((word) => {
       if (!word.classList.contains("found")) {
-        let incorrectDiv = document.createElement("div");
-        incorrectDiv.className = "incorrect";
-        incorrectDiv.innerHTML = ICONS.Incorrect;
-        word.appendChild(incorrectDiv);
+        let incorrectIcon = createElement("div", {
+          className: "incorrect",
+          innerHTML: ICONS.Incorrect,
+        });
+        word.appendChild(incorrectIcon);
         word.classList.add("unfound");
       }
     });
@@ -170,25 +158,31 @@ function render({ model, el }) {
       window.alert("Game over! Click OK to reset.");
       resetGameState();
     }, 0);
+  };
+
+  endButton.addEventListener("click", handleEndButton);
+
+  const setScoreCounter = (foundWords) => {
+    return `<b>${foundWords}</b> of <b>${WORDS.length}</b> words found`;
+  };
+
+  let scoreCounter = createElement("div", {
+    className: "score-counter",
+    innerHTML: setScoreCounter(0),
   });
 
-  leftColumn.appendChild(bottomWrapper);
-
-  let scoreCounter = document.createElement("div");
-  scoreCounter.className = "score-counter";
-  scoreCounter.innerHTML = `<b>0</b> of <b>${words.length}</b> words found`;
   rightColumn.appendChild(scoreCounter);
 
   const updateScore = () => {
     let foundWords = wordBank.querySelectorAll(".word.found").length;
-    scoreCounter.innerHTML = `<b>${foundWords}</b> of <b>${words.length}</b> words found`;
+    scoreCounter.innerHTML = setScoreCounter(foundWords);
   };
 
   // Grid selection listeners
   let isMouseDown = false;
   let svgOverlay = null;
   let startCell = null;
-
+  
   const initSvgOverlay = () => {
     // Initialize selection overlay
     svgOverlay = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -211,37 +205,46 @@ function render({ model, el }) {
   gridContainer.addEventListener("mousemove", (e) => {
     if (isMouseDown && svgOverlay && e.target.classList.contains("grid-cell")) {
       let endCell = e.target;
+      updateSelectionPath(startCell, endCell);
       getSelectedCells(startCell, endCell);
     }
   });
 
-  const checkSelectedWord = (selectedCells) => {
-    const upperCaseWords = words.map((word) => word.toUpperCase());
+  const validateWord = (selectedCells) => {
+    const upperCaseWords = WORDS.map((word) => word.toUpperCase());
     let selectedWord = selectedCells.map((cell) => cell.innerText).join("");
-    let foundWord = upperCaseWords.includes(selectedWord);
+    let isWordFound = upperCaseWords.includes(selectedWord);
+    return {
+      isWordFound,
+      selectedWord,
+    };
+  };
 
-    if (foundWord) {
-      // Highlight selected cells
-      selectedCells.forEach((cell) => {
-        cell.classList.add("selected");
+  const markFoundWord = (word) => {
+    let wordElement = wordBank.querySelector(`#${word.toLowerCase()}`);
+    if (!wordElement.querySelector(".checkmark")) {
+      const checkMarkIcon = createElement("div", {
+        className: "checkmark",
+        innerHTML: ICONS.Checkmark,
       });
-      let wordElement = wordBank.querySelector(
-        `#${selectedWord.toLowerCase()}`
-      );
-      wordElement.classList.add("found");
-      if (!wordElement.querySelector(".checkmark")) {
-        let checkmarkDiv = document.createElement("div");
-        checkmarkDiv.className = "checkmark";
-        checkmarkDiv.innerHTML = ICONS.Checkmark;
-        wordElement.appendChild(checkmarkDiv);
-      }
-      updateScore();
+      wordElement.appendChild(checkMarkIcon);
     }
+    wordElement.classList.add("found");
+  };
+
+  const checkSelectedWord = (selectedCells) => {
+    const { isWordFound, selectedWord } = validateWord(selectedCells);
+
+    if (!isWordFound) {
+      return false;
+    }
+    markFoundWord(selectedWord);
+    updateScore();
 
     return foundWord;
   };
 
-  const getSelectedCells = (startCell, endCell) => {
+  const updateSelectionPath = (startCell, endCell) => {
     const containerRect = gridContainer.getBoundingClientRect();
     const startRect = startCell.getBoundingClientRect();
     const endRect = endCell.getBoundingClientRect();
@@ -278,7 +281,9 @@ function render({ model, el }) {
     selectionPath.dataset.startCol = startCell.dataset.col;
     selectionPath.dataset.endRow = endCell.dataset.row;
     selectionPath.dataset.endCol = endCell.dataset.col;
+  };
 
+  const getSelectedCells = (startCell, endCell) => {
     // Handle cell selection based on direction
     let direction = getSelectedDirection(startCell, endCell);
     const selectedCells = [];
@@ -438,7 +443,7 @@ function render({ model, el }) {
 
     // Check if all words have been found
     const allWordsFound =
-      wordBank.querySelectorAll(".word.found").length === words.length;
+      wordBank.querySelectorAll(".word.found").length === WORDS.length;
     if (allWordsFound) {
       alert("Congratulations! You found all the words!");
       timer.stop();
