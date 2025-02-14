@@ -111,12 +111,14 @@
     }
     .submit:hover,
     .retry:hover,
+    .restart:hover,
     .show-solution:hover {
       border: 1px solid #264653;
       color: #264653;
       background-color: white;
     }
-    .retry {
+    .retry,
+    .restart {
       background-color: #ea8cff;
       color: white;
       padding: 5px 10px 5px 10px;

@@ -83,10 +83,17 @@ function checkAnswers() {
   });
 }
 
-function clearAnswers() {
+/**
+ *
+ * @param {Boolean} clear_all: whether to clear all answer boxes or not
+ */
+function clearAnswers(clear_all = false) {
   Object.keys(answerStatus).forEach((answerID) => {
     var idx = answerStatus[answerID][0];
-    if (!answerStatus[answerID][1].innerText.includes(solution[idx])) {
+    if (
+      clear_all ||
+      !answerStatus[answerID][1].innerText.includes(solution[idx])
+    ) {
       answerStatus[answerID][1].className = "blank";
       if (answerStatus[answerID][2] !== undefined) {
         wordCount[answerStatus[answerID][2].innerText][1] -= 1;
@@ -108,26 +115,43 @@ function showSolution() {
     var idx = answerStatus[answerID][0];
     answerStatus[answerID][1].innerText = solution[idx];
     answerStatus[answerID][1].className = "revealed";
+    answerStatus[answerID][2] = undefined;
+  });
+
+  // Reset the current count for all the words as 0
+  Object.keys(wordCount).forEach((word) => {
+    wordCount[word][1] = 0;
   });
 }
 
-// main render function
-function render({ model, el }) {
-  let container = document.createElement("div");
-  container.className = "drag-words-widget";
+function createWordBoxes() {
+  let box_container = document.createElement("div");
+  box_container.className = "words-container";
+  box_container.innerHTML = "";
+  const random_order = shuffleArray(Object.keys(wordCount));
+  random_order.forEach((element, idx) => {
+    let word = document.createElement("div");
+    word.className = "word-box";
+    word.id = `word-${idx}`;
+    word.innerHTML = element;
+    word.setAttribute("draggable", true);
+    word.addEventListener("dragstart", (event) => dragWord(event));
+    box_container.appendChild(word);
+  });
 
-  // instruction text
-  let instruction = document.createElement("div");
-  instruction.className = "instruction-text";
-  instruction.innerHTML = model.get("data")["instruction"];
+  return box_container;
+}
 
-  // question text
+/**
+ *
+ * @param {String} question_text
+ */
+function createQuestionContainer(question_text) {
   let question = document.createElement("div");
   question.className = "question";
 
   // TODO: sanity check {{}} -- backend task?
   // replace {{solution}} with the box
-  const question_text = model.get("data")["question"];
   question.innerHTML = "";
   let lastIndex = 0;
   let matchIndex = 0;
@@ -157,23 +181,29 @@ function render({ model, el }) {
     );
   }
 
+  return question;
+}
+
+// main render function
+function render({ model, el }) {
+  let container = document.createElement("div");
+  container.className = "drag-words-widget";
+
+  // instruction
+  let instruction = document.createElement("div");
+  instruction.className = "instruction-text";
+  instruction.innerHTML = model.get("data")["instruction"];
+
+  // question
+  let question = createQuestionContainer(model.get("data")["question"]);
+
   // word boxes
-  let box_container = document.createElement("div");
-  box_container.className = "words-container";
+  let box_container = createWordBoxes();
 
-  const random_order = shuffleArray(Object.keys(wordCount));
-  random_order.forEach((element, idx) => {
-    let word = document.createElement("div");
-    word.className = "word-box";
-    word.id = `word-${idx}`;
-    word.innerHTML = element;
-    word.setAttribute("draggable", true);
-    word.addEventListener("dragstart", (event) => dragWord(event));
-    box_container.appendChild(word);
-  });
-
+  // buttons
   let button_container = document.createElement("div");
   button_container.className = "bottom-banner";
+
   let submit_button = document.createElement("button");
   submit_button.innerHTML = "Submit";
   submit_button.className = "submit";
@@ -186,19 +216,20 @@ function render({ model, el }) {
   retry_button.innerHTML = "Retry";
   retry_button.className = "retry";
 
+  let restart_button = document.createElement("button");
+  restart_button.innerHTML = "Restart";
+  restart_button.className = "restart";
+
   submit_button.addEventListener("click", () => {
     checkAnswers();
-    button_container.removeChild(submit_button);
+    button_container.innerHTML = "";
     button_container.appendChild(show_solution_button);
     button_container.appendChild(retry_button);
   });
 
   retry_button.addEventListener("click", () => {
     clearAnswers();
-    button_container.removeChild(retry_button);
-    if (button_container.contains(show_solution_button)) {
-      button_container.removeChild(show_solution_button);
-    }
+    button_container.innerHTML = "";
     button_container.appendChild(submit_button);
     if (!container.contains(box_container)) {
       container.appendChild(box_container);
@@ -207,11 +238,22 @@ function render({ model, el }) {
 
   show_solution_button.addEventListener("click", () => {
     showSolution();
-    button_container.removeChild(show_solution_button);
-    button_container.removeChild(retry_button);
+    button_container.innerHTML = "";
+    button_container.appendChild(restart_button);
     container.removeChild(box_container);
   });
 
+  restart_button.addEventListener("click", () => {
+    clearAnswers(true);
+    button_container.innerHTML = "";
+    button_container.appendChild(submit_button);
+    container.removeChild(button_container);
+    box_container = createWordBoxes();
+    container.appendChild(box_container);
+    container.appendChild(button_container);
+  });
+
+  // on the initial render, we have Submit button visible
   button_container.appendChild(submit_button);
 
   container.appendChild(instruction);
