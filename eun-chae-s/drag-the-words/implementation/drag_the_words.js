@@ -1,3 +1,18 @@
+// Variables
+// Icons
+const correctAnswerIcon =
+  '<span>&nbsp;</span><svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"/></svg>';
+const wrongAnswerIcon =
+  '<span>&nbsp;</span><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z"/></svg>';
+
+// the word that is currently dragged
+let draggedWord = null;
+// key: each blank box ID, value: [its index in the solution list, the blank box HTML element, the selected word box HTML element]
+let answerStatus = {};
+let solution = [];
+// key: word, value: [total count, current count]
+let wordCount = {};
+
 // helper functions
 function shuffleArray(array) {
   const newArr = array.slice();
@@ -9,12 +24,6 @@ function shuffleArray(array) {
   return newArr;
 }
 
-// Status of all answer blanks + currently dragging word
-let draggedWord = null;
-let answerStatus = {};
-let solution = [];
-let wordCount = {};
-
 function dragWord(event) {
   event.dataTransfer.clearData();
   draggedWord = event.target;
@@ -24,22 +33,22 @@ function dragWord(event) {
 function dropWord(event) {
   event.preventDefault();
 
+  // if the answer box was already filled with another word
+  // then decrement the count of that word
   if (answerStatus[event.target.id][2] !== undefined) {
     answerStatus[event.target.id][2].className = "word-box";
     wordCount[event.target.innerText][1] -= 1;
     answerStatus[event.target.id][2].setAttribute("draggable", true);
     answerStatus[event.target.id][2].style.cursor = "pointer";
-    // console.log(
-    //   "count decreased for",
-    //   event.target.innerText,
-    //   wordCount[event.target.innerText]
-    // );
   }
 
   event.target.innerText = draggedWord.innerText;
   event.target.className = "filled";
   answerStatus[event.target.id][2] = draggedWord;
   wordCount[event.target.innerText][1] += 1;
+
+  // if the current count of this word is same as the actual count of this word in all answers
+  // then set the corresponding box to be disabled for dragging
   if (
     wordCount[event.target.innerText][0] ===
     wordCount[event.target.innerText][1]
@@ -48,14 +57,12 @@ function dropWord(event) {
     draggedWord.setAttribute("draggable", false);
     draggedWord.style.cursor = "default";
   }
-  console.log("after dropping the word", wordCount);
 }
 
 function createAnswerBox(index) {
   let blankBox = document.createElement("div");
   blankBox.className = "blank";
   blankBox.id = `answer-${index}`;
-  // TODO: figure out why adding dragover should be added to make ondrop work
   blankBox.addEventListener("dragover", (event) => event.preventDefault());
   blankBox.addEventListener("drop", (event) => dropWord(event));
   answerStatus[blankBox.id] = [index, blankBox, undefined];
@@ -63,22 +70,20 @@ function createAnswerBox(index) {
   return blankBox;
 }
 
-function checkAnswers(solution) {
+function checkAnswers() {
   Object.keys(answerStatus).forEach((answerID) => {
     var idx = answerStatus[answerID][0];
     if (answerStatus[answerID][1].innerText !== solution[idx]) {
       answerStatus[answerID][1].className += " incorrect";
-      answerStatus[answerID][1].innerHTML +=
-        '<span>&nbsp;</span><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z"/></svg>';
+      answerStatus[answerID][1].innerHTML += wrongAnswerIcon;
     } else {
       answerStatus[answerID][1].className += " correct";
-      answerStatus[answerID][1].innerHTML +=
-        '<span>&nbsp;</span><svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"/></svg>';
+      answerStatus[answerID][1].innerHTML += correctAnswerIcon;
     }
   });
 }
 
-function clearAnswers(solution) {
+function clearAnswers() {
   Object.keys(answerStatus).forEach((answerID) => {
     var idx = answerStatus[answerID][0];
     if (!answerStatus[answerID][1].innerText.includes(solution[idx])) {
@@ -96,10 +101,9 @@ function clearAnswers(solution) {
       answerStatus[answerID][1].innerHTML = solution[idx];
     }
   });
-  // console.log("Retry: wordcount", wordCount);
 }
 
-function showSolution(solution) {
+function showSolution() {
   Object.keys(answerStatus).forEach((answerID) => {
     var idx = answerStatus[answerID][0];
     answerStatus[answerID][1].innerText = solution[idx];
@@ -120,6 +124,8 @@ function render({ model, el }) {
   // question text
   let question = document.createElement("div");
   question.className = "question";
+
+  // TODO: sanity check {{}} -- backend task?
   // replace {{solution}} with the box
   const question_text = model.get("data")["question"];
   question.innerHTML = "";
@@ -138,6 +144,7 @@ function render({ model, el }) {
     } else {
       wordCount[p1] = [1, 0];
     }
+
     const answerBox = createAnswerBox(matchIndex);
     question.appendChild(answerBox);
     lastIndex = offset + match.length;
@@ -153,16 +160,9 @@ function render({ model, el }) {
   // word boxes
   let box_container = document.createElement("div");
   box_container.className = "words-container";
-  console.log(wordCount);
-  // // get
-  // wordCount = solution.reduce((acc, word) => {
-  //   acc[word] = [(acc[word]?.[0] || 0) + 1, 0];
-  //   return acc;
-  // }, {});
 
   const random_order = shuffleArray(Object.keys(wordCount));
   random_order.forEach((element, idx) => {
-    // TODO: define this element as a new element
     let word = document.createElement("div");
     word.className = "word-box";
     word.id = `word-${idx}`;
@@ -187,14 +187,14 @@ function render({ model, el }) {
   retry_button.className = "retry";
 
   submit_button.addEventListener("click", () => {
-    checkAnswers(solution);
+    checkAnswers();
     button_container.removeChild(submit_button);
     button_container.appendChild(show_solution_button);
     button_container.appendChild(retry_button);
   });
 
   retry_button.addEventListener("click", () => {
-    clearAnswers(solution);
+    clearAnswers();
     button_container.removeChild(retry_button);
     if (button_container.contains(show_solution_button)) {
       button_container.removeChild(show_solution_button);
@@ -206,7 +206,7 @@ function render({ model, el }) {
   });
 
   show_solution_button.addEventListener("click", () => {
-    showSolution(solution);
+    showSolution();
     button_container.removeChild(show_solution_button);
     button_container.removeChild(retry_button);
     container.removeChild(box_container);
