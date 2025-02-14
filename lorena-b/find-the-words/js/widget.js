@@ -1,7 +1,13 @@
 import "./widget.css";
 import CONSTANTS from "./constants";
 import ICONS from "./icons";
-import Grid from "./grid";
+import {
+  Grid,
+  getSelectedDirection,
+  getDiagonalCells,
+  getHorizontalCells,
+  getVerticalCells,
+} from "./grid";
 import Timer from "./timer";
 import { createElement, setupLayout } from "./utils";
 
@@ -182,7 +188,7 @@ function render({ model, el }) {
   let isMouseDown = false;
   let svgOverlay = null;
   let startCell = null;
-  
+
   const initSvgOverlay = () => {
     // Initialize selection overlay
     svgOverlay = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -234,39 +240,47 @@ function render({ model, el }) {
 
   const checkSelectedWord = (selectedCells) => {
     const { isWordFound, selectedWord } = validateWord(selectedCells);
-
     if (!isWordFound) {
       return false;
     }
     markFoundWord(selectedWord);
     updateScore();
-
-    return foundWord;
+    return isWordFound;
   };
 
-  const updateSelectionPath = (startCell, endCell) => {
-    const containerRect = gridContainer.getBoundingClientRect();
+  const calculatePathPoints = (startCell, endCell) => {
     const startRect = startCell.getBoundingClientRect();
     const endRect = endCell.getBoundingClientRect();
+    const containerRect = gridContainer.getBoundingClientRect();
 
-    // Calculate centers and path
     const pathStartX =
       startRect.left + startRect.width / 2 - containerRect.left;
     const pathStartY = startRect.top + startRect.height / 2 - containerRect.top;
     const pathEndX = endRect.left + endRect.width / 2 - containerRect.left;
     const pathEndY = endRect.top + endRect.height / 2 - containerRect.top;
 
-    // Create or update path
-    let selectionPath = svgOverlay.querySelector(".selection-path");
-    if (!selectionPath) {
-      selectionPath = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "path"
-      );
-      selectionPath.classList.add("selection-path");
-      svgOverlay.appendChild(selectionPath);
-    }
+    return {
+      pathStartX,
+      pathStartY,
+      pathEndX,
+      pathEndY,
+      cellHeight: startRect.height,
+    };
+  };
 
+  const createSelectionPath = () => {
+    let selectionPath = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path"
+    );
+    selectionPath.classList.add("selection-path");
+    svgOverlay.appendChild(selectionPath);
+    return selectionPath;
+  };
+
+  const setPathAttrs = (selectionPath, startCell, endCell, pathPoints) => {
+    const { pathStartX, pathStartY, pathEndX, pathEndY, cellHeight } =
+      pathPoints;
     // Update path
     const pathD = `M ${pathStartX} ${pathStartY} L ${pathEndX} ${pathEndY}`;
     selectionPath.setAttribute("d", pathD);
@@ -275,12 +289,20 @@ function render({ model, el }) {
       barColor || CONSTANTS.DEFAULT_BAR_COLOR
     );
     selectionPath.setAttribute("stroke-opacity", "0.4");
-    selectionPath.setAttribute("stroke-width", `${startRect.height}px`);
+    selectionPath.setAttribute("stroke-width", `${cellHeight}px`);
     selectionPath.setAttribute("stroke-linecap", "round");
     selectionPath.dataset.startRow = startCell.dataset.row;
     selectionPath.dataset.startCol = startCell.dataset.col;
     selectionPath.dataset.endRow = endCell.dataset.row;
     selectionPath.dataset.endCol = endCell.dataset.col;
+  };
+
+  const updateSelectionPath = (startCell, endCell) => {
+    const pathPoints = calculatePathPoints(startCell, endCell);
+    // Create or update path
+    let selectionPath =
+      svgOverlay.querySelector(".selection-path") || createSelectionPath();
+    setPathAttrs(selectionPath, startCell, endCell, pathPoints);
   };
 
   const getSelectedCells = (startCell, endCell) => {
@@ -290,130 +312,23 @@ function render({ model, el }) {
     if (direction) {
       switch (direction.type) {
         case "horizontal":
-          selectedCells.push(...getHorizontalCells(startCell, endCell));
+          selectedCells.push(
+            ...getHorizontalCells(startCell, endCell, gridContainer)
+          );
           break;
         case "vertical":
-          selectedCells.push(...getVerticalCells(startCell, endCell));
+          selectedCells.push(
+            ...getVerticalCells(startCell, endCell, gridContainer)
+          );
           break;
         case "diagonal":
-          selectedCells.push(...getDiagonalCells(startCell, endCell));
+          selectedCells.push(
+            ...getDiagonalCells(startCell, endCell, gridContainer)
+          );
           break;
       }
     }
-
     return selectedCells;
-  };
-
-  const getSelectedDirection = (startCell, endCell) => {
-    const startRect = startCell.getBoundingClientRect();
-    const endRect = endCell.getBoundingClientRect();
-
-    // Calculate angle
-    const deltaX = endRect.left - startRect.left;
-    const deltaY = endRect.top - startRect.top;
-    const angle = ((Math.atan2(deltaY, deltaX) * 180) / Math.PI + 360) % 360;
-
-    // Define valid directions
-    const directions = [
-      { angle: 0, type: "horizontal" },
-      { angle: 45, type: "diagonal" },
-      { angle: 90, type: "vertical" },
-      { angle: 135, type: "diagonal" },
-      { angle: 180, type: "horizontal" },
-      { angle: 225, type: "diagonal" },
-      { angle: 270, type: "vertical" },
-      { angle: 315, type: "diagonal" },
-    ];
-
-    const snapThreshold = 20; // degrees
-
-    // Find nearest direction
-    const nearestDirection = directions.reduce(
-      (nearest, current) => {
-        const diff = Math.abs(((angle + 360) % 360) - current.angle);
-        return diff < nearest.diff ? { ...current, diff } : nearest;
-      },
-      { diff: Infinity }
-    );
-
-    return nearestDirection.diff < snapThreshold ? nearestDirection : null;
-  };
-
-  const getHorizontalCells = (start, end) => {
-    // get the horizontal cells between start and end
-    const startRow = parseInt(start.dataset.row);
-    const startCol = parseInt(start.dataset.col);
-    const endRow = parseInt(end.dataset.row);
-    const endCol = parseInt(end.dataset.col);
-
-    const cells = [];
-    if (startRow === endRow) {
-      const minCol = Math.min(startCol, endCol);
-      const maxCol = Math.max(startCol, endCol);
-      for (let col = minCol; col <= maxCol; col++) {
-        const cell = gridContainer.querySelector(
-          `.grid-cell[data-row="${startRow}"][data-col="${col}"]`
-        );
-        cells.push(cell);
-      }
-    }
-
-    return cells;
-  };
-
-  const getVerticalCells = (start, end) => {
-    // get the vertical cells between start and end
-    const startRow = parseInt(start.dataset.row);
-    const startCol = parseInt(start.dataset.col);
-    const endRow = parseInt(end.dataset.row);
-    const endCol = parseInt(end.dataset.col);
-
-    const cells = [];
-    if (startCol === endCol) {
-      const minRow = Math.min(startRow, endRow);
-      const maxRow = Math.max(startRow, endRow);
-      for (let row = minRow; row <= maxRow; row++) {
-        const cell = gridContainer.querySelector(
-          `.grid-cell[data-row="${row}"][data-col="${startCol}"]`
-        );
-        cells.push(cell);
-      }
-    }
-
-    return cells;
-  };
-
-  const getDiagonalCells = (start, end) => {
-    // get the diagonal cells between start and end
-    const startRow = parseInt(start.dataset.row);
-    const startCol = parseInt(start.dataset.col);
-    const endRow = parseInt(end.dataset.row);
-    const endCol = parseInt(end.dataset.col);
-
-    const cells = [];
-    const dx = startCol < endCol ? 1 : -1;
-    const dy = startRow < endRow ? 1 : -1;
-    const slope = (endRow - startRow) / (endCol - startCol);
-
-    if (Math.abs(slope) === 1) {
-      let row = startRow;
-      let col = startCol;
-      while (row !== endRow && col !== endCol) {
-        const cell = gridContainer.querySelector(
-          `.grid-cell[data-row="${row}"][data-col="${col}"]`
-        );
-        cells.push(cell);
-        row += dy;
-        col += dx;
-      }
-      cells.push(
-        gridContainer.querySelector(
-          `.grid-cell[data-row="${endRow}"][data-col="${endCol}"]`
-        )
-      );
-    }
-
-    return cells;
   };
 
   const cleanupSelection = () => {
@@ -424,37 +339,38 @@ function render({ model, el }) {
     startCell = null;
   };
 
+  const allWordsFound = () => {
+    return wordBank.querySelectorAll(".word.found").length === WORDS.length;
+  };
+
   gridContainer.addEventListener("mouseup", (e) => {
     if (isMouseDown) {
       isMouseDown = false;
       const selectedCells = getSelectedCells(startCell, e.target);
       const isWordFound = checkSelectedWord(selectedCells);
-      if (isWordFound) {
-        // keep the current svg overlay on the screen
-        svgOverlay
-          .querySelector(".selection-path")
-          ?.classList.add("found-word");
-        svgOverlay = null;
-        startCell = null;
-      } else {
+
+      if (!isWordFound) {
         cleanupSelection();
       }
-    }
 
+      // keep the current svg overlay on the screen
+      svgOverlay.querySelector(".selection-path")?.classList.add("found-word");
+      svgOverlay = null;
+      startCell = null;
+    }
     // Check if all words have been found
-    const allWordsFound =
-      wordBank.querySelectorAll(".word.found").length === WORDS.length;
-    if (allWordsFound) {
+    if (allWordsFound()) {
       alert("Congratulations! You found all the words!");
       timer.stop();
     }
   });
 
   gridContainer.addEventListener("mouseleave", () => {
-    if (isMouseDown) {
-      isMouseDown = false;
-      cleanupSelection();
+    if (!isMouseDown) {
+      return;
     }
+    isMouseDown = false;
+    cleanupSelection();
   });
 }
 

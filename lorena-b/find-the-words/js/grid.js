@@ -4,6 +4,7 @@
  */
 
 import CONSTANTS from "./constants";
+import { createElement } from "./utils";
 
 const DIRECTIONS = [
   [0, 1], // Vertical
@@ -54,13 +55,16 @@ class Grid {
       let gridRow = document.createElement("tr");
       gridRow.className = "grid-row";
       row.forEach((col, colIndex) => {
-        let gridCell = document.createElement("td");
-        gridCell.className = "grid-cell";
-        gridCell.innerText = col;
+        let gridCell = createElement("td", {
+          className: "grid-cell",
+          innerText: col,
+          style: {
+            width: CONSTANTS.CELL_SIZE + "px",
+            height: CONSTANTS.CELL_SIZE + "px",
+          },
+        });
         gridCell.dataset.row = rowIndex;
         gridCell.dataset.col = colIndex;
-        gridCell.style.width = CONSTANTS.CELL_SIZE + "px";
-        gridCell.style.height = CONSTANTS.CELL_SIZE + "px";
         gridRow.appendChild(gridCell);
       });
       gridTable.appendChild(gridRow);
@@ -173,4 +177,125 @@ const placeWord = (grid, word, direction) => {
   return false;
 };
 
-export default Grid;
+/**
+ * Grid selection utils
+ */
+const getSelectedDirection = (startCell, endCell) => {
+  const startRect = startCell.getBoundingClientRect();
+  const endRect = endCell.getBoundingClientRect();
+
+  // Calculate angle
+  const deltaX = endRect.left - startRect.left;
+  const deltaY = endRect.top - startRect.top;
+  const angle = ((Math.atan2(deltaY, deltaX) * 180) / Math.PI + 360) % 360;
+
+  // Define valid directions
+  const directions = [
+    { angle: 0, type: "horizontal" },
+    { angle: 45, type: "diagonal" },
+    { angle: 90, type: "vertical" },
+    { angle: 135, type: "diagonal" },
+    { angle: 180, type: "horizontal" },
+    { angle: 225, type: "diagonal" },
+    { angle: 270, type: "vertical" },
+    { angle: 315, type: "diagonal" },
+  ];
+
+  const snapThreshold = 20; // degrees
+
+  // Find nearest direction
+  const nearestDirection = directions.reduce(
+    (nearest, current) => {
+      const diff = Math.abs(((angle + 360) % 360) - current.angle);
+      return diff < nearest.diff ? { ...current, diff } : nearest;
+    },
+    { diff: Infinity }
+  );
+
+  return nearestDirection.diff < snapThreshold ? nearestDirection : null;
+};
+
+const getHorizontalCells = (start, end, gridContainer) => {
+  // get the horizontal cells between start and end
+  const startRow = parseInt(start.dataset.row);
+  const startCol = parseInt(start.dataset.col);
+  const endRow = parseInt(end.dataset.row);
+  const endCol = parseInt(end.dataset.col);
+
+  const cells = [];
+  if (startRow === endRow) {
+    const minCol = Math.min(startCol, endCol);
+    const maxCol = Math.max(startCol, endCol);
+    for (let col = minCol; col <= maxCol; col++) {
+      const cell = gridContainer.querySelector(
+        `.grid-cell[data-row="${startRow}"][data-col="${col}"]`
+      );
+      cells.push(cell);
+    }
+  }
+
+  return cells;
+};
+
+const getVerticalCells = (start, end, gridContainer) => {
+  // get the vertical cells between start and end
+  const startRow = parseInt(start.dataset.row);
+  const startCol = parseInt(start.dataset.col);
+  const endRow = parseInt(end.dataset.row);
+  const endCol = parseInt(end.dataset.col);
+
+  const cells = [];
+  if (startCol === endCol) {
+    const minRow = Math.min(startRow, endRow);
+    const maxRow = Math.max(startRow, endRow);
+    for (let row = minRow; row <= maxRow; row++) {
+      const cell = gridContainer.querySelector(
+        `.grid-cell[data-row="${row}"][data-col="${startCol}"]`
+      );
+      cells.push(cell);
+    }
+  }
+
+  return cells;
+};
+
+const getDiagonalCells = (start, end, gridContainer) => {
+  // get the diagonal cells between start and end
+  const startRow = parseInt(start.dataset.row);
+  const startCol = parseInt(start.dataset.col);
+  const endRow = parseInt(end.dataset.row);
+  const endCol = parseInt(end.dataset.col);
+
+  const cells = [];
+  const dx = startCol < endCol ? 1 : -1;
+  const dy = startRow < endRow ? 1 : -1;
+  const slope = (endRow - startRow) / (endCol - startCol);
+
+  if (Math.abs(slope) === 1) {
+    let row = startRow;
+    let col = startCol;
+    while (row !== endRow && col !== endCol) {
+      const cell = gridContainer.querySelector(
+        `.grid-cell[data-row="${row}"][data-col="${col}"]`
+      );
+      cells.push(cell);
+      row += dy;
+      col += dx;
+    }
+    cells.push(
+      gridContainer.querySelector(
+        `.grid-cell[data-row="${endRow}"][data-col="${endCol}"]`
+      )
+    );
+  }
+
+  return cells;
+};
+
+export {
+  Grid,
+  getSelectedDirection,
+  getHorizontalCells,
+  getVerticalCells,
+  getDiagonalCells,
+};
