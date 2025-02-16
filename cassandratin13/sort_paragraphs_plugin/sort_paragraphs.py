@@ -7,11 +7,9 @@ app = marimo.App(width="medium")
 @app.cell
 def _(create_stp):
     import marimo as mo
-    from sort_paragraphs_widget import create_stp
-    from callbacks import get_question
-    
-    question, texts = get_question()
-    create_stp(question, texts)
+    from widgets import create_stp
+
+    create_stp()
 
 
 if __name__ == "__main__":
