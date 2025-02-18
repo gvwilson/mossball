@@ -13,8 +13,8 @@ def _():
         "words": ["Apple", "Orange", "Banana", "Pineapple"],
         "instructions": "Click and drag the words on the grid to select them",
         "config": {
-            "gridWidth": 5,  # dimensions must fit the longest word
-            "gridHeight": 5,
+            "gridWidth": 10,  # dimensions must fit the longest word
+            "gridHeight": 10,
             "gameMode": {
                 "timed": True,
                 "countdown": 60,  # in seconds, ignored if timed is false
