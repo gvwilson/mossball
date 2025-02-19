@@ -1,4 +1,5 @@
 # institution_backend.py
+import random
 from consts import PLUGIN_TYPES
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -33,10 +34,17 @@ def institution_query():
     if plugin_type == PLUGIN_TYPES.SORT_PARAGRAPHS.value:
         data = sort_paragraphs_data.get(unique_id)
         if data:
+            original = data["texts"]
+            randomized = original[:]
+
+            if len(randomized) > 1:
+                while randomized == original:
+                    random.shuffle(randomized)
+
             return jsonify({
                 "unique_id": unique_id,
                 "question": data["question"],
-                "texts": data["texts"]
+                "texts": randomized,
             })
         else:
             return jsonify({"error": "Data not found"}), 404
