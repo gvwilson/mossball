@@ -52,13 +52,22 @@ def institution_verify():
     data = request.json
     plugin_type = data.get("plugin_type")
     unique_id = data.get("unique_id")
+
     if plugin_type == PLUGIN_TYPES.SORT_PARAGRAPHS.value:
         user_answer = data.get("answer")
         stored = sort_paragraphs_data.get(unique_id)
         if not stored:
             return jsonify({"error": "Data not found"}), 404
-        valid = user_answer == stored.get("texts")
-        return jsonify({"unique_id": unique_id, "valid": valid})
+
+        stored_texts = stored.get("texts")
+        results = [ua == ct for ua, ct in zip(user_answer, stored_texts)]
+        all_valid = all(results)
+
+        return jsonify({
+            "unique_id": unique_id,
+            "valid": all_valid,
+            "results": results
+        })
     return jsonify({"error": "Unsupported plugin type"}), 400
 
 

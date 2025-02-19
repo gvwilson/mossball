@@ -26,6 +26,9 @@ class SortTheParagraphs(anywidget.AnyWidget):
     question = traitlets.Unicode(default_value="Sort the texts")
     sorted_texts = traitlets.List(
         default_value=["Text 1", "Text 2", "Text 3", "Text 4"]).tag(sync=True)
+    institution_id = traitlets.Unicode("inst001").tag(sync=True)
+    unique_id = traitlets.Unicode("1").tag(sync=True)
+    plugin_type = traitlets.Unicode("sort_paragraphs").tag(sync=True)
 
 
 def create_stp():
