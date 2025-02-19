@@ -17,25 +17,6 @@ function createElement(tag, { classNames = "", children = [], ...attrs} = {}) {
 }
 
 /**
- * Shuffle the elements in the given array and generate another array that maps the corresponding positions
- * of the elements after being shuffled
- * @param {Array} array The array containing elements to shuffle
- * @returns A copy of the array shuffled and the corresponding positions array
- */
-function shuffleArray(array) {
-    let positions = [...Array(array.length).keys()];
-    let shuffledArray = [...array];
-
-    for (let currIndex = 0; currIndex < array.length; currIndex++) {
-        let randIndex = Math.floor(Math.random() * currIndex);
-        [shuffledArray[currIndex], shuffledArray[randIndex]] = [shuffledArray[randIndex], shuffledArray[currIndex]];
-        [positions[currIndex], positions[randIndex]] = [positions[randIndex], positions[currIndex]];
-    }
-
-    return [shuffledArray, positions];
-}
-
-/**
  * Create a textbox for sorting, containing the given text and ID number that corresponds to
  * the textbox's position in the array after being shuffled
  * @param {String} text The text displayed in the text box container
@@ -344,6 +325,9 @@ function submit(textsContainer, restartButton, submitButton, result, model) {
         const resultsArray = data.results;
         let correctCount = 0;
         Array.from(textsContainer.children).forEach((child, index) => {
+            child.disabled = true;
+            child.classList.add("disabled");
+
             if (resultsArray[index]) {
                 child.classList.add("correct");
                 let icon = child.querySelector(".drag-icon");
@@ -378,22 +362,11 @@ function render({ model, el }) {
 
     let textsContainer = createElement("div", { classNames: "texts-container" });
     let form = createElement("form", { classNames: "main-container", action: "javascript:void(0);", children: [textsContainer]});
-    let texts = []; // strings for the text boxes
-
-    // Shuffle the sequence of texts that are already in order
-    let correctSequence = model.get("sorted_texts");
-    let [shuffledTexts, positions] = shuffleArray(correctSequence);
-    shuffledTexts.forEach((text, index) => {
+    let texts = model.get("texts");
+    texts.forEach((text, index) => {
         let container = createRow(text, index + 1);
         textsContainer.appendChild(container);
-        texts.push(text);
     });
-
-    // Correct order of the shuffled IDs to later check for the submission's correctness
-    let correctOrder = [...positions];
-    positions.forEach((pos, index) => {
-        correctOrder[pos] = `text${index + 1}`;
-    })
 
     // Create the list of options from the text boxes, and duplicate them for each dropdown
     let options = createOptions(texts);
