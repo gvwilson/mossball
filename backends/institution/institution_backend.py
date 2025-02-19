@@ -17,6 +17,15 @@ sort_paragraphs_data = {
             "Precipitation occurs as rain or snow.",
             "Water collects in bodies of water."
         ],
+    },
+    "2": {
+        "question": "Order the steps for problem solving:",
+        "texts": [
+            "Understand the problem",
+            "Make a plan",
+            "Carry out the plan",
+            "Look back and reflect"
+        ],
     }
 }
 

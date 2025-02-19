@@ -3,22 +3,24 @@ import anywidget
 import traitlets
 import requests
 
-
 class Widget():
     def __init__(self, institution_id, unique_id, plugin_type):
         self.institution_id = institution_id
         self.unique_id = unique_id
         self.plugin_type = plugin_type
+        self.data = self.fetch_data()
 
-        self.get_question()
-
-    def get_question(self):
+    def fetch_data(self):
         url = f"http://localhost:5001/plugin/query/{self.institution_id}/{self.unique_id}?plugin_type={self.plugin_type}"
-        response = requests.get(url)
-        self.data = response.json()
+        try:
+            response = requests.get(url)
+            return response.json()
+        except requests.RequestException as e:
+            print(f"Error: {str(e)}")
+            return {}
 
 
-class SortTheParagraphs(anywidget.AnyWidget):
+class SortTheParagraphs(anywidget.AnyWidget, Widget):
     _widget_dir = pathlib.Path(__file__).parent
     _module_dir = _widget_dir
     _esm = _module_dir / "stp.js"
@@ -29,15 +31,16 @@ class SortTheParagraphs(anywidget.AnyWidget):
     institution_id = traitlets.Unicode("inst001").tag(sync=True)
     unique_id = traitlets.Unicode("1").tag(sync=True)
     plugin_type = traitlets.Unicode("sort_paragraphs").tag(sync=True)
+    data = traitlets.Dict().tag(sync=True)
+
+    def __init__(self, institution_id, unique_id):
+        anywidget.AnyWidget.__init__(self)
+        Widget.__init__(self, institution_id, unique_id, "sort_paragraphs")
+        
+        self.question = self.data.get("question")
+        self.sorted_texts = self.data.get("texts")
 
 
-def create_stp():
-    widget = Widget(
-        institution_id="inst001",
-        unique_id=1,
-        plugin_type="sort_paragraphs"
-    )
+def create_stp(unique_id):
+    return SortTheParagraphs("inst001", unique_id)
 
-    question = widget.data.get("question")
-    texts = widget.data.get("texts")
-    return SortTheParagraphs(question=question, sorted_texts=texts)

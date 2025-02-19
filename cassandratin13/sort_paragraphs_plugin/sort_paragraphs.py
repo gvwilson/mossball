@@ -5,11 +5,18 @@ app = marimo.App(width="medium")
 
 
 @app.cell
-def _(create_stp):
+def _():
     import marimo as mo
     from widgets import create_stp
 
-    create_stp()
+    create_stp("1")
+    return create_stp, mo
+
+
+@app.cell
+def _(create_stp):
+    create_stp("2")
+    return
 
 
 if __name__ == "__main__":
