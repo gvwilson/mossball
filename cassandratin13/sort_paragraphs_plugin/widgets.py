@@ -2,6 +2,7 @@ import pathlib
 import anywidget
 import traitlets
 import requests
+import random
 
 class Widget():
     def __init__(self, institution_id, unique_id, plugin_type):
@@ -26,7 +27,7 @@ class SortTheParagraphs(anywidget.AnyWidget, Widget):
     _esm = _module_dir / "stp.js"
     _css = _module_dir / "stp.css"
     question = traitlets.Unicode(default_value="Sort the texts")
-    sorted_texts = traitlets.List(
+    texts = traitlets.List(
         default_value=["Text 1", "Text 2", "Text 3", "Text 4"]).tag(sync=True)
     institution_id = traitlets.Unicode("inst001").tag(sync=True)
     unique_id = traitlets.Unicode("1").tag(sync=True)
@@ -38,8 +39,12 @@ class SortTheParagraphs(anywidget.AnyWidget, Widget):
         Widget.__init__(self, institution_id, unique_id, "sort_paragraphs")
         
         self.question = self.data.get("question")
-        self.sorted_texts = self.data.get("texts")
+        original = self.data.get("texts")
+        self.texts = original[:]
 
+        if len(self.texts) > 1:
+            while self.texts == original:
+                random.shuffle(self.texts)
 
 def create_stp(unique_id):
     return SortTheParagraphs("inst001", unique_id)
