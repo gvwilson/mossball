@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.10.11"
+__generated_with = "0.11.7"
 app = marimo.App(width="medium")
 
 
@@ -13,11 +13,8 @@ def _():
 
 
 @app.cell
-def _(anywidget, traitlets):
-    class DragWordsWidget(anywidget.AnyWidget):
-        _esm = "./drag_the_words.js"
-        _css = "./drag_the_words.css"
-        data = traitlets.Dict({}).tag(sync=True)
+def _():
+    from DragWordsWidget import DragWordsWidget
     return (DragWordsWidget,)
 
 
