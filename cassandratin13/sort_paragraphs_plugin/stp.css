@@ -44,7 +44,6 @@
 }
 
 .question {
-    font-size: var(--font-size);
     padding: 2px;
     margin-bottom: 1rem;
     display: flex;

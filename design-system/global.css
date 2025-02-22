@@ -71,7 +71,7 @@
   font-weight: bold;
 }
 
-.instruction {
+.instruction, .question {
   font-size: 1.1rem;
 }
 
