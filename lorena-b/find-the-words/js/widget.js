@@ -73,7 +73,7 @@ function render({ model, el }) {
       },
     });
     let startGameButton = createElement("button", {
-      className: "start-game-button button",
+      className: "start-game-button",
       innerText: CONSTANTS.START_GAME_COPY,
     });
     startGameOverlay.appendChild(startGameButton);
@@ -100,7 +100,7 @@ function render({ model, el }) {
   let timerElement = timer.createTimerElement();
 
   let endButton = createElement("button", {
-    className: "end-button button",
+    className: "end-button",
     innerText: CONSTANTS.END_BUTTON_COPY,
   });
 
