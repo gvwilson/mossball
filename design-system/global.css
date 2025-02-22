@@ -1,3 +1,16 @@
 /**
 add global styles here
 */
+/* Font-related */
+.title {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.instruction {
+  font-size: 1.1rem;
+}
+
+button {
+  font-size: 1rem;
+}

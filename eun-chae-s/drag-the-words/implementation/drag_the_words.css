@@ -1,7 +1,6 @@
 .drag-words-widget {
-  .instruction-text {
-    font-weight: 800;
-    margin: 10px;
+  .title {
+    margin: 20px;
   }
 
   .question {

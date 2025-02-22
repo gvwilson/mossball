@@ -43,6 +43,4 @@ class WordSearch(anywidget.AnyWidget):
 
         if gridWidth < longest_word_length or gridHeight < longest_word_length:
             raise ValueError(
-                f"gridWidth and gridHeight must be at least {
-                    longest_word_length}"
-            )
+                f"gridWidth and gridHeight must be at least {longest_word_length}")
