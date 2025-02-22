@@ -3,7 +3,7 @@
  * @description Utility functions for layout
  */
 import tippy from "https://esm.sh/tippy.js@6";
-import ICONS from "./icons";
+import CONSTANTS from "./constants";
 
 /**
  * Create an HTML element with the given tag and props
@@ -24,13 +24,13 @@ const createElement = (tag, props) => {
 };
 
 /**
- * Setup the tippy tooltip for the help icon
+ * Setup the tooltip
  * @param {HTMLElement} helpTooltip
  */
 const setupTippyTooltip = (helpTooltip, textContent) => {
   tippy(helpTooltip, {
     content:
-      textContent || "Click and drag the words on the grid to select them",
+      textContent || CONSTANTS.DEFAULT_TOOLTIP_TEXT,
     interactive: true,
     arrow: true,
     popperOptions: {
@@ -58,9 +58,9 @@ const setupLayout = (el, data) => {
     className: "title",
     innerHTML: data.title,
   });
-  let helpTooltip = createElement("div", {
-    className: "help-tooltip",
-    innerHTML: ICONS.HelpIcon,
+  let helpTooltip = createElement("button", {
+    className: "info-tooltip",
+    innerHTML: "i",
   });
 
   setupTippyTooltip(helpTooltip, data.instructions);
@@ -82,7 +82,6 @@ const setupLayout = (el, data) => {
     container,
     gameContainer,
     title,
-    helpTooltip,
     leftColumn,
     rightColumn,
   };
