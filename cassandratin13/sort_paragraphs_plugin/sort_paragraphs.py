@@ -1,7 +1,17 @@
 import marimo
 
-__generated_with = "0.10.9"
+__generated_with = "0.11.8"
 app = marimo.App(width="medium")
+
+
+@app.cell
+def _():
+    from sessions.login import LoginWidget
+
+    login_widget = LoginWidget()
+    login_widget.institution_id = "inst1"
+    login_widget.login()
+    return LoginWidget, login_widget
 
 
 @app.cell

@@ -305,15 +305,15 @@ function submit(textsContainer, restartButton, submitButton, result, model) {
     result.innerHTML = "Verifying...";
     result.style.display = "block";
 
-    const institutionId = model.get("institution_id") || "inst001";
     const uniqueId = model.get("unique_id") || "1";
     const pluginType = model.get("plugin_type") || "sort_paragraphs";
 
-    fetch(`http://localhost:5001/plugin/verify/${institutionId}/${uniqueId}`, {
+    fetch(`http://localhost:5001/plugin/verify/${uniqueId}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify({
             plugin_type: pluginType,
             unique_id: uniqueId,

@@ -69,7 +69,8 @@ def institution_verify():
             return jsonify({"error": "Data not found"}), 404
 
         stored_texts = stored.get("texts")
-        results = [ua == ct for ua, ct in zip(user_answer, stored_texts)]
+        results = [answer == correct for
+                   answer, correct in zip(user_answer, stored_texts)]
         all_valid = all(results)
 
         return jsonify({
