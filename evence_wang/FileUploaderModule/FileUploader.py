@@ -22,6 +22,8 @@ from FileUploaderModule.s3_helpers import (
 
 load_dotenv()
 
+ROOT_DIR = pathlib.Path(__file__).parent.parent.parent
+DESIGN_SYSTEM_ROOT = ROOT_DIR / "design-system"
 
 class FileUploader(anywidget.AnyWidget):
     # S3 feature
@@ -32,8 +34,15 @@ class FileUploader(anywidget.AnyWidget):
     _widget_dir = pathlib.Path(__file__).parent
     _module_dir = _widget_dir
     _esm = _module_dir / "upload.js"
-    _css = _module_dir / "upload.css"
 
+    _widget_css = _module_dir / "upload.css"
+    _global_css = DESIGN_SYSTEM_ROOT / "global.css"
+    _css = "\n".join(
+        [
+            _global_css.read_text(encoding="utf-8"),
+            _widget_css.read_text(encoding="utf-8"),
+        ]
+    )
     # Values to be synced with the frontend
     files = traitlets.List(traitlets.Dict()).tag(sync=True)
     status = traitlets.Unicode("waiting").tag(sync=True)
