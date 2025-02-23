@@ -47,6 +47,30 @@ class SortTheParagraphs(anywidget.AnyWidget, Widget):
             while self.texts == original:
                 random.shuffle(self.texts)
 
+    def _handle_custom_msg(self, content, buffers):
+        command = content.get("command", "")
+        if command == "verify":
+            plugin_type = content.get("plugin_type")
+            unique_id = content.get("unique_id")
+            answer = content.get("answer")
+            try:
+                response = global_session.post(
+                    f"http://localhost:5001/plugin/verify/{unique_id}",
+                    json={
+                        "plugin_type": plugin_type,
+                        "unique_id": unique_id,
+                        "answer": answer
+                    }
+                )
+                data = response.json()
+                results = data.get("results", [])
+            except Exception as e:
+                results = []
+            self.send({
+                "command": "verify_result",
+                "results": results
+            })
+
 
 def create_stp(unique_id):
     return SortTheParagraphs(unique_id)

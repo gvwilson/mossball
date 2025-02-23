@@ -249,7 +249,7 @@ function createFormButtons(result, textsContainer, model) {
 
     submitButton.addEventListener("click", (event) => {
         event.preventDefault();
-        submit(textsContainer, restartButton, submitButton, result, model);
+        submit(textsContainer, submitButton, result, model);
     });
 
     restartButton.addEventListener("click", () => {
@@ -298,9 +298,8 @@ function restart(textsContainer, result) {
  * @param {Array} correctOrder The correct order of the shuffled IDs belonging to the textboxes
  * @returns The number of correctly placed texts in the sequence
  */
-function submit(textsContainer, restartButton, submitButton, result, model) {
+function submit(textsContainer, submitButton, result, model) {
     const userAnswer = Array.from(textsContainer.children).map(child => child.dataset.text);
-
     submitButton.disabled = true;
     result.innerHTML = "Verifying...";
     result.style.display = "block";
@@ -308,53 +307,15 @@ function submit(textsContainer, restartButton, submitButton, result, model) {
     const uniqueId = model.get("unique_id") || "1";
     const pluginType = model.get("plugin_type") || "sort_paragraphs";
 
-    fetch(`http://localhost:5001/plugin/verify/${uniqueId}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        credentials: "include",
-        body: JSON.stringify({
-            plugin_type: pluginType,
-            unique_id: uniqueId,
-            answer: userAnswer
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        const resultsArray = data.results;
-        let correctCount = 0;
-        Array.from(textsContainer.children).forEach((child, index) => {
-            child.disabled = true;
-            child.classList.add("disabled");
-
-            if (resultsArray[index]) {
-                child.classList.add("correct");
-                let icon = child.querySelector(".drag-icon");
-                icon.innerHTML = checkmarkSVG;
-                correctCount++;
-            } else {
-                child.classList.add("incorrect");
-                let icon = child.querySelector(".drag-icon");
-                icon.innerHTML = xMarkSVG;
-            }
-        });
-
-        if (correctCount === textsContainer.children.length) {
-            result.innerHTML = "All correct!";
-            restartButton.disabled = true;
-        } else {
-            result.innerHTML = `${correctCount} out of ${textsContainer.children.length} correct, try again.`;
-            restartButton.disabled = false;
-        }
-    })
-    .catch(err => {
-        result.innerHTML = "Error verifying answer.";
-        console.error(err);
-        restartButton.disabled = false;
+    // Send a custom msg to backend of the plugin
+    model.send({
+         command: "verify",
+         plugin_type: pluginType,
+         unique_id: uniqueId,
+         answer: userAnswer
     });
-
 }
+
 
 function render({ model, el }) {
     // Create the header and container for the draggable text boces
@@ -391,6 +352,37 @@ function render({ model, el }) {
 
     el.classList.add("stp");
     el.append(...[title, instructions, question, form, result, restartButton]);
+
+    // Listen for custom msgs from the plugin backend
+    model.on("msg:custom", (msg) => {
+        if (msg.command && msg.command === "verify_result") {
+            const resultsArray = msg.results;
+            let correctCount = 0;
+            Array.from(textsContainer.children).forEach((child, index) => {
+                child.disabled = true;
+                child.classList.add("disabled");
+
+                if (resultsArray[index]) {
+                    child.classList.add("correct");
+                    let icon = child.querySelector(".drag-icon");
+                    icon.innerHTML = checkmarkSVG;
+                    correctCount++;
+                } else {
+                    child.classList.add("incorrect");
+                    let icon = child.querySelector(".drag-icon");
+                    icon.innerHTML = xMarkSVG;
+                }
+            });
+
+            if (correctCount === textsContainer.children.length) {
+                result.innerHTML = "All correct!";
+                restartButton.disabled = true;
+            } else {
+                result.innerHTML = `${correctCount} out of ${textsContainer.children.length} correct, try again.`;
+                restartButton.disabled = false;
+            }
+        }
+    });
 }
 export default { render };
 
