@@ -205,20 +205,20 @@ function render({ model, el }) {
   button_container.className = "bottom-banner";
 
   let submit_button = document.createElement("button");
-  submit_button.innerHTML = "Submit";
-  submit_button.className = "submit";
+  submit_button.innerHTML = "Check";
+  submit_button.className = "check-button";
 
   let show_solution_button = document.createElement("button");
   show_solution_button.innerHTML = "Show Solution";
-  show_solution_button.className = "show-solution";
+  show_solution_button.className = "try-button";
 
   let retry_button = document.createElement("button");
   retry_button.innerHTML = "Retry";
-  retry_button.className = "retry";
+  retry_button.className = "try-button";
 
   let restart_button = document.createElement("button");
   restart_button.innerHTML = "Restart";
-  restart_button.className = "restart";
+  restart_button.className = "try-button";
 
   submit_button.addEventListener("click", () => {
     checkAnswers();

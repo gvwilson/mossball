@@ -100,8 +100,8 @@
   .bottom-banner {
     display: flex;
     flex-direction: row;
-    justify-content: end;
     margin: 10px;
+    gap: 10px;
     .submit {
       background-color: #264653;
       color: white;

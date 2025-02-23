@@ -237,7 +237,7 @@ function createButtonContainer(model, userInputs, container) {
  */
 function createSubmitButton(model, userInputs, container) {
     const submitBtn = document.createElement("button");
-    submitBtn.className = "submit-btn";
+    submitBtn.className = "check-button";
     submitBtn.textContent = "Check";
     
     submitBtn.addEventListener("click", () => {
@@ -267,7 +267,7 @@ function createSubmitButton(model, userInputs, container) {
  */
 function createCopyButton(model, userInputs) {
     const copyBtn = document.createElement("button");
-    copyBtn.className = "submit-btn";
+    copyBtn.className = "try-button";
     copyBtn.textContent = "Copy";
     
     copyBtn.addEventListener("click", () => {
