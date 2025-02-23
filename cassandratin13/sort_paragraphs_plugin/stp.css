@@ -20,10 +20,6 @@
   pointer-events: none;
 }
 
-.stp .title {
-  color: var(--med-blue);
-}
-
 .stp .instructions {
   margin-bottom: 1rem;
   display: flex;
