@@ -21,6 +21,7 @@
         justify-self: end;
         width: 1rem;
         color: white;
+        transform: translateX(5px);
       }
     }
 
@@ -50,14 +51,14 @@
 
     div.correct {
       border: none;
-      background-color: #2a9d8f;
-      color: white;
+      background-color: var(--green);
+      color: var(--dark-green);
     }
 
     div.incorrect {
       border: none;
-      background-color: #e76f51;
-      color: white;
+      background-color: var(--light-red);
+      color: var(--dark-red);
     }
 
     .blank.incorrect {
@@ -100,8 +101,8 @@
   .bottom-banner {
     display: flex;
     flex-direction: row;
-    justify-content: end;
     margin: 10px;
+    gap: 10px;
     .submit {
       background-color: #264653;
       color: white;
