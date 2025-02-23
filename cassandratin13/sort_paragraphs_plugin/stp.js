@@ -112,26 +112,14 @@ function createOptions(texts) {
  * @returns Elements for the title, instructions, and question
  */
 function createHeader(model, el) {
-    let title = createElement("h1", {
-        classNames: "title",
-        textContent: "Sort the Paragraphs",
-    });
-    let description = createElement("h1", {
-        classNames: "description",
-        textContent: "Drag & drop or select to sort",
-    });
     let infoContainer = createInfoContainer();
-    let instructions = createElement("div", {
-        classNames: "instructions",
-        children: [description],
-    });
     let question = createElement("p", {
-        classNames: "question",
+        classNames: ["question", "title"],
         innerHTML: model.get("question"),
         children: [infoContainer],
     });
 
-    return [title, instructions, question];
+    return [question];
 }
 
 /**
@@ -431,7 +419,7 @@ function submit(
 
 function render({ model, el }) {
     // Create the header and container for the draggable text boces
-    let [title, instructions, question] = createHeader(model, el);
+    let [question] = createHeader(model, el);
 
     let textsContainer = createElement("div", {
         classNames: "texts-container",
@@ -494,7 +482,7 @@ function render({ model, el }) {
     form.appendChild(submitButton);
 
     el.classList.add("stp");
-    el.append(...[title, instructions, question, form, result, restartButton]);
+    el.append(...[question, form, result, restartButton]);
 }
 export default { render };
 

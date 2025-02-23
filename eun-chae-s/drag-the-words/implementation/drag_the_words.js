@@ -191,7 +191,7 @@ function render({ model, el }) {
 
   // instruction
   let instruction = document.createElement("div");
-  instruction.className = "instruction-text";
+  instruction.className = "title";
   instruction.innerHTML = model.get("data")["instruction"];
 
   // question

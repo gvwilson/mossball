@@ -1,10 +1,10 @@
 .drag-words-widget {
-  .instruction-text {
-    font-weight: 800;
-    margin: 10px;
+  .title {
+    margin: 20px;
   }
 
   .question {
+    font-size: 1.1rem;
     margin: 20px;
 
     div {
@@ -75,7 +75,7 @@
     border: 1px solid black;
     border-radius: 5px;
     padding: 10px;
-    margin: 10px;
+    margin: 20px;
 
     .word-box {
       display: inline-block;

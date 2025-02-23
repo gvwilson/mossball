@@ -64,3 +64,17 @@
     border-bottom: 5px solid transparent;
     border-left: 5px solid var(--light-blue);
 }
+
+/* Font-related */
+.title {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.instruction {
+  font-size: 1.1rem;
+}
+
+button {
+  font-size: 1rem;
+}

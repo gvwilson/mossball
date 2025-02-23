@@ -1,52 +1,45 @@
 .stp {
-    --grey: #e2e2e2;
-    --light-grey: #eeeeee;
-    --light-blue: #c1dafd;
-    --lightest-blue: #d3e5ff;
-    --med-blue: #2858b3;
-    --dark-blue: #123767;
-    --darker-blue: #0c2654;
-    --green: #9ae9b3;
-    --dark-green: #0a6000;
-    --light-red: #ff9494;
-    --dark-red: #8f0000;
-    --font-size: 1.1rem;
-    --gap: 5px;
+  --grey: #e2e2e2;
+  --light-grey: #eeeeee;
+  --light-blue: #c1dafd;
+  --lightest-blue: #d3e5ff;
+  --med-blue: #2858b3;
+  --dark-blue: #123767;
+  --darker-blue: #0c2654;
+  --green: #9ae9b3;
+  --dark-green: #0a6000;
+  --light-red: #ff9494;
+  --dark-red: #8f0000;
+  --font-size: 1.1rem;
+  --gap: 5px;
 
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
 .stp .disabled {
-    pointer-events: none;
-}
-
-.stp .title {
-    font-size: 1.3rem;
-    font-weight: bolder;
-    color: var(--med-blue);
+  pointer-events: none;
 }
 
 .stp .instructions {
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    justify-self: flex-start;
-    gap: 5px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-self: flex-start;
+  gap: 5px;
 }
 
 .stp .description {
-    font-style: italic;
-    color: #3b3b3b;
+  font-style: italic;
+  color: #3b3b3b;
 }
 
 .stp .info {
-    width: max-content;
-    height: max-content;
-    position: relative;
+  width: max-content;
+  height: max-content;
+  position: relative;
 }
 
 .question {
-    font-size: var(--font-size);
     padding: 2px;
     margin-bottom: 1rem;
     display: flex;
@@ -57,7 +50,7 @@
 
 /* Text boxes and elements inside */
 .stp .main-container {
-    width: 100%;
+  width: 100%;
 }
 
 .stp .texts-container {
@@ -68,47 +61,47 @@
 }
 
 .stp .dropdown {
-    display: block;
-    position: relative;
-    margin-left: auto;
-    max-width: 100%;
+  display: block;
+  position: relative;
+  margin-left: auto;
+  max-width: 100%;
 }
 
 .stp .arrow-button {
-    width: 1.6rem;
-    height: 1.6rem;
-    margin-left: 5px;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin-left: 5px;
+  background-color: transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  padding: 3px;
+
+  &:hover {
+    background-color: var(--lightest-blue);
+    transition: background-color 0.2s ease;
+  }
+
+  &:disabled {
     background-color: transparent;
-    border-radius: 5px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    vertical-align: middle;
-    padding: 3px;
-
-    &:hover {
-        background-color: var(--lightest-blue);
-        transition: background-color 0.2s ease;
-    }
-
-    &:disabled {
-        background-color: transparent;
-        pointer-events: none;
-    }
+    pointer-events: none;
+  }
 }
 
 .stp .option-list {
-    display: none;
-    position: absolute;
-    top: 1rem;
-    right: 0;
-    overflow: auto;
-    z-index: 999;
-    border: 1px solid #d0d0d0;
-    border-radius: 5px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    background-color: white;
+  display: none;
+  position: absolute;
+  top: 1rem;
+  right: 0;
+  overflow: auto;
+  z-index: 999;
+  border: 1px solid #d0d0d0;
+  border-radius: 5px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  background-color: white;
 }
 
 .stp .option {
@@ -124,43 +117,43 @@
         border-bottom: none;
     }
 
-    &:hover {
-        background-color: var(--light-blue) !important;
-    }
+  &:hover {
+    background-color: var(--light-blue) !important;
+  }
 }
 
 /* Individual text box */
 .stp .container {
-    display: flex;
-    align-items: center;
-    vertical-align: middle;
-    width: 100%;
-    background-color: var(--grey);
-    height: min-content;
-    min-height: 3rem;
-    padding: 0.5rem;
-    margin: var(--gap) 0;
-    border-radius: 5px;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  vertical-align: middle;
+  width: 100%;
+  background-color: var(--grey);
+  height: min-content;
+  min-height: 3rem;
+  padding: 0.5rem;
+  margin: var(--gap) 0;
+  border-radius: 5px;
+  cursor: pointer;
 
-    &:hover {
-        border: 2px solid var(--dark-blue);
-        transition: border 0.1s ease;
-    }
+  &:hover {
+    border: 2px solid var(--dark-blue);
+    transition: border 0.1s ease;
+  }
 }
 
 .stp .draggable {
-    cursor: move;
-    background-color: var(--grey);
+  cursor: move;
+  background-color: var(--grey);
 }
 
 .stp .dragging {
-    background-color: var(--light-blue);
-    border-width: 2px;
-    border-color: var(--dark-blue);
-    color: var(--darker-blue);
-    font-weight: bolder;
-    opacity: 1;
+  background-color: var(--light-blue);
+  border-width: 2px;
+  border-color: var(--dark-blue);
+  color: var(--darker-blue);
+  font-weight: bolder;
+  opacity: 1;
 }
 
 .stp .placeholder {
@@ -173,70 +166,70 @@
 }
 
 .stp .placeholder > .drag-icon {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .stp .correct {
-    background-color: var(--green);
-    border-width: 0;
-    color: var(--dark-green);
-    font-weight: bolder;
+  background-color: var(--green);
+  border-width: 0;
+  color: var(--dark-green);
+  font-weight: bolder;
 }
 
 .stp .incorrect {
-    background-color: var(--light-red);
-    border-width: 0;
-    color: var(--dark-red);
-    font-weight: bolder;
+  background-color: var(--light-red);
+  border-width: 0;
+  color: var(--dark-red);
+  font-weight: bolder;
 }
 
 .stp .drag-icon {
-    width: 1.5rem;
-    margin-right: 0.5rem;
-    padding: 0;
-    flex-shrink: 0;
+  width: 1.5rem;
+  margin-right: 0.5rem;
+  padding: 0;
+  flex-shrink: 0;
 }
 
 .stp .result-icon {
-    width: 1rem;
-    margin-left: 0.3rem;
-    margin-right: 0.7rem;
+  width: 1rem;
+  margin-left: 0.3rem;
+  margin-right: 0.7rem;
 }
 
 .stp .disabled {
-    pointer-events: none;
+  pointer-events: none;
 }
 
 /* Check button and results */
 .stp .form-button {
-    background-color: var(--med-blue);
-    color: white;
-    border-radius: 18px;
-    display: inline-flex;
-    padding: 0.4rem 1.6rem 0.4rem 1.5rem;
-    margin: 10px 0px;
+  background-color: var(--med-blue);
+  color: white;
+  border-radius: 18px;
+  display: inline-flex;
+  padding: 0.4rem 1.6rem 0.4rem 1.5rem;
+  margin: 10px 0px;
 
-    &:hover {
-        background-color: var(--dark-blue);
-        transition: background-color 0.2s ease;
-    }
+  &:hover {
+    background-color: var(--dark-blue);
+    transition: background-color 0.2s ease;
+  }
 
-    &:disabled {
-        display: none;
-    }
+  &:disabled {
+    display: none;
+  }
 }
 
 .stp .checkmark-circle {
-    fill: white;
-    width: var(--font-size);
-    margin: auto;
-    margin-right: 8px;
-    display: block;
+  fill: white;
+  width: var(--font-size);
+  margin: auto;
+  margin-right: 8px;
+  display: block;
 }
 
 .stp .result {
-    font-weight: bolder;
-    font-size: 1.3rem;
-    color: var(--med-blue);
-    margin-top: 1rem;
+  font-weight: bolder;
+  font-size: 1.3rem;
+  color: var(--med-blue);
+  margin-top: 1rem;
 }
