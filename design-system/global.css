@@ -50,3 +50,84 @@ add global styles here
     }
 }
 
+.marimo {
+    --med-blue: #0077cc;
+    --light-blue: #c1dafd;
+}
+
+/* Information tooltip */
+.info-tooltip {
+    border-radius: 50%;
+    border: 1.5px solid var(--med-blue);
+    width: 1rem;
+    height: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    color: var(--med-blue);
+    cursor: pointer;
+
+    &:hover {
+        color: white;
+        background-color: var(--med-blue);
+        transition: background-color 0.2s ease;
+    }
+}
+
+.tippy-box {
+    background-color: var(--light-blue);
+    color: black;
+    font-size: 14px;
+    border-radius: 10px;
+    padding: 5px 10px;
+    font-weight: lighter;
+    text-align: center;
+    width: 150px;
+    transition: none;
+    opacity: 0;
+}
+
+.tippy-box[data-state="visible"] {
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.tippy-arrow {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    transition: inherit;
+}
+
+.tippy-box[data-placement^="bottom"] .tippy-arrow {
+    bottom: 100%;
+    left: 50%;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid var(--light-blue);
+}
+
+.tippy-box[data-placement^="left"] .tippy-arrow {
+    left: 100%;
+    top: 50%;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid var(--light-blue);
+}
+
+/* Font-related */
+.title {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.instruction {
+  font-size: 1.1rem;
+}
+
+button {
+  font-size: 1rem;
+}
+

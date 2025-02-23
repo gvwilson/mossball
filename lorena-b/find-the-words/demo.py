@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.10.18"
+__generated_with = "0.11.8"
 app = marimo.App(width="medium")
 
 
@@ -13,8 +13,8 @@ def _():
         "words": ["Apple", "Orange", "Banana", "Pineapple"],
         "instructions": "Click and drag the words on the grid to select them",
         "config": {
-            "gridWidth": 10,  # dimensions must fit the longest word
-            "gridHeight": 10,
+            "gridWidth": 15,  # dimensions must fit the longest word
+            "gridHeight": 15,
             "gameMode": {
                 "timed": True,
                 "countdown": 60,  # in seconds, ignored if timed is false
