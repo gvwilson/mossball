@@ -253,22 +253,26 @@ function createButtonContainer(model, userInputs, container) {
  * @returns {HTMLButtonElement} Configured submit button with click handler
  */
 function createSubmitButton(model, userInputs, container) {
-    const submitBtn = document.createElement("button");
-    submitBtn.className = "check-button";
-    submitBtn.textContent = "Check";
+  const submitBtn = document.createElement("button");
+  submitBtn.className = "check-button";
+  submitBtn.textContent = "Check";
     
-    submitBtn.addEventListener("click", () => {
-        model.get("sections").forEach((section, index) => {
-            const text = userInputs[section.id] || "";
-            const feedback = container.querySelectorAll(".feedback")[index];
+  submitBtn.addEventListener("click", () => {
+    model.get("sections").forEach((section, index) => {
+      const text = userInputs[section.id] || "";
+      const feedback = container.querySelectorAll(".feedback")[index];
 
       if (section.max_length) {
         const remaining = section.max_length - text.length;
-        feedback.textContent =
-          remaining > 0
-            ? `✖ Need at least ${remaining} more characters`
-            : "✔ Section complete!";
-        feedback.style.color = remaining > 0 ? "#dc3545" : "#28a745";
+        if (remaining > 0) {
+          feedback.textContent = `Need at least ${remaining} more characters`;
+          feedback.classList.remove("correct");
+          feedback.classList.add("incorrect");
+        } else {
+          feedback.textContent = "Section complete!";
+          feedback.classList.remove("incorrect");
+          feedback.classList.add("correct");
+        }
         feedback.style.display = "block";
       }
     });

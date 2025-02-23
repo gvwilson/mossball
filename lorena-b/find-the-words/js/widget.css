@@ -106,12 +106,12 @@
 }
 
 .found {
-  color: green;
+  color: var(--dark-green);
   text-decoration: line-through;
 }
 
 .unfound {
-  color: red;
+  color: var(--dark-red);
 }
 
 .correct {
