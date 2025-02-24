@@ -105,28 +105,19 @@
   align-items: center;
 }
 
-.found {
+.word[data-state="found"] {
   color: var(--dark-green);
   text-decoration: line-through;
 }
 
-.unfound {
+.word[data-state="unfound"] {
   color: var(--dark-red);
-}
-
-.correct {
-  margin-top: 4px;
-}
-
-.incorrect {
-  margin-top: 4px;
 }
 
 .bottom-wrapper {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 10px;
   align-items: center;
 }
 

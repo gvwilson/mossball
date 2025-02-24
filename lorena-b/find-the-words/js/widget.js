@@ -1,6 +1,5 @@
 import "./widget.css";
 import CONSTANTS from "./constants";
-import ICONS from "./icons";
 import {
   Grid,
   getSelectedDirection,
@@ -110,8 +109,6 @@ function render({ model, el }) {
   const WORD_STATES = {
     FOUND: "found",
     UNFOUND: "unfound",
-    INCORRECT: ".incorrect",
-    CHECKMARK: ".checkmark",
   };
 
   const showStartOverlay = () => {
@@ -125,11 +122,8 @@ function render({ model, el }) {
   const resetWordBank = () => {
     // Reset word bank
     wordBank.querySelectorAll(".word").forEach((word) => {
-      word.classList.remove(WORD_STATES.FOUND);
-      word.classList.remove(WORD_STATES.UNFOUND);
-      // remove the icons
-      word.querySelector(WORD_STATES.CHECKMARK)?.remove();
-      word.querySelector(WORD_STATES.INCORRECT)?.remove();
+      word.dataset.state = "";
+      word.classList.remove("feedback", "correct", "incorrect");
     });
   };
 
@@ -150,13 +144,9 @@ function render({ model, el }) {
     });
     // mark unfound words
     wordBank.querySelectorAll(".word").forEach((word) => {
-      if (!word.classList.contains("found")) {
-        let incorrectIcon = createElement("div", {
-          className: "incorrect",
-          innerHTML: ICONS.Incorrect,
-        });
-        word.appendChild(incorrectIcon);
-        word.classList.add("unfound");
+      if (word.dataset.state !== WORD_STATES.FOUND) {
+        word.dataset.state = WORD_STATES.UNFOUND;
+        word.classList.add("feedback", "incorrect");
       }
     });
 
@@ -180,7 +170,7 @@ function render({ model, el }) {
   rightColumn.appendChild(scoreCounter);
 
   const updateScore = () => {
-    let foundWords = wordBank.querySelectorAll(".word.found").length;
+    let foundWords = wordBank.querySelectorAll(`.word[data-state="${WORD_STATES.FOUND}"]`).length;
     scoreCounter.innerHTML = setScoreCounter(foundWords);
   };
 
@@ -228,14 +218,8 @@ function render({ model, el }) {
 
   const markFoundWord = (word) => {
     let wordElement = wordBank.querySelector(`#${word.toLowerCase()}`);
-    if (!wordElement.querySelector(".checkmark")) {
-      const checkMarkIcon = createElement("div", {
-        className: "checkmark",
-        innerHTML: ICONS.Checkmark,
-      });
-      wordElement.appendChild(checkMarkIcon);
-    }
-    wordElement.classList.add("found");
+    wordElement.dataset.state = WORD_STATES.FOUND;
+    wordElement.classList.add("feedback", "correct");
   };
 
   const checkSelectedWord = (selectedCells) => {
@@ -340,7 +324,7 @@ function render({ model, el }) {
   };
 
   const allWordsFound = () => {
-    return wordBank.querySelectorAll(".word.found").length === WORDS.length;
+    return wordBank.querySelectorAll(`.word[data-state="${WORD_STATES.FOUND}"]`).length === WORDS.length;
   };
 
   gridContainer.addEventListener("mouseup", (e) => {
@@ -354,7 +338,7 @@ function render({ model, el }) {
       }
 
       // keep the current svg overlay on the screen
-      svgOverlay.querySelector(".selection-path")?.classList.add("found-word");
+      svgOverlay?.querySelector(".selection-path")?.classList.add("found-word");
       svgOverlay = null;
       startCell = null;
     }
