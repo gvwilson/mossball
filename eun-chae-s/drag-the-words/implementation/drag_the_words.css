@@ -12,7 +12,7 @@
       position: relative;
       height: 100%;
       margin: 2px;
-      border-radius: 5px;
+      border-radius: 18px;
       vertical-align: middle;
       justify-content: flex-end;
 
@@ -36,17 +36,17 @@
       width: auto;
       height: 100%;
       padding: 5px 10px 5px 10px;
-      background-color: #86bbd8;
-      color: white;
+      border: 1px solid #4299e1;
+      color: #4299e1;
     }
 
     .revealed {
       width: auto;
       height: 100%;
       padding: 5px 10px 5px 10px;
-      border: 1px solid #219ebc;
+      border: 1px solid #2858b3;
       background-color: white;
-      color: #219ebc;
+      color: #2858b3;
     }
 
     div.correct {
@@ -73,22 +73,22 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
-    border: 1px solid black;
-    border-radius: 5px;
+    border: 1px solid #4a5568;
+    border-radius: 18px;
     padding: 10px;
     margin: 20px;
 
     .word-box {
       display: inline-block;
       padding: 5px 10px 5px 10px;
-      border-radius: 5px;
-      background-color: #e9c46a;
-      color: black;
+      border-radius: 18px;
+      background-color: #4299e1;
+      color: white;
       cursor: pointer;
     }
 
     .word-box:hover {
-      background-color: #f4a261;
+      background-color: #3182ce;
       color: white;
     }
 
