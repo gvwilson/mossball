@@ -12,7 +12,7 @@
       position: relative;
       height: 100%;
       margin: 2px;
-      border-radius: 15px;
+      border-radius: 18px;
       vertical-align: middle;
       justify-content: flex-end;
 
@@ -74,14 +74,14 @@
     justify-content: center;
     gap: 5px;
     border: 1px solid #4a5568;
-    border-radius: 15px;
+    border-radius: 18px;
     padding: 10px;
     margin: 20px;
 
     .word-box {
       display: inline-block;
       padding: 5px 10px 5px 10px;
-      border-radius: 15px;
+      border-radius: 18px;
       background-color: #4299e1;
       color: white;
       cursor: pointer;
