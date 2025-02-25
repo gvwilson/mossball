@@ -378,7 +378,7 @@ function render({ model, el }) {
                 result.innerHTML = "All correct!";
                 restartButton.disabled = true;
             } else {
-                result.innerHTML = `${correctCount} out of ${textsContainer.children.length} correct, try again.`;
+                result.innerHTML = `Score: <span style="font-weight: bolder; font-size: 1.5rem;">${correctCount}</span> out of ${textsContainer.children.length}`;
                 restartButton.disabled = false;
             }
         }
