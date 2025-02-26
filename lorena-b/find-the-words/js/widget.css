@@ -22,23 +22,12 @@
   justify-content: center;
   background-color: #f0f0f0;
   z-index: 100;
-}
-
-.start-game-button {
-  background-color: #4c9b4d;
-  width: auto;
-  padding: 5px 10px;
   border-radius: 8px;
-  color: white;
-}
-
-.start-game-button:hover {
-  background-color: #4a884b;
-  cursor: pointer;
 }
 
 .grid {
-  border: #f0f0f0 2px solid;
+  border: var(--border-color) 1px solid;
+  border-radius: 8px;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -72,8 +61,9 @@
   display: inline-block;
   flex-direction: column;
   padding: 10px 20px;
-  background-color: aliceblue;
-  border: #f0f0f0 2px solid;
+  background-color: var(--background-color);
+  border: var(--border-color) 1px solid;
+  border-radius: 8px;
 }
 
 .main-area {
@@ -133,17 +123,4 @@
   font-size: 16px;
   align-items: center;
   gap: 5px;
-}
-
-.end-button {
-  background-color: #ee4242;
-  width: auto;
-  padding: 5px 10px;
-  border-radius: 8px;
-  color: white;
-}
-
-.end-button:hover {
-  background-color: #ff5e5e;
-  cursor: pointer;
 }
