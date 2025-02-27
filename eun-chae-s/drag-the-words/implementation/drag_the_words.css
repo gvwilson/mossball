@@ -1,11 +1,12 @@
 .drag-words-widget {
+  padding: 1.5rem; 
+
   .title {
-    margin: 20px;
+    margin-bottom: 1rem;
   }
 
   .question {
     font-size: 1.1rem;
-    margin: 20px;
 
     div {
       display: inline-flex;
@@ -76,7 +77,7 @@
     border: 1px solid #4a5568;
     border-radius: 18px;
     padding: 10px;
-    margin: 20px;
+    margin: 20px 0px;
 
     .word-box {
       display: inline-block;
@@ -101,7 +102,6 @@
   .bottom-banner {
     display: flex;
     flex-direction: row;
-    margin: 10px;
     gap: 10px;
     .submit {
       background-color: #264653;
