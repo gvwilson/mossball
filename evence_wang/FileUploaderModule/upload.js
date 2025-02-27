@@ -18,14 +18,14 @@ class S3DialogManager {
   // The other for confirming the switch of a bucket
   createDialogElements() {
     this.configButton = document.createElement("button");
-    this.configButton.className = "s3-config-button";
+    this.configButton.className = "try-button";
     this.configButton.textContent = "⚙️ Configure S3";
     this.configButton.style.display = this.model.get("s3_enabled")
       ? "block"
       : "none";
 
     this.selectedBucketDisplay = document.createElement("span");
-    this.selectedBucketDisplay.className = "s3-selected-bucket";
+    this.selectedBucketDisplay.className = "instruction";
     this.updateSelectedBucketText();
 
     this.dialog = document.createElement("div");
@@ -53,10 +53,10 @@ class S3DialogManager {
                                               )
                                               .join("")}
                                         </select>
-                                        <button class="refresh-buckets">🔄 Refresh Buckets</button>
+                                        <button class="refresh-buckets">⭯ Refresh Buckets</button>
                                     </div>
                                     <div class="flip-button-container">
-                                        <button class="flip-to-create">+ Create New Bucket</button>
+                                        <button class="flip-to-create">✚ Create New Bucket</button>
                                     </div>
                                 </div>
                             </div>
@@ -68,7 +68,7 @@ class S3DialogManager {
                                         <button class="create-bucket-btn">Create Bucket</button>
                                     </div>
                                     <div class="flip-button-container">
-                                        <button class="flip-to-select">← Back to Bucket Selection</button>
+                                        <button class="flip-to-select">🡄 Back to Bucket Selection</button>
                                     </div>
                                 </div>
                             </div>
