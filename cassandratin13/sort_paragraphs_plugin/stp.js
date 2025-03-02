@@ -19,31 +19,6 @@ function createElement(tag, { classNames = "", children = [], ...attrs } = {}) {
 }
 
 /**
- * Shuffle the elements in the given array and generate another array that maps the corresponding positions
- * of the elements after being shuffled
- * @param {Array} array The array containing elements to shuffle
- * @returns A copy of the array shuffled and the corresponding positions array
- */
-function shuffleArray(array) {
-    let positions = [...Array(array.length).keys()];
-    let shuffledArray = [...array];
-
-    for (let currIndex = 0; currIndex < array.length; currIndex++) {
-        let randIndex = Math.floor(Math.random() * currIndex);
-        [shuffledArray[currIndex], shuffledArray[randIndex]] = [
-            shuffledArray[randIndex],
-            shuffledArray[currIndex],
-        ];
-        [positions[currIndex], positions[randIndex]] = [
-            positions[randIndex],
-            positions[currIndex],
-        ];
-    }
-
-    return [shuffledArray, positions];
-}
-
-/**
  * Create a textbox for sorting, containing the given text and ID number that corresponds to
  * the textbox's position in the array after being shuffled
  * @param {String} text The text displayed in the text box container
@@ -59,6 +34,7 @@ function createRow(text, idNum) {
         classNames: "dropdown",
         children: [arrow],
     });
+
     let container = createElement("div", {
         classNames: ["container", "draggable"],
         textContent: text,
@@ -66,6 +42,7 @@ function createRow(text, idNum) {
         id: `text${idNum}`,
         children: [dropdown],
     });
+    container.dataset.text = text;
 
     let icon = createElement("div", {
         classNames: "drag-icon",
@@ -108,10 +85,9 @@ function createOptions(texts) {
 /**
  * Create a header container with the title of the widget, instructions, and the question
  * @param {DOMWidgetModel} model The widget model
- * @param {HTMLElement} el The widget element
  * @returns Elements for the title, instructions, and question
  */
-function createHeader(model, el) {
+function createHeader(model) {
     let infoContainer = createInfoContainer();
     let question = createElement("p", {
         classNames: ["question", "title"],
@@ -119,7 +95,7 @@ function createHeader(model, el) {
         children: [infoContainer],
     });
 
-    return [question];
+    return question;
 }
 
 /**
@@ -304,10 +280,9 @@ function dragOver(event, textsContainer) {
  * Create the submit and restart buttons, and add event listeners for when they are clicked
  * @param {HTMLElement} result The element containing the resulting score after submission
  * @param {HTMLElement} textsContainer The container with all the textboxes
- * @param {Array} correctOrder The correct order of the shuffled IDs belonging to the textboxes
  * @returns The two button elements
  */
-function createFormButtons(result, textsContainer, correctOrder) {
+function createFormButtons(result, textsContainer, model) {
     let submitButton = createElement("button", {
         classNames: "check-button",
         innerHTML: "Check",
@@ -322,13 +297,7 @@ function createFormButtons(result, textsContainer, correctOrder) {
 
     submitButton.addEventListener("click", (event) => {
         event.preventDefault();
-        submit(
-            textsContainer,
-            restartButton,
-            submitButton,
-            correctOrder,
-            result
-        );
+        submit(textsContainer, submitButton, result, model);
     });
 
     restartButton.addEventListener("click", () => {
@@ -372,54 +341,30 @@ function restart(textsContainer, result) {
  * Event listener function for clicking the submit button.
  * Highlights the correct and incorrect answers and calculates the score.
  * @param {HTMLElement} textsContainer The container with all the textboxes
- * @param {HTMLElement} restartButton The restart button element
  * @param {HTMLElement} submitButton The submit button element
- * @param {Array} correctOrder The correct order of the shuffled IDs belonging to the textboxes
  * @returns The number of correctly placed texts in the sequence
  */
-function submit(
-    textsContainer,
-    restartButton,
-    submitButton,
-    correctOrder,
-    result
-) {
-    let score = 0;
-
-    if (!submitButton.disabled) {
-        Array.from(textsContainer.children).forEach((element, index) => {
-            element.disabled = true;
-            element.classList.add("disabled");
-
-            // Change the dragging icon to be a checkmark or x mark
-            let icon = element.firstChild;
-            icon.classList.add("result-icon");
-
-            if (element.id == correctOrder[index]) {
-                element.classList.add("correct");
-                icon.innerHTML = checkmarkSVG;
-                score++;
-            } else {
-                element.classList.add("incorrect");
-                restartButton.disabled = false;
-                icon.innerHTML = xMarkSVG;
-            }
-        });
-    }
-
-    if (score === correctOrder.length) {
-        restartButton.disabled = true;
-    } else {
-        restartButton.disabled = false;
-    }
+function submit(textsContainer, submitButton, result, model) {
+    const userAnswer = Array.from(textsContainer.children).map(child => child.dataset.text);
     submitButton.disabled = true;
-    result.innerHTML = `Score: ${score} / ${correctOrder.length}`;
+    result.innerHTML = "Verifying...";
     result.style.display = "block";
+
+    const uniqueId = model.get("unique_id") || "1";
+    const pluginType = model.get("plugin_type") || "sort_paragraphs";
+
+    // Send a custom msg to backend of the plugin
+    model.send({
+         command: "verify",
+         plugin_type: pluginType,
+         unique_id: uniqueId,
+         answer: userAnswer
+    });
 }
 
 function render({ model, el }) {
     // Create the header and container for the draggable text boces
-    let [question] = createHeader(model, el);
+    let question = createHeader(model);
 
     let textsContainer = createElement("div", {
         classNames: "texts-container",
@@ -429,21 +374,11 @@ function render({ model, el }) {
         action: "javascript:void(0);",
         children: [textsContainer],
     });
-    let texts = []; // strings for the text boxes
-
-    // Shuffle the sequence of texts that are already in order
-    let correctSequence = model.get("sorted_texts");
-    let [shuffledTexts, positions] = shuffleArray(correctSequence);
-    shuffledTexts.forEach((text, index) => {
+    let texts = model.get("texts");
+  
+    texts.forEach((text, index) => {
         let container = createRow(text, index + 1);
         textsContainer.appendChild(container);
-        texts.push(text);
-    });
-
-    // Correct order of the shuffled IDs to later check for the submission's correctness
-    let correctOrder = [...positions];
-    positions.forEach((pos, index) => {
-        correctOrder[pos] = `text${index + 1}`;
     });
 
     // Create the list of options from the text boxes, and duplicate them for each dropdown
@@ -470,19 +405,43 @@ function render({ model, el }) {
     });
 
     // Create the result, score, submit button, and restart button elements
-    let result = createElement("div", {
-        className: "result",
-        style: "display: none;",
-    });
-    let [submitButton, restartButton] = createFormButtons(
-        result,
-        textsContainer,
-        correctOrder
-    );
+    let result = createElement("div", { className: "result", style: "display: none;" });
+    let [submitButton, restartButton] = createFormButtons(result, textsContainer, model);
     form.appendChild(submitButton);
 
     el.classList.add("stp");
     el.append(...[question, form, result, restartButton]);
+
+    // Listen for custom msgs from the plugin backend
+    model.on("msg:custom", (msg) => {
+        if (msg.command && msg.command === "verify_result") {
+            const resultsArray = msg.results;
+            let correctCount = 0;
+            Array.from(textsContainer.children).forEach((child, index) => {
+                child.disabled = true;
+                child.classList.add("disabled");
+
+                if (resultsArray[index]) {
+                    child.classList.add("correct");
+                    let icon = child.querySelector(".drag-icon");
+                    icon.innerHTML = checkmarkSVG;
+                    correctCount++;
+                } else {
+                    child.classList.add("incorrect");
+                    let icon = child.querySelector(".drag-icon");
+                    icon.innerHTML = xMarkSVG;
+                }
+            });
+
+            if (correctCount === textsContainer.children.length) {
+                result.innerHTML = "All correct!";
+                restartButton.disabled = true;
+            } else {
+                result.innerHTML = `Score: ${correctCount} / ${textsContainer.children.length}`;
+                restartButton.disabled = false;
+            }
+        }
+    });
 }
 export default { render };
 
@@ -499,17 +458,17 @@ export default { render };
 //                             17.3039 10.8515 17.301 11.2399 16.911L18.4158 9.70405Z" fill="#ffffff"></path> </g></svg>`;
 
 const checkmarkSVG = `<svg fill="#0a6000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" class="checkmark">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" 
-                    stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>checkmark2</title> 
-                    <path d="M28.998 8.531l-2.134-2.134c-0.394-0.393-1.030-0.393-1.423 0l-12.795 
-                    12.795-6.086-6.13c-0.393-0.393-1.029-0.393-1.423 0l-2.134 2.134c-0.393 0.394-0.393 1.030 0 1.423l8.924 
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                    stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>checkmark2</title>
+                    <path d="M28.998 8.531l-2.134-2.134c-0.394-0.393-1.030-0.393-1.423 0l-12.795
+                    12.795-6.086-6.13c-0.393-0.393-1.029-0.393-1.423 0l-2.134 2.134c-0.393 0.394-0.393 1.030 0 1.423l8.924
                     8.984c0.393 0.393 1.030 0.393 1.423 0l15.648-15.649c0.393-0.392 0.393-1.030 0-1.423z"></path> </g></svg>`;
 
 const xMarkSVG = `<svg fill="#8f0000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" class="x-mark">
                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                </g><g id="SVGRepo_iconCarrier"> <title>cancel2</title> <path d="M19.587 16.001l6.096 6.096c0.396 0.396 0.396 1.039 0 1.435l-2.151 
-                2.151c-0.396 0.396-1.038 0.396-1.435 0l-6.097-6.096-6.097 6.096c-0.396 0.396-1.038 0.396-1.434 0l-2.152-2.151c-0.396-0.396-0.396-1.038 
-                0-1.435l6.097-6.096-6.097-6.097c-0.396-0.396-0.396-1.039 0-1.435l2.153-2.151c0.396-0.396 1.038-0.396 1.434 0l6.096 6.097 
+                </g><g id="SVGRepo_iconCarrier"> <title>cancel2</title> <path d="M19.587 16.001l6.096 6.096c0.396 0.396 0.396 1.039 0 1.435l-2.151
+                2.151c-0.396 0.396-1.038 0.396-1.435 0l-6.097-6.096-6.097 6.096c-0.396 0.396-1.038 0.396-1.434 0l-2.152-2.151c-0.396-0.396-0.396-1.038
+                0-1.435l6.097-6.096-6.097-6.097c-0.396-0.396-0.396-1.039 0-1.435l2.153-2.151c0.396-0.396 1.038-0.396 1.434 0l6.096 6.097
                 6.097-6.097c0.396-0.396 1.038-0.396 1.435 0l2.151 2.152c0.396 0.396 0.396 1.038 0 1.435l-6.096 6.096z"></path> </g></svg>`;
 
 const dragSVG = `<svg viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
