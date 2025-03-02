@@ -1,18 +1,19 @@
 .drag-words-widget {
-  .instruction-text {
-    font-weight: 800;
-    margin: 10px;
+  padding: 1.5rem; 
+
+  .title {
+    margin-bottom: 1rem;
   }
 
   .question {
-    margin: 20px;
+    font-size: 1.1rem;
 
     div {
       display: inline-flex;
       position: relative;
       height: 100%;
       margin: 2px;
-      border-radius: 5px;
+      border-radius: 18px;
       vertical-align: middle;
       justify-content: flex-end;
 
@@ -21,6 +22,7 @@
         justify-self: end;
         width: 1rem;
         color: white;
+        transform: translateX(5px);
       }
     }
 
@@ -35,29 +37,29 @@
       width: auto;
       height: 100%;
       padding: 5px 10px 5px 10px;
-      background-color: #86bbd8;
-      color: white;
+      border: 1px solid #4299e1;
+      color: #4299e1;
     }
 
     .revealed {
       width: auto;
       height: 100%;
       padding: 5px 10px 5px 10px;
-      border: 1px solid #219ebc;
+      border: 1px solid #2858b3;
       background-color: white;
-      color: #219ebc;
+      color: #2858b3;
     }
 
     div.correct {
       border: none;
-      background-color: #2a9d8f;
-      color: white;
+      background-color: var(--green);
+      color: var(--dark-green);
     }
 
     div.incorrect {
       border: none;
-      background-color: #e76f51;
-      color: white;
+      background-color: var(--light-red);
+      color: var(--dark-red);
     }
 
     .blank.incorrect {
@@ -72,22 +74,22 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
-    border: 1px solid black;
-    border-radius: 5px;
+    border: 1px solid #4a5568;
+    border-radius: 18px;
     padding: 10px;
-    margin: 10px;
+    margin: 20px 0px;
 
     .word-box {
       display: inline-block;
       padding: 5px 10px 5px 10px;
-      border-radius: 5px;
-      background-color: #e9c46a;
-      color: black;
+      border-radius: 18px;
+      background-color: #4299e1;
+      color: white;
       cursor: pointer;
     }
 
     .word-box:hover {
-      background-color: #f4a261;
+      background-color: #3182ce;
       color: white;
     }
 
@@ -100,8 +102,7 @@
   .bottom-banner {
     display: flex;
     flex-direction: row;
-    justify-content: end;
-    margin: 10px;
+    gap: 10px;
     .submit {
       background-color: #264653;
       color: white;

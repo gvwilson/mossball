@@ -1,13 +1,13 @@
 import marimo
 
-__generated_with = "0.10.9"
+__generated_with = "0.11.7"
 app = marimo.App(width="medium")
 
 
 @app.cell
 def _():
     from sessions.login import LoginWidget
-
+    
     login_widget = LoginWidget()
     login_widget.institution_id = "inst1"
     login_widget.login()
@@ -32,6 +32,7 @@ def _():
 
     create_stp("1")
     return create_stp, mo
+
 
 
 @app.cell
