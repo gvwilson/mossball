@@ -141,18 +141,18 @@ function createOption(option, index, model) {
 
 function render({ model, el }) {
     // Create question, form, and buttons
-    let question = createElement("p", { classNames: "question",innerHTML: model.get("question")});
+    let question = createElement("p", { classNames: ["question", "title"] ,innerHTML: model.get("question")});
     let options = model.get("options");
     let mc = createElement("form", { action: "javascript:void(0);"})
     let submitButton = createElement("button", {
-        classNames: "mc-button",
-        innerHTML: checkmarkCircleSVG + "Check",
+        classNames: "check-button",
+        innerHTML: "Check",
         type: "submit"
     });
     
     let result = createElement("div", { className: "result", style: "display: none;" });
     let restart_button = createElement("button", {
-        classNames: "mc-button",
+        classNames: "try-button",
         innerHTML: "Try again",
         disabled: true
     });
