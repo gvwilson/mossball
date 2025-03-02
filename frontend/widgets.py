@@ -4,7 +4,7 @@ __generated_with = "0.10.11"
 app = marimo.App(width="medium")
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(__file__):
     import marimo as mo
     import sys
@@ -35,7 +35,7 @@ def _(__file__):
     )
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(WordSearch):
     data = {
         "title": "Select the words in the grid below:",
@@ -54,26 +54,6 @@ def _(WordSearch):
 
     WordSearch(data=data)
     return (data,)
-
-
-@app.cell
-def _(SortTheParagraphs):
-    question = "Order the steps for problem solving."
-    texts = ["Understand the problem", "Make a plan", "Carry out the plan", "Look back and reflect"]
-
-    SortTheParagraphs(question=question, sorted_texts=texts)
-    return question, texts
-
-
-@app.cell
-def _(DragWordsWidget):
-    drag_the_words_data = {
-        "instruction": "Drag the words to the correct positions",
-        "question": "In a multitasking operating system, {{processes}} share the CPU by using {{scheduling algorithms}} such as Round Robin and First Come, First Served. The OS also manages {{memory allocation}}, ensuring that each process has access to the necessary {{resources}}. To prevent {{deadlocks}}, it employs techniques like resource ordering and {{preemption}}."
-    }
-
-    DragWordsWidget(data=drag_the_words_data)
-    return (drag_the_words_data,)
 
 
 @app.cell(hide_code=True)
@@ -119,7 +99,7 @@ def _(StructureStripWidget):
     return str_description, str_sections, str_title
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(FileUploader):
     uploader = FileUploader(multiple=True, to_disk=True, cloud_only=True)
     return (uploader,)
@@ -129,6 +109,26 @@ def _(FileUploader):
 def _(uploader):
     uploader
     return
+
+
+@app.cell(hide_code=True)
+def _(DragWordsWidget):
+    drag_the_words_data = {
+        "instruction": "Drag the words to the correct positions",
+        "question": "In a multitasking operating system, {{processes}} share the CPU by using {{scheduling algorithms}} such as Round Robin and First Come, First Served. The OS also manages {{memory allocation}}, ensuring that each process has access to the necessary {{resources}}. To prevent {{deadlocks}}, it employs techniques like resource ordering and {{preemption}}."
+    }
+
+    DragWordsWidget(data=drag_the_words_data)
+    return (drag_the_words_data,)
+
+
+@app.cell(hide_code=True)
+def _(SortTheParagraphs):
+    question = "Order the steps for problem solving."
+    texts = ["Understand the problem", "Make a plan", "Carry out the plan", "Look back and reflect"]
+
+    SortTheParagraphs(question=question, sorted_texts=texts)
+    return question, texts
 
 
 if __name__ == "__main__":
