@@ -17,6 +17,7 @@ def _(__file__):
 
     # Now import the plugins
     from find_the_words import WordSearch
+    from cassandratin13.mcq_plugin.MCQPlugin import MultipleChoice
     from cassandratin13.sort_paragraphs_plugin.SortTheParagraphs import SortTheParagraphs
     DragWordsWidget = getattr(importlib.import_module("eun-chae-s.drag-the-words.implementation.DragWordsWidget"), "DragWordsWidget")
     from evence_wang.FileUploaderModule.FileUploader import FileUploader
@@ -24,6 +25,7 @@ def _(__file__):
     return (
         DragWordsWidget,
         FileUploader,
+        MultipleChoice,
         Path,
         SortTheParagraphs,
         StructureStripWidget,
@@ -54,6 +56,16 @@ def _(WordSearch):
 
     WordSearch(data=data)
     return (data,)
+
+
+@app.cell(hide_code=True)
+def _(MultipleChoice):
+    mcQuestion = "What is the capital city of Ontario?"
+    mcOptions = ["Ottawa", "Toronto", "Vancouver", "Montreal"]
+    answer = 1
+
+    MultipleChoice(question=mcQuestion, options=mcOptions, correctOption=answer)
+    return answer, mcOptions, mcQuestion
 
 
 @app.cell(hide_code=True)
