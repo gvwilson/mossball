@@ -85,10 +85,9 @@ function createOptions(texts) {
 /**
  * Create a header container with the title of the widget, instructions, and the question
  * @param {DOMWidgetModel} model The widget model
- * @param {HTMLElement} el The widget element
  * @returns Elements for the title, instructions, and question
  */
-function createHeader(model, el) {
+function createHeader(model) {
     let infoContainer = createInfoContainer();
     let question = createElement("p", {
         classNames: ["question", "title"],
@@ -96,7 +95,7 @@ function createHeader(model, el) {
         children: [infoContainer],
     });
 
-    return [question];
+    return question;
 }
 
 /**
@@ -365,7 +364,7 @@ function submit(textsContainer, submitButton, result, model) {
 
 function render({ model, el }) {
     // Create the header and container for the draggable text boces
-    let [question] = createHeader(model, el);
+    let question = createHeader(model);
 
     let textsContainer = createElement("div", {
         classNames: "texts-container",
@@ -411,7 +410,7 @@ function render({ model, el }) {
     form.appendChild(submitButton);
 
     el.classList.add("stp");
-    el.append(...[title, instructions, question, form, result, restartButton]);
+    el.append(...[question, form, result, restartButton]);
 
     // Listen for custom msgs from the plugin backend
     model.on("msg:custom", (msg) => {
@@ -438,7 +437,7 @@ function render({ model, el }) {
                 result.innerHTML = "All correct!";
                 restartButton.disabled = true;
             } else {
-                result.innerHTML = `Score: <span style="font-weight: bolder; font-size: 1.5rem;">${correctCount}</span> out of ${textsContainer.children.length}`;
+                result.innerHTML = `Score: ${correctCount} / ${textsContainer.children.length}`;
                 restartButton.disabled = false;
             }
         }
