@@ -33,7 +33,7 @@
     &:hover {
         border: 2px solid var(--dark-blue);
         transition: border 0.1s ease;
-      }
+    }
 
     &:has(input[type="radio"]:checked) {
         background-color: var(--light-blue);
@@ -59,7 +59,7 @@
 
 .mc input[type="radio"]:before,
 .mc input[type="radio"]:after {
-    content: '';
+    content: "";
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -102,7 +102,8 @@
     font-weight: bolder;
 }
 
-.mc #correct > input[type="radio"], #incorrect > input[type="radio"] {
+.mc #correct > input[type="radio"],
+#incorrect > input[type="radio"] {
     margin: 0;
 }
 
@@ -180,4 +181,4 @@
     z-index: 10;
     padding: 0;
     background-color: rgba(0, 0, 0, 0.7);
-  }
+}
