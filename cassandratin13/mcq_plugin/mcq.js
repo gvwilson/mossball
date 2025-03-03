@@ -48,30 +48,29 @@ function showModal(modal, overlay) {
 /**
  * Checks whether the selected option is correct and shows the results on screen
  * @param {Number} currOption The index of the currently selected option within the list of options
- * @param {Number} correctOption The index of the correct option within the list of options
  * @param {HTMLElement} el The widget element
  * @param {HTMLElement} result The element displaying the result of the answered question
  * @param {HTMLElement} mc The multiple question form element
- * @param {HTMLElement} restart_button The button to try again
  */
-function checkAnswer(currOption, correctOption, result, mc, restart_button) {  
+function checkAnswer(currOption, result, mc, model) {  
     // Add an icon before the selected option 
-    let selected = mc.children[currOption];
-    let icon = createElement("div", { classNames: "icon" });
-    selected.insertBefore(icon, selected.querySelector("input[type='radio']"));
 
-    if (currOption === correctOption) {
-        result.innerHTML = "Correct!";
-        selected.id = "correct";
-        icon.innerHTML = checkmarkSVG;
-        restart_button.disabled = true;
-    } else {
-        result.innerHTML = "Incorrect";
-        selected.id = "incorrect";
-        icon.innerHTML = xMarkSVG;
-        restart_button.disabled = false;
-    }
+    result.innerHTML = "Verifying...";
     result.style.display = "block";
+
+    const uniqueId = model.get("unique_id") || "3";
+    const pluginType = model.get("plugin_type") || "multiple_choice";
+    console.log(uniqueId);
+    console.log(pluginType);
+    console.log(currOption);
+
+    // Send a custom msg to backend of the plugin
+    model.send({
+        command: "verify",
+        plugin_type: pluginType,
+        unique_id: uniqueId,
+        answer: currOption
+   });
 
     // Disable all options
     disableChoices(mc);
@@ -175,14 +174,36 @@ function render({ model, el }) {
         event.preventDefault();
         if (!submitButton.disabled) {
             let currOption = model.get("currOption");
-            let correctOption = model.get("correctOption");
             if (currOption < 0) showModal(modal, overlay);
-            else checkAnswer(currOption, correctOption, result, mc, restart_button);
+            else checkAnswer(currOption, result, mc, model);
         }
     });
 
     el.classList.add("mc");
     el.append(...[question, mc, result, restart_button, modal, overlay]);
+
+
+    // Listen for custom msgs from the plugin backend
+    model.on("msg:custom", (msg) => {
+        if (msg.command && msg.command === "verify_result") {
+            const correct = msg.results;
+            let selected = mc.children[model.get("currOption")];
+            let icon = createElement("div", { classNames: "icon" });
+            selected.insertBefore(icon, selected.querySelector("input[type='radio']"));
+
+            if (correct) {
+                result.innerHTML = "Correct!";
+                selected.id = "correct";
+                icon.innerHTML = checkmarkSVG;
+                restart_button.disabled = true;
+            } else {
+                result.innerHTML = "Incorrect";
+                selected.id = "incorrect";
+                icon.innerHTML = xMarkSVG;
+                restart_button.disabled = false;
+            }
+        }
+    });
 }
 export default { render };
 
