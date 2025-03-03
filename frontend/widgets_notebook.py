@@ -32,12 +32,21 @@ def _():
     create_stp("1")
     return (create_stp,)
 
+
 @app.cell
 def _():
     from widgets import create_mc
 
     create_mc("3")
     return (create_mc,)
+
+
+@app.cell
+def _():
+    from widgets import create_str
+
+    create_str("4")
+    return (create_str,)
 
 
 @app.cell(hide_code=True)
@@ -64,33 +73,11 @@ def _(__file__):
         Path,
         SortTheParagraphs,
         StructureStripWidget,
-        WordSearch,
         importlib,
         mo,
         project_root,
         sys,
     )
-
-
-# @app.cell(hide_code=True)
-# def _(WordSearch):
-#     data = {
-#         "title": "Select the words in the grid below:",
-#         "words": ["Apple", "Orange", "Banana", "Pineapple"],
-#         "instructions": "Click and drag the words on the grid to select them",
-#         "config": {
-#             "gridWidth": 15,  # dimensions must fit the longest word
-#             "gridHeight": 15,
-#             "gameMode": {
-#                 "timed": True,
-#                 "countdown": 60,  # in seconds, ignored if timed is false
-#             },
-#             "barColor": "green",  # accept any valid css color
-#         },
-#     }
-
-#     WordSearch(data=data)
-#     return (data,)
 
 
 @app.cell(hide_code=True)

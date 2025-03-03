@@ -3,11 +3,10 @@ from consts import PLUGIN_TYPES
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from datetime import datetime
-from dummy_data import sort_paragraphs_data, mc_data, structure_strip_data, drag_the_words_data, student_data
+from dummy_data import sort_paragraphs_data, mc_data, str_data, drag_the_words_data, student_data
 
 app = Flask(__name__)
 CORS(app)
-
 
 
 # --- Endpoints ---
@@ -33,6 +32,18 @@ def query_mc(unique_id):
         })
     else:
         return jsonify({"error": "Data not found"}), 404
+    
+def query_str(unique_id):
+    data = str_data.get(unique_id)
+    if data:
+        return jsonify({
+            "unique_id": unique_id,
+            "title": data["title"],
+            "description": data["description"],
+            "sections": data["sections"]
+        })
+    else:
+        return jsonify({"error": "Data not found"}), 404
 
 
 @app.route("/api/institution/plugin/query", methods=["GET"])
@@ -47,6 +58,8 @@ def institution_query():
         return query_stp(unique_id)
     elif plugin_type == PLUGIN_TYPES.MULTIPLE_CHOICE.value:
         return query_mc(unique_id)
+    elif plugin_type == PLUGIN_TYPES.STRUCTRUE_STRIP.value:
+        return query_str(unique_id)
     return jsonify({"error": "Unsupported plugin type"}), 400
 
 

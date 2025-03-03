@@ -30,7 +30,7 @@ mc_data = {
 }
 
 
-structure_strip_data = {
+str_data = {
     "4": {
         "title": "London Docklands Evaluation",
         "description": "Make yourself familiar with the Docklands in London that underwent major changes. To what extend was the Docklands Regeneration successful? Your evaluation of the successes and the failures each should be roughly three times the size of your introduction and your conclusion.",
