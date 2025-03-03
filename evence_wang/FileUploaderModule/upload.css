@@ -39,7 +39,7 @@
 .file-status {
     width: 20px;
     height: 20px;
-    border-radius: 50%;
+    border-radius: 20%;
 }
 .file-status.uploading {
     border: 2px solid #2196F3;
@@ -47,7 +47,7 @@
     animation: spin 1s linear infinite;
 }
 .file-status.complete {
-    background: #4CAF50;
+    background: var(--green);
     position: relative;
 }
 .file-status.complete::after {
@@ -57,7 +57,9 @@
     top: 50%;
     width: 6px;
     height: 10px;
-    border: solid white;
+    border-style: solid;
+    border-color: var(--dark-green);
+    border-image: initial;
     border-width: 0 2px 2px 0;
     transform: translate(-50%, -60%) rotate(45deg);
 }
@@ -120,8 +122,8 @@
     animation: spin 1s linear infinite;
 }
 .status-icon.complete {
-    background: #4CAF50;
-    border-radius: 50%;
+    background: var(--green);
+    border-radius: 20%;
     position: relative;
 }
 .status-icon.complete::after {
@@ -131,7 +133,9 @@
     top: 50%;
     width: 10px;
     height: 16px;
-    border: solid white;
+    border-style: solid;
+    border-color: var(--dark-green);
+    border-image: initial;
     border-width: 0 3px 3px 0;
     transform: translate(-50%, -60%) rotate(45deg);
 }
@@ -233,16 +237,16 @@
     display: inline-block;
 }
 .s3-status[data-status="success"] {
-    background: #1a4721;
-    color: #a5d6a7;
+    background: var(--green);
+    color: var(--dark-green);
 }
 .s3-status[data-status="error"] {
-    background: #621b16;
-    color: #ef9a9a;
+    background: var(--light-red);
+    color: var(--dark-red);
 }
 .s3-status[data-status="pending"] {
-    background: #4a3506;
-    color: #ffe082;
+    background: var(--light-red);
+    color: var(--dark-red);
 }
 .card-container {
     perspective: 1000px;
@@ -411,11 +415,11 @@
     min-height: 24px;
 }
 .error-message {
-    color: #ef5350;
+    color: var(--dark-red);
     font-size: 0.9em;
 }
 .success-message {
-    color: #66bb6a;
+    color: var(--dark-green);
     font-size: 0.9em;
 }
 .s3-config-button {
