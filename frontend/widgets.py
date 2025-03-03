@@ -123,6 +123,18 @@ def _(uploader):
     return
 
 
+@app.cell
+def _(uploader):
+    uploader.names()
+    return
+
+
+@app.cell
+def _(uploader):
+    uploader.contents(0, True)
+    return
+
+
 @app.cell(hide_code=True)
 def _(DragWordsWidget):
     drag_the_words_data = {
@@ -136,11 +148,11 @@ def _(DragWordsWidget):
 
 @app.cell(hide_code=True)
 def _(SortTheParagraphs):
-    question = "Order the steps for problem solving."
-    texts = ["Understand the problem", "Make a plan", "Carry out the plan", "Look back and reflect"]
+    stp_question = "Order the steps for problem solving."
+    stp_texts = ["Understand the problem", "Make a plan", "Carry out the plan", "Look back and reflect"]
 
-    SortTheParagraphs(question=question, sorted_texts=texts)
-    return question, texts
+    SortTheParagraphs(question=stp_question, sorted_texts=stp_texts)
+    return stp_question, stp_texts
 
 
 if __name__ == "__main__":
