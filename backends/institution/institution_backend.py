@@ -3,41 +3,36 @@ from consts import PLUGIN_TYPES
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from datetime import datetime
+from dummy_data import sort_paragraphs_data, mc_data, structure_strip_data, drag_the_words_data, student_data
 
 app = Flask(__name__)
 CORS(app)
 
-# Dummy data for the sort paragraphs plugin
-sort_paragraphs_data = {
-    "1": {
-        "question": "Arrange the following steps of the water cycle:",
-        "texts": [
-            "Water evaporates from the surface.",
-            "Water vapor condenses to form clouds.",
-            "Precipitation occurs as rain or snow.",
-            "Water collects in bodies of water."
-        ],
-    },
-    "2": {
-        "question": "Order the steps for problem solving:",
-        "texts": [
-            "Understand the problem",
-            "Make a plan",
-            "Carry out the plan",
-            "Look back and reflect"
-        ],
-    }
-}
 
-student_data = {
-    "1": {},
-    "2": {},
-    "3": {},
-    "4": {},
-    "5": {}
-}
 
 # --- Endpoints ---
+
+def query_stp(unique_id):
+    data = sort_paragraphs_data.get(unique_id)
+    if data:
+        return jsonify({
+            "unique_id": unique_id,
+            "question": data["question"],
+            "texts": data["texts"],
+        })
+    else:
+        return jsonify({"error": "Data not found"}), 404
+    
+def query_mc(unique_id):
+    data = mc_data.get(unique_id)
+    if data:
+        return jsonify({
+            "unique_id": unique_id,
+            "question": data["question"],
+            "options": data["options"],
+        })
+    else:
+        return jsonify({"error": "Data not found"}), 404
 
 
 @app.route("/api/institution/plugin/query", methods=["GET"])
@@ -49,16 +44,52 @@ def institution_query():
     plugin_type = request.args.get("plugin_type")
     unique_id = request.args.get("unique_id")
     if plugin_type == PLUGIN_TYPES.SORT_PARAGRAPHS.value:
-        data = sort_paragraphs_data.get(unique_id)
-        if data:
-            return jsonify({
-                "unique_id": unique_id,
-                "question": data["question"],
-                "texts": data["texts"],
-            })
-        else:
-            return jsonify({"error": "Data not found"}), 404
+        return query_stp(unique_id)
+    elif plugin_type == PLUGIN_TYPES.MULTIPLE_CHOICE.value:
+        return query_mc(unique_id)
     return jsonify({"error": "Unsupported plugin type"}), 400
+
+
+def verify_stp(data, unique_id, student_id):
+    user_answer = data.get("answer")
+    stored = sort_paragraphs_data.get(unique_id)
+    if not stored:
+        return jsonify({"error": "Data not found"}), 404
+
+    stored_texts = stored.get("texts")
+    results = [answer == correct for
+                answer, correct in zip(user_answer, stored_texts)]
+    all_valid = all(results)
+
+    current_time = datetime.now()
+    timestamp = int(current_time.timestamp())
+    user_data = student_data[student_id]
+    user_data[unique_id] = (timestamp, all_valid)
+
+    return jsonify({
+            "unique_id": unique_id,
+            "valid": all_valid,
+            "results": results
+        })
+
+def verify_mc(data, unique_id, student_id):
+    user_answer = data.get("answer")
+    stored = mc_data.get(unique_id)
+    if not stored:
+        return jsonify({"error": "Data not found"}), 404
+
+    stored_answer = stored.get("answer")
+    results = 1 if user_answer == stored_answer else 0
+
+    current_time = datetime.now()
+    timestamp = int(current_time.timestamp())
+    user_data = student_data[student_id]
+    user_data[unique_id] = (timestamp, results)
+
+    return jsonify({
+            "unique_id": unique_id,
+            "results": results
+        })
 
 
 @app.route("/api/institution/plugin/verify", methods=["POST"])
@@ -77,27 +108,10 @@ def institution_verify():
         return jsonify({"error": "Student not found"}), 404
 
     if plugin_type == PLUGIN_TYPES.SORT_PARAGRAPHS.value:
-        user_answer = data.get("answer")
-        stored = sort_paragraphs_data.get(unique_id)
-        if not stored:
-            return jsonify({"error": "Data not found"}), 404
+        return verify_stp(data, unique_id, student_id)
+    elif plugin_type == PLUGIN_TYPES.MULTIPLE_CHOICE.value:
+        return verify_mc(data, unique_id, student_id)
 
-        stored_texts = stored.get("texts")
-        results = [answer == correct for
-                   answer, correct in zip(user_answer, stored_texts)]
-        all_valid = all(results)
-
-        current_time = datetime.now()
-        timestamp = int(current_time.timestamp())
-        user_data = student_data[student_id]
-        user_data[unique_id] = (timestamp, all_valid)
-        print(student_data)
-        
-        return jsonify({
-            "unique_id": unique_id,
-            "valid": all_valid,
-            "results": results
-        })
     return jsonify({"error": "Unsupported plugin type"}), 400
 
 
