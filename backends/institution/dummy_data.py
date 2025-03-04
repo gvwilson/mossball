@@ -70,7 +70,15 @@ str_data = {
 drag_the_words_data = {
     "5": {
         "instruction": "Drag the words to the correct positions",
-        "question": "In a multitasking operating system, {{processes}} share the CPU by using {{scheduling algorithms}} such as Round Robin and First Come, First Served. The OS also manages {{memory allocation}}, ensuring that each process has access to the necessary {{resources}}. To prevent {{deadlocks}}, it employs techniques like resource ordering and {{preemption}}."
+        "question": (
+            "In a multitasking operating system, {{}} share the CPU by using {{}} such as Round Robin and First Come, First Served. "
+            "The OS also manages {{}}, ensuring that each process has access to the necessary {{}}, "
+            "to prevent {{}}, it employs techniques like resource ordering and {{}}."
+        ),
+        "choices": [
+            "processes", "scheduling algorithms", "memory allocation",
+            "resources", "deadlocks", "preemption"
+        ]
     }
 }
 

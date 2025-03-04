@@ -27,6 +27,14 @@ def _():
 
 @app.cell
 def _():
+    from widgets import create_drag
+
+    create_drag("5")
+    return (create_drag,)
+
+
+@app.cell
+def _():
     from widgets import create_stp
 
     create_stp("1")
@@ -64,9 +72,13 @@ def _(__file__):
     # from find_the_words import WordSearch
     from cassandratin13.mcq_plugin.MCQPlugin import MultipleChoice
     from cassandratin13.sort_paragraphs_plugin.SortTheParagraphs import SortTheParagraphs
-    DragWordsWidget = getattr(importlib.import_module("eun-chae-s.drag-the-words.implementation.DragWordsWidget"), "DragWordsWidget")
+    DragWordsWidget = getattr(importlib.import_module(
+        "eun-chae-s.drag-the-words.implementation.DragWordsWidget"
+    ), "DragWordsWidget")
     # from evence_wang.FileUploaderModule.FileUploader import FileUploader
-    StructureStripWidget = getattr(importlib.import_module("Barsamyan-D.str-strip-plugin-david.StructureStripWidget"), "StructureStripWidget")
+    StructureStripWidget = getattr(importlib.import_module(
+        "Barsamyan-D.str-strip-plugin-david.StructureStripWidget"
+    ), "StructureStripWidget")
     return (
         DragWordsWidget,
         MultipleChoice,
@@ -85,35 +97,35 @@ def _(StructureStripWidget):
     str_title = "London Docklands Evaluation"
     str_description = "Make yourself familiar with the Docklands in London that underwent major changes. To what extend was the Docklands Regeneration successful? Your evaluation of the successes and the failures each should be roughly three times the size of your introduction and your conclusion."
     str_sections = [
-            {
-                "id": "introduction",
-                "label": "Introduction",
-                "prompt": "Describe how the London Docklands has changed and why. Where is the London Docklands? What was the function before 1980? What happened after 1980?",
-                "rows": 6,
-                "max_length": 200
-            },
-            {
-                "id": "body1",
-                "label": "Successes",
-                "prompt": "What were the successes of the change in function? How was the regeneration successful for the people? What were the successes of the change in land use? Keywords that you should include: hospitals, schools, facilities, infrastructure, inner city, and community. Remember to include facts and statistics to support your points.",
-                "rows": 6,
-                "max_length": 600
-            },
-            {
-                "id": "body2",
-                "label": "Failures",
-                "prompt": "What were the failures in the change in function? How was the regeneration a failure for the people? What were the failures of the change in land use? Keywords that you should include: hospitals, schools, facilities, infrastructure, inner city, and community. Remember to include facts and statistics to support your points.",
-                "rows": 6,
-                "max_length": 600
-            },
-            {
-                "id": "conclusion",
-                "label": "Conclusion",
-                "prompt": "Summarise the overall successes of the regeneration. Summarise the overall failures of the regeneration. To what extend was the regeneration a success overall? Use specific evidence to support your points.",
-                "rows": 6,
-                "max_length": 200
-            }
-        ]
+        {
+            "id": "introduction",
+            "label": "Introduction",
+            "prompt": "Describe how the London Docklands has changed and why. Where is the London Docklands? What was the function before 1980? What happened after 1980?",
+            "rows": 6,
+            "max_length": 200
+        },
+        {
+            "id": "body1",
+            "label": "Successes",
+            "prompt": "What were the successes of the change in function? How was the regeneration successful for the people? What were the successes of the change in land use? Keywords that you should include: hospitals, schools, facilities, infrastructure, inner city, and community. Remember to include facts and statistics to support your points.",
+            "rows": 6,
+            "max_length": 600
+        },
+        {
+            "id": "body2",
+            "label": "Failures",
+            "prompt": "What were the failures in the change in function? How was the regeneration a failure for the people? What were the failures of the change in land use? Keywords that you should include: hospitals, schools, facilities, infrastructure, inner city, and community. Remember to include facts and statistics to support your points.",
+            "rows": 6,
+            "max_length": 600
+        },
+        {
+            "id": "conclusion",
+            "label": "Conclusion",
+            "prompt": "Summarise the overall successes of the regeneration. Summarise the overall failures of the regeneration. To what extend was the regeneration a success overall? Use specific evidence to support your points.",
+            "rows": 6,
+            "max_length": 200
+        }
+    ]
 
     StructureStripWidget(
         title=str_title,
@@ -124,20 +136,14 @@ def _(StructureStripWidget):
 
 
 @app.cell(hide_code=True)
-def _(DragWordsWidget):
-    drag_the_words_data = {
-        "instruction": "Drag the words to the correct positions",
-        "question": "In a multitasking operating system, {{processes}} share the CPU by using {{scheduling algorithms}} such as Round Robin and First Come, First Served. The OS also manages {{memory allocation}}, ensuring that each process has access to the necessary {{resources}}. To prevent {{deadlocks}}, it employs techniques like resource ordering and {{preemption}}."
-    }
-
-    DragWordsWidget(data=drag_the_words_data)
-    return (drag_the_words_data,)
-
-
-@app.cell(hide_code=True)
 def _(SortTheParagraphs):
     question = "Order the steps for problem solving."
-    texts = ["Understand the problem", "Make a plan", "Carry out the plan", "Look back and reflect"]
+    texts = [
+        "Understand the problem",
+        "Make a plan",
+        "Carry out the plan",
+        "Look back and reflect"
+    ]
 
     SortTheParagraphs(question=question, sorted_texts=texts)
     return question, texts

@@ -25,6 +25,49 @@ class Widget():
             return {}
 
 
+class DragWordsWidget(anywidget.AnyWidget, Widget):
+    _module_dir = ROOT_DIR / "eun-chae-s/drag-the-words/implementation"
+    _esm = _module_dir / "drag_the_words.js"
+    _widget_css = _module_dir / "drag_the_words.css"
+    _global_css = DESIGN_SYSTEM_ROOT / "global.css"
+    _css = "\n".join([
+        _global_css.read_text(encoding="utf-8"),
+        _widget_css.read_text(encoding="utf-8"),
+    ])
+
+    data = traitlets.Dict({}).tag(sync=True)
+    unique_id = traitlets.Unicode("drag_words_1").tag(sync=True)
+    plugin_type = traitlets.Unicode("drag_words").tag(sync=True)
+
+    def __init__(self, unique_id):
+        anywidget.AnyWidget.__init__(self)
+        Widget.__init__(self, unique_id, "drag_words")
+
+    def _handle_custom_msg(self, content, buffers):
+        command = content.get("command", "")
+        if command == "verify":
+            plugin_type = content.get("plugin_type", "drag_words")
+            unique_id = content.get("unique_id", self.unique_id)
+            answer = content.get("answer")
+            try:
+                response = global_session.post(
+                    f"http://localhost:5001/plugin/verify/{unique_id}",
+                    json={
+                        "plugin_type": plugin_type,
+                        "unique_id": unique_id,
+                        "answer": answer
+                    }
+                )
+                data = response.json()
+                results = data.get("results", [])
+            except Exception as e:
+                results = []
+            self.send({
+                "command": "verify_result",
+                "results": results
+            })
+
+
 class SortTheParagraphs(anywidget.AnyWidget, Widget):
     _module_dir = ROOT_DIR / "cassandratin13/sort_paragraphs_plugin"
     _esm = _module_dir / "stp.js"
@@ -209,3 +252,7 @@ def create_mc(unique_id):
 
 def create_str(unique_id):
     return StructureStrip(unique_id)
+
+
+def create_drag(unique_id):
+    return DragWordsWidget(unique_id)
