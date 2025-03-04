@@ -45,6 +45,16 @@ def query_str(unique_id):
     else:
         return jsonify({"error": "Data not found"}), 404
 
+def query_drag(unique_id):
+    data = str_data.get(unique_id)
+    if data:
+        return jsonify({
+            "unique_id": unique_id,
+            "instruction": data["instruction"],
+            "question": data["question"]
+        })
+    else:
+        return jsonify({"error": "Data not found"}), 404
 
 @app.route("/api/institution/plugin/query", methods=["GET"])
 def institution_query():

@@ -158,8 +158,8 @@ class StructureStrip(anywidget.AnyWidget, Widget):
 
         self.image_path = self._file_to_data_url(image_path)
         self.sections = self.data.get("sections", self.sections)
-        self.user_inputs = self.data.get("user_inputs", self.user_inputs)
-        self.user_inputs = self.data.get("user_inputs", self.user_inputs)
+        self.title = self.data.get("title", self.title)
+        self.description = self.data.get("description", self.description)
         self.user_inputs = self.data.get("user_inputs", self.user_inputs)
 
     def _file_to_data_url(self, file_path):
