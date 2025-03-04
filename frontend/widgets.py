@@ -37,7 +37,7 @@ class SortTheParagraphs(anywidget.AnyWidget, Widget):
         ]
     )
 
-    question = traitlets.Unicode(default_value="Sort the texts")
+    question = traitlets.Unicode(default_value="Sort the texts").tag(sync=True)
     texts = traitlets.List(
         default_value=["Text 1", "Text 2", "Text 3", "Text 4"]).tag(sync=True)
     unique_id = traitlets.Unicode("1").tag(sync=True)
@@ -80,6 +80,7 @@ class SortTheParagraphs(anywidget.AnyWidget, Widget):
                 "results": results
             })
 
+
 class MultipleChoice(anywidget.AnyWidget, Widget):
     _module_dir = ROOT_DIR / "cassandratin13/mcq_plugin"
     _esm = _module_dir / "mcq.js"
@@ -92,8 +93,12 @@ class MultipleChoice(anywidget.AnyWidget, Widget):
         ]
     )
 
-    question = traitlets.Unicode(default_value="Choose an option")
-    options = traitlets.List(default_value=["Option 1", "Option 2", "Option 3", "Option 4"]).tag(sync=True)
+    question = traitlets.Unicode(
+        default_value="Choose an option"
+    ).tag(sync=True)
+    options = traitlets.List(
+        default_value=["Option 1", "Option 2", "Option 3", "Option 4"]
+    ).tag(sync=True)
     currOption = traitlets.Int(-1).tag(sync=True)
     unique_id = traitlets.Unicode("3").tag(sync=True)
     plugin_type = traitlets.Unicode("multiple_choice").tag(sync=True)
@@ -129,6 +134,7 @@ class MultipleChoice(anywidget.AnyWidget, Widget):
                 "command": "verify_result",
                 "results": results
             })
+
 
 class StructureStrip(anywidget.AnyWidget, Widget):
     _module_dir = ROOT_DIR / "Barsamyan-D/str-strip-plugin-david"
@@ -192,11 +198,14 @@ class StructureStrip(anywidget.AnyWidget, Widget):
                 "results": results
             })
 
+
 def create_stp(unique_id):
     return SortTheParagraphs(unique_id)
 
+
 def create_mc(unique_id):
     return MultipleChoice(unique_id)
+
 
 def create_str(unique_id):
     return StructureStrip(unique_id)
