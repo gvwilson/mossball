@@ -18,14 +18,22 @@ class S3DialogManager {
   // The other for confirming the switch of a bucket
   createDialogElements() {
     this.configButton = document.createElement("button");
+<<<<<<< HEAD
     this.configButton.className = "try-button";
+=======
+    this.configButton.className = "s3-config-button";
+>>>>>>> test-setup
     this.configButton.textContent = "⚙️ Configure S3";
     this.configButton.style.display = this.model.get("s3_enabled")
       ? "block"
       : "none";
 
     this.selectedBucketDisplay = document.createElement("span");
+<<<<<<< HEAD
     this.selectedBucketDisplay.className = "instruction";
+=======
+    this.selectedBucketDisplay.className = "s3-selected-bucket";
+>>>>>>> test-setup
     this.updateSelectedBucketText();
 
     this.dialog = document.createElement("div");

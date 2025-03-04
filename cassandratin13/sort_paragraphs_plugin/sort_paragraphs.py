@@ -6,12 +6,23 @@ app = marimo.App(width="medium")
 
 @app.cell
 def _():
+<<<<<<< HEAD
     from sessions.login import LoginWidget
     
     login_widget = LoginWidget()
     login_widget.institution_id = "inst1"
     login_widget.login()
     return LoginWidget, login_widget
+=======
+    import marimo as mo
+    from SortTheParagraphs import SortTheParagraphs
+
+    question = "Order the steps for problem solving."
+    texts = ["Understand the problem", "Make a plan", "Carry out the plan", "Look back and reflect"]
+
+    SortTheParagraphs(question=question, sorted_texts=texts)
+    return SortTheParagraphs, mo, question, texts
+>>>>>>> test-setup
 
 
 @app.cell
