@@ -1,10 +1,5 @@
 // Variables
 // Icons
-//const correctAnswerIcon =
-  '<span>&nbsp;</span><svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"/></svg>';
-//const wrongAnswerIcon =
-  '<span>&nbsp;</span><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z"/></svg>';
-
 const correctAnswerIcon = `<svg fill="#0a6000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" class="checkmark">
   <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" 
   stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>checkmark2</title> 
@@ -19,16 +14,24 @@ const wrongAnswerIcon = `<svg fill="#8f0000" viewBox="0 0 32 32" version="1.1" x
 0-1.435l6.097-6.096-6.097-6.097c-0.396-0.396-0.396-1.039 0-1.435l2.153-2.151c0.396-0.396 1.038-0.396 1.434 0l6.096 6.097 
 6.097-6.097c0.396-0.396 1.038-0.396 1.435 0l2.151 2.152c0.396 0.396 0.396 1.038 0 1.435l-6.096 6.096z"></path> </g></svg>`;
 
+const deleteAnswerIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>`;
 
+// Gloabl objects
 // the word that is currently dragged
 let draggedWord = null;
-// key: each blank box ID, value: [its index in the solution list, the blank box HTML element, the selected word box HTML element]
+// key: each blank box ID (answer-{num}), value: [its index in the solution list, the blank box HTML element, the selected word box HTML element]
 let answerStatus = {};
 let solution = [];
 // key: word, value: [total count, current count]
 let wordCount = {};
 
 // helper functions
+
+/**
+ * Shuffle the list of words in a random order to be placed in its container
+ * @param {Array} array 
+ * @returns 
+ */
 function shuffleArray(array) {
   const newArr = array.slice();
   for (let i = newArr.length - 1; i > 0; i--) {
@@ -39,12 +42,20 @@ function shuffleArray(array) {
   return newArr;
 }
 
+/**
+ * Handle the word that is in drag
+ * @param {*} event 
+ */
 function dragWord(event) {
   event.dataTransfer.clearData();
   draggedWord = event.target;
   event.dataTransfer.setData("text", event.target.id);
 }
 
+/**
+ * Handle the word that is just dropped on the answer box with ID (answer-{num})
+ * @param {*} event 
+ */
 function dropWord(event) {
   event.preventDefault();
 
@@ -57,8 +68,32 @@ function dropWord(event) {
     answerStatus[event.target.id][2].style.cursor = "pointer";
   }
 
+  // A "X-mark" button next to the dragged word
+  const removeAnswerButton = document.createElement("button");
+  removeAnswerButton.innerHTML = deleteAnswerIcon;
+  removeAnswerButton.id = `remove-${event.target.id}`;
+  removeAnswerButton.addEventListener("click", () => {
+    const answerID = removeAnswerButton.id.substring(7);
+
+    // reset the answer box as blank
+    answerStatus[answerID][1].className = "blank";
+
+    // decrement the total counts for using the previously selected word
+    if (answerStatus[answerID][2] !== undefined) {
+      wordCount[answerStatus[answerID][2].innerText][1] -= 1;
+      answerStatus[answerID][2].className = "word-box";
+      answerStatus[answerID][2].setAttribute("draggable", true);
+      answerStatus[answerID][2].style.cursor = "pointer";
+    }
+    answerStatus[answerID][1].innerHTML = "";
+    answerStatus[answerID][2] = undefined;
+  });
+
   event.target.innerText = draggedWord.innerText;
+  // add the x-mark button to be able to remove the answer
+  event.target.append(removeAnswerButton);
   event.target.className = "filled";
+
   answerStatus[event.target.id][2] = draggedWord;
   wordCount[event.target.innerText][1] += 1;
 
@@ -74,6 +109,11 @@ function dropWord(event) {
   }
 }
 
+/**
+ * Create a blank answer box and Add its entry to the global object `answerStatus`
+ * @param {*} index 
+ * @returns 
+ */
 function createAnswerBox(index) {
   let blankBox = document.createElement("div");
   blankBox.className = "blank";
@@ -85,21 +125,32 @@ function createAnswerBox(index) {
   return blankBox;
 }
 
+/**
+ * Handler to check the answers from the current submission
+ */
 function checkAnswers() {
   Object.keys(answerStatus).forEach((answerID) => {
     var idx = answerStatus[answerID][0];
     if (answerStatus[answerID][1].innerText !== solution[idx]) {
-      answerStatus[answerID][1].className += " incorrect";
-      answerStatus[answerID][1].innerHTML += wrongAnswerIcon;
+      if (!answerStatus[answerID][1].className.includes("incorrect")) {
+        answerStatus[answerID][1].className += " incorrect";
+      }
+
+      answerStatus[answerID][1].innerHTML =
+        answerStatus[answerID][1].innerText + wrongAnswerIcon;
     } else {
-      answerStatus[answerID][1].className += " correct";
-      answerStatus[answerID][1].innerHTML += correctAnswerIcon;
+      if (!answerStatus[answerID][1].className.includes("correct")) {
+        answerStatus[answerID][1].className += " correct";
+      }
+
+      answerStatus[answerID][1].innerHTML =
+        answerStatus[answerID][1].innerText + correctAnswerIcon;
     }
   });
 }
 
 /**
- *
+ * Clear the existing answers in the boxes
  * @param {Boolean} clear_all: whether to clear all answer boxes or not
  */
 function clearAnswers(clear_all = false) {
@@ -125,6 +176,9 @@ function clearAnswers(clear_all = false) {
   });
 }
 
+/**
+ * Reveal the solution to each answer box
+ */
 function showSolution() {
   Object.keys(answerStatus).forEach((answerID) => {
     var idx = answerStatus[answerID][0];
@@ -235,6 +289,10 @@ function render({ model, el }) {
   restart_button.innerHTML = "Restart";
   restart_button.className = "try-button";
 
+  let reset_button = document.createElement("button");
+  reset_button.innerHTML = "Reset";
+  reset_button.className = "try-button";
+
   submit_button.addEventListener("click", () => {
     checkAnswers();
     button_container.innerHTML = "";
@@ -246,6 +304,7 @@ function render({ model, el }) {
     clearAnswers();
     button_container.innerHTML = "";
     button_container.appendChild(submit_button);
+    button_container.appendChild(reset_button);
     if (!container.contains(box_container)) {
       container.appendChild(box_container);
     }
@@ -262,14 +321,20 @@ function render({ model, el }) {
     clearAnswers(true);
     button_container.innerHTML = "";
     button_container.appendChild(submit_button);
+    button_container.appendChild(reset_button);
     container.removeChild(button_container);
     box_container = createWordBoxes();
     container.appendChild(box_container);
     container.appendChild(button_container);
   });
 
+  reset_button.addEventListener("click", () => {
+    clearAnswers(true);
+  });
+
   // on the initial render, we have Submit button visible
   button_container.appendChild(submit_button);
+  button_container.appendChild(reset_button);
 
   container.appendChild(instruction);
   container.appendChild(question);
