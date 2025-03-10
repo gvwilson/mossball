@@ -6,17 +6,22 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def get_chrome_driver():
     service = Service(ChromeDriverManager().install())
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")  # Headless mode for CI/CD
+    options.add_argument("--headless=new")  # Headless mode for CI/CD
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
     
-    return webdriver.Chrome(service=service, options=options)
+    chrome_driver = webdriver.Chrome(service=service, options=options)
+    yield chrome_driver
 
-@pytest.fixture
+    chrome_driver.quit()
+
+
+@pytest.fixture(scope="module")
 def start_marimo(request):
     '''
     Start Marimo and capture the running localhost URL
@@ -41,7 +46,7 @@ def start_marimo(request):
         raise RuntimeError("Failed to detect Marimo server URL")
     
     print(f"Returning marimo_url: {marimo_url}, process: {process}")
-    yield marimo_url, process
+    yield marimo_url
 
     # Clean up the process after the test
     process.terminate()
