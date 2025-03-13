@@ -158,11 +158,14 @@ function clearAnswers(clear_all = false) {
   }
 }
 
-function verifyAnswers(model) {
+function verifyAnswers(model, result) {
   const answers = [];
   Object.keys(answerStatus).forEach((answerID) => {
     answers.push(answerStatus[answerID][1].innerText.trim());
   });
+
+  result.innerHTML = "Verifying...";
+  result.style.display = "block";
 
   model.send({
     command: "verify",
@@ -198,28 +201,46 @@ function render({ model, el }) {
   restart_button.innerHTML = "Restart";
   restart_button.className = "try-button";
 
+  let result = document.createElement("div");
+  result.className = "result";
+  result.style.display = "none";
+
+  let totalCount = Object.keys(answerStatus).length;
+
   submit_button.addEventListener("click", () => {
-    verifyAnswers(model);
+    Array.from(box_container.children).forEach((elem) => {
+      elem.setAttribute("draggable", false);
+      elem.style.pointerEvents = 'none';
+    })
+
+    verifyAnswers(model, result);
     button_container.innerHTML = "";
-    button_container.appendChild(retry_button);
   });
 
   retry_button.addEventListener("click", () => {
     clearAnswers();
+    result.innerHTML = "";
     button_container.innerHTML = "";
     button_container.appendChild(submit_button);
     if (!container.contains(box_container)) {
       container.appendChild(box_container);
     }
+    Array.from(box_container.children).forEach((elem) => {
+      elem.setAttribute("draggable", true);
+      elem.style.pointerEvents = 'auto';
+    })
   });
 
   restart_button.addEventListener("click", () => {
     clearAnswers(true);
     button_container.innerHTML = "";
+    result.innerHTML = "";
+    result.style.display = "none";
     button_container.appendChild(submit_button);
     container.removeChild(box_container);
     box_container = createWordBoxes(content.choices);
     container.appendChild(box_container);
+    container.appendChild(result);
     container.appendChild(button_container);
   });
 
@@ -228,18 +249,23 @@ function render({ model, el }) {
   container.appendChild(instruction);
   container.appendChild(question);
   container.appendChild(box_container);
+  container.appendChild(result);
   container.appendChild(button_container);
   el.appendChild(container);
 
   model.on("msg:custom", (content) => {
     if (content.command === "verify_result") {
       const results = content.results;
+      let correctCount = 0;
       Object.keys(answerStatus).forEach((answerID, idx) => {
         let answerBox = answerStatus[answerID][1];
-        if (!answerBox.classList.contains("correct")) {
+        if (answerBox.classList.contains("correct")) {
+          correctCount++; 
+        } else {
           if (results[idx] === true) {
             answerBox.classList.add("correct");
             answerBox.innerHTML += correctAnswerIcon;
+            correctCount++;
           } else {
             answerBox.classList.add("incorrect");
             answerBox.innerHTML += wrongAnswerIcon;
@@ -247,16 +273,14 @@ function render({ model, el }) {
         }
       });
 
-      let allCorrect = true;
-      Object.keys(answerStatus).forEach((answerID) => {
-        let answerBox = answerStatus[answerID][1];
-        if (!answerBox.classList.contains("correct")) {
-          allCorrect = false;
-        }
-      });
-      if (allCorrect) {
+      if (correctCount === totalCount) {
+        result.innerHTML = "All correct!";
         button_container.innerHTML = "";
         button_container.appendChild(restart_button);
+      } else {
+        result.innerHTML = `Score: ${correctCount} / ${totalCount}`;
+        button_container.innerHTML = "";
+        button_container.appendChild(retry_button);
       }
     }
   });

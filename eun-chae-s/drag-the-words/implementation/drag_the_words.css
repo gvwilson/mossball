@@ -136,4 +136,12 @@
       margin-right: 5px;
     }
   }
+
+  .result {
+    font-weight: bolder;
+    font-size: 1.3rem;
+    color: var(--dark-blue);
+    margin-top: 1rem;
+  }
+  
 }
