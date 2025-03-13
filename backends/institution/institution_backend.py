@@ -144,6 +144,21 @@ def verify_drag(data, unique_id, student_id):
         "results": results
     })
 
+def verify_str(data, unique_id, student_id):
+    user_answer = data.get("answer")
+    stored = str_data.get(unique_id)
+    if not stored:
+        return jsonify({"error": "Data not found"}), 404
+
+    current_time = datetime.now()
+    timestamp = int(current_time.timestamp())
+    user_data = student_data[student_id]
+    user_data[unique_id] = (timestamp, user_answer)
+
+    return jsonify({
+        "unique_id": unique_id,
+        "results": "Completed"
+    })
 
 @app.route("/api/institution/plugin/verify", methods=["POST"])
 def institution_verify():
@@ -165,6 +180,8 @@ def institution_verify():
         return verify_mc(data, unique_id, student_id)
     elif plugin_type == PLUGIN_TYPES.DRAG_WORDS.value:
         return verify_drag(data, unique_id, student_id)
+    elif plugin_type == PLUGIN_TYPES.STRUCTRUE_STRIP.value:
+        return verify_str(data, unique_id, student_id)
 
     return jsonify({"error": "Unsupported plugin type"}), 400
 
