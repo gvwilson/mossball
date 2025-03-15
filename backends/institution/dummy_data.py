@@ -30,7 +30,7 @@ mc_data = {
 }
 
 
-structure_strip_data = {
+str_data = {
     "4": {
         "title": "London Docklands Evaluation",
         "description": "Make yourself familiar with the Docklands in London that underwent major changes. To what extend was the Docklands Regeneration successful? Your evaluation of the successes and the failures each should be roughly three times the size of your introduction and your conclusion.",
@@ -68,9 +68,19 @@ structure_strip_data = {
 }
 
 drag_the_words_data = {
+    "5": {
         "instruction": "Drag the words to the correct positions",
-        "question": "In a multitasking operating system, {{processes}} share the CPU by using {{scheduling algorithms}} such as Round Robin and First Come, First Served. The OS also manages {{memory allocation}}, ensuring that each process has access to the necessary {{resources}}. To prevent {{deadlocks}}, it employs techniques like resource ordering and {{preemption}}."
+        "question": (
+            "In a multitasking operating system, {{}} share the CPU by using {{}} such as Round Robin and First Come, First Served. "
+            "The OS also manages {{}}, ensuring that each process has access to the necessary {{}}, "
+            "to prevent {{}}, it employs techniques like resource ordering and {{}}."
+        ),
+        "choices": [
+            "processes", "scheduling algorithms", "memory allocation",
+            "resources", "deadlocks", "preemption"
+        ]
     }
+}
 
 student_data = {
     "1": {},
