@@ -37,7 +37,7 @@ class SortTheParagraphs(anywidget.AnyWidget, Widget):
         ]
     )
 
-    question = traitlets.Unicode(default_value="Sort the texts")
+    question = traitlets.Unicode(default_value="Sort the texts").tag(sync=True)
     texts = traitlets.List(
         default_value=["Text 1", "Text 2", "Text 3", "Text 4"]).tag(sync=True)
     unique_id = traitlets.Unicode("1").tag(sync=True)
@@ -92,7 +92,7 @@ class MultipleChoice(anywidget.AnyWidget, Widget):
         ]
     )
 
-    question = traitlets.Unicode(default_value="Choose an option")
+    question = traitlets.Unicode(default_value="Choose an option").tag(sync=True)
     options = traitlets.List(default_value=["Option 1", "Option 2", "Option 3", "Option 4"]).tag(sync=True)
     currOption = traitlets.Int(-1).tag(sync=True)
     # correctOption = traitlets.Int(0).tag(sync=True)

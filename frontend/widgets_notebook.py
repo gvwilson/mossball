@@ -1,7 +1,57 @@
 import marimo
 
-__generated_with = "0.10.11"
+__generated_with = "0.11.13"
 app = marimo.App(width="medium")
+
+
+@app.cell(hide_code=True)
+def _(__file__):
+    import marimo as mo
+    import sys
+    from pathlib import Path
+    import importlib
+
+    # Set the project root folder dynamically
+    project_root = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(project_root))  # Add project root to sys.path
+
+    # Now import the plugins
+    from find_the_words import WordSearch
+    from cassandratin13.mcq_plugin.MCQPlugin import MultipleChoice
+    from cassandratin13.sort_paragraphs_plugin.SortTheParagraphs import SortTheParagraphs
+    DragWordsWidget = getattr(importlib.import_module("eun-chae-s.drag-the-words.implementation.DragWordsWidget"), "DragWordsWidget")
+    from evence_wang.FileUploaderModule.FileUploader import FileUploader
+    StructureStripWidget = getattr(importlib.import_module("Barsamyan-D.str-strip-plugin-david.StructureStripWidget"), "StructureStripWidget")
+    return (
+        DragWordsWidget,
+        FileUploader,
+        MultipleChoice,
+        Path,
+        SortTheParagraphs,
+        StructureStripWidget,
+        WordSearch,
+        importlib,
+        mo,
+        project_root,
+        sys,
+    )
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""# 📚🧑‍🏫 Welcome to our demo!👩‍🏫📚""")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        """
+        ### **From this project... ✨**
+        Our goal is to create **interactive learning experiences**, which allow students to explore different tools that enhance their learning and help instructors with student engagement and evaluation.
+        """
+    )
+    return
 
 
 @app.cell(hide_code=True)
@@ -52,39 +102,6 @@ def _():
 
     create_mc("3")
     return (create_mc,)
-
-
-@app.cell(hide_code=True)
-def _(__file__):
-    import marimo as mo
-    import sys
-    from pathlib import Path
-    import importlib
-
-    # Set the project root folder dynamically
-    project_root = Path(__file__).resolve().parent.parent
-    sys.path.insert(0, str(project_root))  # Add project root to sys.path
-
-    # Now import the plugins
-    from find_the_words import WordSearch
-    from cassandratin13.mcq_plugin.MCQPlugin import MultipleChoice
-    from cassandratin13.sort_paragraphs_plugin.SortTheParagraphs import SortTheParagraphs
-    DragWordsWidget = getattr(importlib.import_module("eun-chae-s.drag-the-words.implementation.DragWordsWidget"), "DragWordsWidget")
-    from evence_wang.FileUploaderModule.FileUploader import FileUploader
-    StructureStripWidget = getattr(importlib.import_module("Barsamyan-D.str-strip-plugin-david.StructureStripWidget"), "StructureStripWidget")
-    return (
-        DragWordsWidget,
-        FileUploader,
-        MultipleChoice,
-        Path,
-        SortTheParagraphs,
-        StructureStripWidget,
-        WordSearch,
-        importlib,
-        mo,
-        project_root,
-        sys,
-    )
 
 
 @app.cell(hide_code=True)
