@@ -73,12 +73,14 @@ function render({ model, el }) {
     });
     let startGameButton = createElement("button", {
       className: "try-button",
+      id: "start-button",
       innerText: CONSTANTS.START_GAME_COPY,
     });
     startGameOverlay.appendChild(startGameButton);
     leftColumn.appendChild(startGameOverlay);
 
     startGameButton.addEventListener("click", () => {
+      endButton.style.display = "block";
       startGameOverlay.style.display = "none";
       timer.start(() => {
         resetGameState();
@@ -100,7 +102,11 @@ function render({ model, el }) {
 
   let endButton = createElement("button", {
     className: "try-button",
+    id: "end-button",
     innerText: CONSTANTS.END_BUTTON_COPY,
+    style: {
+      display: !timed ? "block" : "none",
+    },
   });
 
   bottomWrapper.appendChild(timerElement);
@@ -132,6 +138,7 @@ function render({ model, el }) {
     gridContainer.querySelectorAll(".selection-svg").forEach((bar) => {
       bar.remove();
     });
+    endButton.style.display = !timed ? "block" : "none";
     resetWordBank();
     showStartOverlay();
     updateScore();
