@@ -242,6 +242,68 @@ class StructureStrip(anywidget.AnyWidget, Widget):
             })
 
 
+class FindTheWords(anywidget.AnyWidget, Widget):
+    _module_dir = ROOT_DIR / "lorena-b/find-the-words/src/find_the_words/static"
+    _esm = _module_dir / "widget.js"
+    _widget_css = _module_dir / "widget.css"
+    _global_css = DESIGN_SYSTEM_ROOT / "global.css"
+    _css = "\n".join(
+        [
+            _global_css.read_text(encoding="utf-8"),
+            _widget_css.read_text(encoding="utf-8"),
+        ]
+    )
+
+    unique_id = traitlets.Unicode("6").tag(sync=True)
+    plugin_type = traitlets.Unicode("find_words").tag(sync=True)
+    data = traitlets.Dict().tag(sync=True)
+    error_ = traitlets.Unicode().tag(sync=True)
+
+    def __init__(self, unique_id):
+        anywidget.AnyWidget.__init__(self)
+        Widget.__init__(self, unique_id, "find_words")
+
+        self.validate_input()
+
+    def validate_input(self):
+        # TODO: handle validation for all configuration options
+        # Ensure that gridWidth and gridHeight are valid given the words
+        words = self.data.get("words", [])
+        config = self.data.get("config", {})
+        gridWidth = config.get("gridWidth", 10)
+        gridHeight = config.get("gridHeight", 10)
+        longest_word_length = len(max(words, key=len))
+
+        if gridWidth < longest_word_length or gridHeight < longest_word_length:
+            raise ValueError(
+                f"gridWidth and gridHeight must be at least {longest_word_length}")
+
+
+    def _handle_custom_msg(self, content, buffers):
+        command = content.get("command", "")
+        if command == "verify":
+            plugin_type = content.get("plugin_type")
+            unique_id = content.get("unique_id")
+            answer = content.get("answer")
+            try:
+                response = global_session.post(
+                    f"http://localhost:5001/plugin/verify/{unique_id}",
+                    json={
+                        "plugin_type": plugin_type,
+                        "unique_id": unique_id,
+                        "answer": answer
+                    }
+                )
+                data = response.json()
+                results = data.get("results", [])
+            except Exception as e:
+                results = []
+            self.send({
+                "command": "verify_result",
+                "results": results
+            })
+
+
 def create_stp(unique_id):
     return SortTheParagraphs(unique_id)
 
@@ -256,3 +318,6 @@ def create_str(unique_id):
 
 def create_drag(unique_id):
     return DragWordsWidget(unique_id)
+
+def create_ftw(unique_id=6):
+    return FindTheWords(unique_id)
