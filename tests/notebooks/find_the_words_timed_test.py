@@ -16,7 +16,7 @@ def _():
             "gridWidth": 15,  # dimensions must fit the longest word
             "gridHeight": 15,
             "gameMode": {
-                "timed": False,
+                "timed": True,
                 "countdown": 60,  # in seconds, ignored if timed is false
             },
             "barColor": "green",  # accept any valid css color

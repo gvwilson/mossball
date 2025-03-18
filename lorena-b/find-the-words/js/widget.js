@@ -9,13 +9,20 @@ import {
 } from "./grid";
 import Timer from "./timer";
 import { createElement, setupLayout } from "./utils";
+import seedrandom from "https://esm.sh/seedrandom@3.0.5";
+
 
 function render({ model, el }) {
   // extract params from model
   const DATA = model.data.data;
 
   const { leftColumn, rightColumn } = setupLayout(el, DATA);
-  const { gridWidth, gridHeight, barColor } = DATA.config;
+  const { gridWidth, gridHeight, barColor, seed } = DATA.config;
+
+  if (seed) {
+    console.log("Setting seed", seed);
+    seedrandom(seed, { global: true });
+  }
 
   let gridContainer = createElement("div", {
     className: "grid",

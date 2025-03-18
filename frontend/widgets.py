@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.10.11"
+__generated_with = "0.11.8"
 app = marimo.App(width="medium")
 
 
@@ -37,7 +37,7 @@ def _(__file__):
     )
 
 
-@app.cell(hide_code=True)
+@app.cell
 def _(WordSearch):
     data = {
         "title": "Select the words in the grid below:",
@@ -51,6 +51,7 @@ def _(WordSearch):
                 "countdown": 60,  # in seconds, ignored if timed is false
             },
             "barColor": "green",  # accept any valid css color
+            "seed": 1234, # optional seed to keep the grid constant
         },
     }
 
