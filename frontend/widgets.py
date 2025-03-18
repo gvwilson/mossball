@@ -263,6 +263,23 @@ class FindTheWords(anywidget.AnyWidget, Widget):
         anywidget.AnyWidget.__init__(self)
         Widget.__init__(self, unique_id, "find_words")
 
+        if not self.data:
+            self.data = {
+                "title": "Select the words in the grid below:",
+                "words": ["Apple", "Orange", "Banana", "Pineapple"],
+                "instructions": "Click and drag the words on the grid to select them",
+                "config": {
+                    "gridWidth": 15,  # dimensions must fit the longest word
+                    "gridHeight": 15,
+                    "gameMode": {
+                        "timed": True,
+                        "countdown": 30,  # in seconds, ignored if timed is false
+                    },
+                    "barColor": "green",  # accept any valid css color
+                    "seed": 1234,  # optional seed to keep the grid constant
+                },
+            }
+
         self.validate_input()
 
     def validate_input(self):
