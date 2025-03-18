@@ -88,23 +88,30 @@ const setupLayout = (el, data) => {
 };
 
 /**
- * Create modals
+ * Render modal
  * @param {string} title
  * @param {string} text
  * @param {string} icon
  * @param {string} buttonText
  * @param {function} closeAction
  */
-const createModal = (title, text, icon, buttonText, closeAction) => {
+const showModal = (title, text, icon, buttonText, closeAction) => {
     swal.fire({
         title: title,
         text: text,
         icon: icon,
         confirmButtonText: buttonText,
         confirmButtonColor: "#2858b3",
+        buttonsStyling: true,
+        // hacky styling because custom class didnt work
+        didOpen: (popup) => {
+            const button = popup.querySelector(".swal2-confirm");
+            button.style.borderRadius = "18px";
+            button.style.padding = "0.4rem 1.6rem 0.4rem 1.5rem;";
+        },
     }).then(() => {
         closeAction();
     });
 };
 
-export { createElement, setupLayout, createModal };
+export { createElement, setupLayout, showModal };

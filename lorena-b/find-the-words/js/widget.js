@@ -8,7 +8,7 @@ import {
     getVerticalCells,
 } from "./grid";
 import Timer from "./timer";
-import { createElement, setupLayout, createModal } from "./utils";
+import { createElement, setupLayout, showModal } from "./utils";
 
 function render({ model, el }) {
     // extract params from model
@@ -82,7 +82,7 @@ function render({ model, el }) {
             startGameOverlay.style.display = "none";
             timer.start(() => {
                 resetGameState();
-                createModal(
+                showModal(
                     "Time's up!",
                     "Click OK to dismiss.",
                     "warning",
@@ -157,7 +157,7 @@ function render({ model, el }) {
         });
 
         setTimeout(() => {
-            createModal(
+            showModal(
                 "Game ended!",
                 "Click OK to reset the game.",
                 "warning",
@@ -372,7 +372,7 @@ function render({ model, el }) {
         }
         // Check if all words have been found
         if (allWordsFound()) {
-            createModal(
+            showModal(
                 "Congratulations!",
                 "You found all the words!",
                 "success",
