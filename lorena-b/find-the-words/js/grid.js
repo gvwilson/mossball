@@ -13,9 +13,6 @@ const DIRECTIONS = [
   [1, -1], // Diagonal up
 ];
 
-const SEED = 1234;
-seedrandom(SEED, { global: true });
-
 class Grid {
   constructor(words, width, height) {
     this.words = words;
