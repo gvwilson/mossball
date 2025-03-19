@@ -1,7 +1,7 @@
 import marimo
 
-__generated_with = "0.11.13"
-app = marimo.App(width="medium")
+__generated_with = "0.11.17"
+app = marimo.App(width="full")
 
 
 @app.cell(hide_code=True)
@@ -126,7 +126,7 @@ def _(uploader):
 
 @app.cell
 def _(uploader):
-    uploader.contents(1, True)
+    uploader.contents(2, True)
     return
 
 
