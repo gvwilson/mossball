@@ -82,6 +82,23 @@ drag_the_words_data = {
     }
 }
 
+find_the_words_data = {
+    "6": {
+        "title": "Select the words in the grid below:",
+        "words": ["Apple", "Orange", "Banana", "Pineapple"],
+        "instructions": "Click and drag the words on the grid to select them",
+        "config": {
+            "gridWidth": 15,  # dimensions must fit the longest word
+            "gridHeight": 15,
+            "gameMode": {
+                "timed": True,
+                "countdown": 60,  # in seconds, ignored if timed is false
+            },
+            "barColor": "green",  # accept any valid css color
+        },
+    }
+}
+
 student_data = {
     "1": {},
     "2": {},
