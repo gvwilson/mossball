@@ -36,8 +36,9 @@ def test_find_the_words_untimed(get_chrome_driver, start_marimo):
     marimo_root = shadow_host.shadow_root
 
     # Get widget container
-    container = marimo_root.find_element(
-        By.CSS_SELECTOR, ".container")
+    container = WebDriverWait(marimo_root, 10).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, ".container"))
+    )
     assert container.is_displayed()
 
     # Check end game button appears
@@ -80,12 +81,11 @@ def test_find_the_words_untimed(get_chrome_driver, start_marimo):
     ActionChains(chrome_driver).move_to_element(
         end_game_button).click().perform()
 
-    # acknowldge browser alert
-    WebDriverWait(chrome_driver, 10).until(
-        EC.alert_is_present()
+    # find the modal
+    modalConfirmButton = WebDriverWait(chrome_driver, 10).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, ".swal2-confirm"))
     )
-    alert = chrome_driver.switch_to.alert
-    alert.accept()
+    modalConfirmButton.click()
 
     # Check states are reset
     for word in words:
@@ -185,12 +185,11 @@ def test_find_the_words_timed(get_chrome_driver, start_marimo):
     ActionChains(chrome_driver).move_to_element(
         end_game_button).click().perform()
 
-    # acknowldge browser alert
-    WebDriverWait(chrome_driver, 10).until(
-        EC.alert_is_present()
+    # find the modal
+    modalConfirmButton = WebDriverWait(chrome_driver, 10).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, ".swal2-confirm"))
     )
-    alert = chrome_driver.switch_to.alert
-    alert.accept()
+    modalConfirmButton.click()
 
     # Check states are reset
     for word in words:
