@@ -1,3 +1,5 @@
+import swal from "https://esm.sh/sweetalert2@11";
+
 /**
  * Creates an HTML element with the given attributes
  * @param {String} tag The HTML tag of the element
@@ -6,44 +8,40 @@
  * @param {Array} children The children to append to the element
  * @returns The created HTML element
  */
-function createElement(tag, { classNames = "", children = [], ...attrs} = {}) {
+function createElement(tag, { classNames = "", children = [], ...attrs } = {}) {
     const element = document.createElement(tag);
     if (classNames) element.classList.add(...[].concat(classNames));
 
     // Add rest of attributes and children
-    Object.entries(attrs).forEach(([key, value]) => element[key] = value);
+    Object.entries(attrs).forEach(([key, value]) => (element[key] = value));
     children.forEach((child) => element.appendChild(child));
     return element;
 }
 
 /**
- * Creates a modal pop-up and an overlay that darkens the background and prevents anything else from being clicked
- * @param {String} message The message shown in the modal
- * @returns The modal and the overlay elements
+ * Render modal
+ * @param {string} title
+ * @param {string} text
+ * @param {string} icon
+ * @param {string} buttonText
+ * @param {function} closeAction
  */
-function createModal(message) {
-    let warningMessage = createElement("p", { textContent: message});
-    let warning = createElement("div", { classNames: "modal-content", children: [warningMessage] });
-    let okButton = createElement("button", { classNames: "okButton", textContent: "OK"});
-    let modal = createElement("div", { classNames: "modal", children: [warning, okButton] });
-    let overlay = createElement("div", { classNames: "overlay" });
-    okButton.addEventListener("click", (event) => {
-        event.preventDefault();
-        modal.style.display = "none";
-        overlay.style.display = "none";
+const showModal = (title, text, icon, buttonText, closeAction) => {
+    swal.fire({
+        title: title,
+        text: text,
+        icon: icon,
+        confirmButtonText: buttonText,
+        confirmButtonColor: "#2858b3",
+        didOpen: (popup) => {
+            const button = popup.querySelector(".swal2-confirm");
+            button.style.borderRadius = "18px";
+            button.style.padding = "0.4rem 1.6rem 0.4rem 1.5rem;";
+        },
+    }).then(() => {
+        closeAction();
     });
-    return [modal, overlay];
-}
-
-/**
- * Changes the modal and overlay's display attributes to make the model appear on screen
- * @param {HTMLElement} modal The modal element to display
- * @param {HTMLElement} overlay The overlay element to display
- */
-function showModal(modal, overlay) {
-    modal.style.display = "block";
-    overlay.style.display = "block";
-}
+};
 
 /**
  * Checks whether the selected option is correct and shows the results on screen
@@ -66,8 +64,8 @@ function checkAnswer(currOption, result, mc, model) {
         command: "verify",
         plugin_type: pluginType,
         unique_id: uniqueId,
-        answer: currOption
-   });
+        answer: currOption,
+    });
 
     // Disable all options
     disableChoices(mc);
@@ -117,14 +115,21 @@ function restart(mc, model, result) {
  * @returns The container element
  */
 function createOption(option, index, model) {
-    let radio_button = createElement("input", { type: "radio", name: "choices", value: option });
-    let label = createElement("label", { classNames: "label", innerHTML: option });
+    let radio_button = createElement("input", {
+        type: "radio",
+        name: "choices",
+        value: option,
+    });
+    let label = createElement("label", {
+        classNames: "label",
+        innerHTML: option,
+    });
     let container = createElement("div", {
         classNames: "choice",
         id: `choice${index + 1}`,
-        children: [radio_button, label]
-    })
-    radio_button.checked = (model.get("currOption") === index) ? true : false;
+        children: [radio_button, label],
+    });
+    radio_button.checked = model.get("currOption") === index ? true : false;
 
     container.addEventListener("click", () => {
         radio_button.checked = true;
@@ -137,28 +142,32 @@ function createOption(option, index, model) {
 
 function render({ model, el }) {
     // Create question, form, and buttons
-    let question = createElement("p", { classNames: ["question", "title"] ,innerHTML: model.get("question")});
+    let question = createElement("p", {
+        classNames: ["question", "title"],
+        innerHTML: model.get("question"),
+    });
     let options = model.get("options");
-    let mc = createElement("form", { action: "javascript:void(0);"})
+    let mc = createElement("form", { action: "javascript:void(0);" });
     let submitButton = createElement("button", {
         classNames: "check-button",
         innerHTML: "Check",
-        type: "submit"
+        type: "submit",
     });
 
-    let result = createElement("div", { className: "result", style: "display: none;" });
+    let result = createElement("div", {
+        className: "result",
+        style: "display: none;",
+    });
     let restart_button = createElement("button", {
         classNames: "try-button",
         innerHTML: "Try again",
-        disabled: true
+        disabled: true,
     });
 
     restart_button.addEventListener("click", () => {
         restart(mc, model, result);
         restart_button.disabled = true;
     });
-
-    let [modal, overlay] = createModal("Warning: Question unanswered! \nPlease select an option to submit.");
 
     // Create radio button, label, and container for each option
     options.forEach((option, index) => {
@@ -171,14 +180,20 @@ function render({ model, el }) {
         event.preventDefault();
         if (!submitButton.disabled) {
             let currOption = model.get("currOption");
-            if (currOption < 0) showModal(modal, overlay);
+            if (currOption < 0)
+                showModal(
+                    "Warning",
+                    "Question unanswered! Please select an option to submit.",
+                    "warning",
+                    "OK",
+                    () => {}
+                );
             else checkAnswer(currOption, result, mc, model);
         }
     });
 
     el.classList.add("mc");
-    el.append(...[question, mc, result, restart_button, modal, overlay]);
-
+    el.append(...[question, mc, result, restart_button]);
 
     // Listen for custom msgs from the plugin backend
     model.on("msg:custom", (msg) => {
@@ -186,7 +201,10 @@ function render({ model, el }) {
             const correct = msg.results;
             let selected = mc.children[model.get("currOption")];
             let icon = createElement("div", { classNames: "icon" });
-            selected.insertBefore(icon, selected.querySelector("input[type='radio']"));
+            selected.insertBefore(
+                icon,
+                selected.querySelector("input[type='radio']")
+            );
 
             if (correct) {
                 result.innerHTML = "Correct!";
@@ -203,7 +221,6 @@ function render({ model, el }) {
     });
 }
 export default { render };
-
 
 // SVG constants (TODO: Move these to a separate file and import)
 const checkmarkCircleSVG = `<svg viewBox="0 0 24 24" fill="none"

@@ -8,7 +8,7 @@ import {
     getVerticalCells,
 } from "./grid";
 import Timer from "./timer";
-import { createElement, setupLayout } from "./utils";
+import { createElement, setupLayout, showModal } from "./utils";
 import seedrandom from "https://esm.sh/seedrandom@3.0.5";
 
 function render({ model, el }) {
@@ -86,11 +86,17 @@ function render({ model, el }) {
         leftColumn.appendChild(startGameOverlay);
 
         startGameButton.addEventListener("click", () => {
-            endButton.style.display = "block";
+            endButton.style.display = "block";            
             startGameOverlay.style.display = "none";
             timer.start(() => {
                 resetGameState();
-                alert("Time's up!");
+                showModal(
+                    "Time's up!",
+                    "Click OK to dismiss.",
+                    "warning",
+                    "OK",
+                    resetGameState
+                );
             });
         });
     };
@@ -164,8 +170,13 @@ function render({ model, el }) {
         });
 
         setTimeout(() => {
-            window.alert("Game over! Click OK to reset.");
-            resetGameState();
+            showModal(
+                "Game ended!",
+                "Click OK to reset the game.",
+                "warning",
+                "OK",
+                resetGameState
+            );
         }, 0);
     };
 
@@ -374,8 +385,13 @@ function render({ model, el }) {
         }
         // Check if all words have been found
         if (allWordsFound()) {
-            alert("Congratulations! You found all the words!");
-            timer.stop();
+            showModal(
+                "Congratulations!",
+                "You found all the words!",
+                "success",
+                "OK",
+                timer.stop()
+            );
         }
     });
 

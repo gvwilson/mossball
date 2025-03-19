@@ -2,7 +2,6 @@
  * @file grid.js
  * @description Grid class and utils to generate and render the word search grid.
  */
-
 import CONSTANTS from "./constants";
 import { createElement } from "./utils";
 
