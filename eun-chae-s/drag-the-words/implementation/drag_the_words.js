@@ -16,10 +16,22 @@ const wrongAnswerIcon = `<svg fill="#8f0000" viewBox="0 0 32 32" version="1.1" x
   </g>
 </svg>`;
 
+const deleteAnswerIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>`;
+
+// Gloabl objects
+// the word that is currently dragged
 let draggedWord = null;
+// key: each blank box ID (answer-{num}), value: [its index in the solution list, the blank box HTML element, the selected word box HTML element]
 let answerStatus = {};
 let wordCount = {};
 
+// helper functions
+
+/**
+ * Shuffle the list of words in a random order to be placed in its container
+ * @param {Array} array
+ * @returns
+ */
 function shuffleArray(array) {
   const newArr = array.slice();
   for (let i = newArr.length - 1; i > 0; i--) {
@@ -29,12 +41,20 @@ function shuffleArray(array) {
   return newArr;
 }
 
+/**
+ * Handle the word that is in drag
+ * @param {*} event
+ */
 function dragWord(event) {
   event.dataTransfer.clearData();
   draggedWord = event.target;
   event.dataTransfer.setData("text", event.target.id);
 }
 
+/**
+ * Handle the word that is just dropped on the answer box with ID (answer-{num})
+ * @param {*} event
+ */
 function dropWord(event) {
   event.preventDefault();
 
@@ -47,8 +67,32 @@ function dropWord(event) {
     prevWordBox.style.cursor = "pointer";
   }
 
+  // A "X-mark" button next to the dragged word
+  const removeAnswerButton = document.createElement("button");
+  removeAnswerButton.innerHTML = deleteAnswerIcon;
+  removeAnswerButton.id = `remove-${event.target.id}`;
+  removeAnswerButton.addEventListener("click", () => {
+    const answerID = removeAnswerButton.id.substring(7);
+
+    // reset the answer box as blank
+    answerStatus[answerID][1].className = "blank";
+
+    // decrement the total counts for using the previously selected word
+    if (answerStatus[answerID][2] !== undefined) {
+      wordCount[answerStatus[answerID][2].innerText][1] -= 1;
+      answerStatus[answerID][2].className = "word-box";
+      answerStatus[answerID][2].setAttribute("draggable", true);
+      answerStatus[answerID][2].style.cursor = "pointer";
+    }
+    answerStatus[answerID][1].innerHTML = "";
+    answerStatus[answerID][2] = undefined;
+  });
+
   event.target.innerText = draggedWord.innerText;
+  // add the x-mark button to be able to remove the answer
+  event.target.append(removeAnswerButton);
   event.target.className = "filled";
+
   answerStatus[event.target.id][2] = draggedWord;
 
   let newWord = draggedWord.innerText;
@@ -61,6 +105,11 @@ function dropWord(event) {
   }
 }
 
+/**
+ * Create a blank answer box and Add its entry to the global object `answerStatus`
+ * @param {*} index
+ * @returns
+ */
 function createAnswerBox(index) {
   let blankBox = document.createElement("div");
   blankBox.className = "blank";
@@ -89,7 +138,9 @@ function createQuestionContainer(question_text) {
     matchIndex++;
   });
   if (lastIndex < question_text.length) {
-    question.appendChild(document.createTextNode(question_text.substring(lastIndex)));
+    question.appendChild(
+      document.createTextNode(question_text.substring(lastIndex))
+    );
   }
   return question;
 }
@@ -171,7 +222,7 @@ function verifyAnswers(model, result) {
     command: "verify",
     unique_id: model.get("unique_id"),
     plugin_type: model.get("plugin_type"),
-    answer: answers
+    answer: answers,
   });
 }
 
@@ -201,6 +252,10 @@ function render({ model, el }) {
   restart_button.innerHTML = "Restart";
   restart_button.className = "try-button";
 
+  let reset_button = document.createElement("button");
+  reset_button.innerHTML = "Reset";
+  reset_button.className = "try-button";
+
   let result = document.createElement("div");
   result.className = "result";
   result.style.display = "none";
@@ -210,8 +265,8 @@ function render({ model, el }) {
   submit_button.addEventListener("click", () => {
     Array.from(box_container.children).forEach((elem) => {
       elem.setAttribute("draggable", false);
-      elem.style.pointerEvents = 'none';
-    })
+      elem.style.pointerEvents = "none";
+    });
 
     verifyAnswers(model, result);
     button_container.innerHTML = "";
@@ -222,13 +277,14 @@ function render({ model, el }) {
     result.innerHTML = "";
     button_container.innerHTML = "";
     button_container.appendChild(submit_button);
+    button_container.appendChild(reset_button);
     if (!container.contains(box_container)) {
       container.appendChild(box_container);
     }
     Array.from(box_container.children).forEach((elem) => {
       elem.setAttribute("draggable", true);
-      elem.style.pointerEvents = 'auto';
-    })
+      elem.style.pointerEvents = "auto";
+    });
   });
 
   restart_button.addEventListener("click", () => {
@@ -237,6 +293,7 @@ function render({ model, el }) {
     result.innerHTML = "";
     result.style.display = "none";
     button_container.appendChild(submit_button);
+    button_container.appendChild(reset_button);
     container.removeChild(box_container);
     box_container = createWordBoxes(content.choices);
     container.appendChild(box_container);
@@ -244,7 +301,12 @@ function render({ model, el }) {
     container.appendChild(button_container);
   });
 
+  reset_button.addEventListener("click", () => {
+    clearAnswers(true);
+  });
+
   button_container.appendChild(submit_button);
+  button_container.appendChild(reset_button);
 
   container.appendChild(instruction);
   container.appendChild(question);
@@ -260,15 +322,21 @@ function render({ model, el }) {
       Object.keys(answerStatus).forEach((answerID, idx) => {
         let answerBox = answerStatus[answerID][1];
         if (answerBox.classList.contains("correct")) {
-          correctCount++; 
+          correctCount++;
         } else {
           if (results[idx] === true) {
-            answerBox.classList.add("correct");
-            answerBox.innerHTML += correctAnswerIcon;
+            if (!answerBox.classList.contains("correct")) {
+              answerBox.classList.add("correct");
+            }
+
+            answerBox.innerHTML = answerBox.innerText + correctAnswerIcon;
             correctCount++;
           } else {
-            answerBox.classList.add("incorrect");
-            answerBox.innerHTML += wrongAnswerIcon;
+            if (!answerBox.classList.contains("incorrect")) {
+              answerBox.classList.add("incorrect");
+            }
+
+            answerBox.innerHTML = answerBox.innerText + wrongAnswerIcon;
           }
         }
       });
