@@ -19,9 +19,11 @@ def _(__file__):
     from find_the_words import WordSearch
     from cassandratin13.mcq_plugin.MCQPlugin import MultipleChoice
     from cassandratin13.sort_paragraphs_plugin.SortTheParagraphs import SortTheParagraphs
-    DragWordsWidget = getattr(importlib.import_module("eun-chae-s.drag-the-words.implementation.DragWordsWidget"), "DragWordsWidget")
+    DragWordsWidget = getattr(importlib.import_module(
+        "eun-chae-s.drag-the-words.implementation.DragWordsWidget"), "DragWordsWidget")
     from evence_wang.FileUploaderModule.FileUploader import FileUploader
-    StructureStripWidget = getattr(importlib.import_module("Barsamyan-D.str-strip-plugin-david.StructureStripWidget"), "StructureStripWidget")
+    StructureStripWidget = getattr(importlib.import_module(
+        "Barsamyan-D.str-strip-plugin-david.StructureStripWidget"), "StructureStripWidget")
     return (
         DragWordsWidget,
         FileUploader,
@@ -59,7 +61,7 @@ def _():
     from sessions.login import LoginWidget
 
     login_widget = LoginWidget()
-    login_widget.institution_id = "inst2" # need to create `inst2`
+    login_widget.institution_id = "inst2"  # need to create `inst2`
     login_widget.login()
     return LoginWidget, login_widget
 
@@ -106,10 +108,56 @@ def _():
 
 @app.cell
 def _():
+    from widgets import create_local_mc
+
+    create_local_mc(
+        "What is the capital of China?",
+        ["Hong Kong", "Shanghai", "Beijing", "Tokyo"],
+        2,
+    )
+    return (create_local_mc,)
+
+
+@app.cell
+def _():
     from widgets import create_str
 
     create_str("4")
     return (create_str,)
+
+
+@app.cell
+def _():
+    from widgets import create_local_str
+
+    create_local_str(
+        "Write a short paragraph about the water cycle.",
+        "Make yourself familiar with the water cycle.",
+        [
+            {
+                "id": "introduction",
+                "label": "Introduction",
+                "prompt": "Describe the water cycle.",
+                "rows": 6,
+                "max_length": 200
+            },
+            {
+                "id": "evaporation",
+                "label": "Evaporation",
+                "prompt": "Describe the process of evaporation.",
+                "rows": 6,
+                "max_length": 200
+            },
+            {
+                "id": "conclusion",
+                "label": "Conclusion",
+                "prompt": "Summarise the overall process of the water cycle.",
+                "rows": 6,
+                "max_length": 600
+            }
+        ]
+    )
+    return (create_local_str,)
 
 
 @app.cell(hide_code=True)
@@ -151,10 +199,46 @@ def _():
 
 @app.cell(hide_code=True)
 def _():
+    from widgets import create_local_drag
+
+    create_local_drag(
+        "Finish the following",
+        (
+            "Kelly is a {{}} scientist, and she is working on a project to study the {{}} system. "
+            "She is interested in the {{}} of the {{}} system."
+        ),
+        [
+            "computer",
+            "operating",
+            "performance",
+            "file",
+        ]
+    )
+    return (create_local_drag,)
+
+
+@app.cell
+def _():
     from widgets import create_stp
 
     create_stp("1")
     return (create_stp,)
+
+
+@app.cell
+def _():
+    from widgets import create_local_stp
+
+    create_local_stp(
+        "Arrange the following steps of the water cycle:",
+        [
+            "Water evaporates from the surface.",
+            "Water vapor condenses to form clouds.",
+            "Precipitation occurs as rain or snow.",
+            "Water collects in bodies of water."
+        ],
+    )
+    return (create_local_stp,)
 
 
 if __name__ == "__main__":

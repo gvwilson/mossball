@@ -10,12 +10,16 @@ DESIGN_SYSTEM_ROOT = ROOT_DIR / "design-system"
 
 
 class Widget():
-    def __init__(self, unique_id, plugin_type):
+    def __init__(self, unique_id, plugin_type, local_data=None):
         self.unique_id = unique_id
         self.plugin_type = plugin_type
+        self.local_data = local_data
         self.data = self.fetch_data()
 
     def fetch_data(self):
+        if self.local_data is not None:
+            return self.local_data
+
         url = f"http://localhost:5001/plugin/query/{self.unique_id}?plugin_type={self.plugin_type}"
         try:
             response = global_session.get(url)
@@ -39,9 +43,9 @@ class DragWordsWidget(anywidget.AnyWidget, Widget):
     unique_id = traitlets.Unicode("drag_words_1").tag(sync=True)
     plugin_type = traitlets.Unicode("drag_words").tag(sync=True)
 
-    def __init__(self, unique_id):
+    def __init__(self, unique_id, local_data=None):
         anywidget.AnyWidget.__init__(self)
-        Widget.__init__(self, unique_id, "drag_words")
+        Widget.__init__(self, unique_id, "drag_words", local_data)
 
     def _handle_custom_msg(self, content, buffers):
         command = content.get("command", "")
@@ -49,6 +53,17 @@ class DragWordsWidget(anywidget.AnyWidget, Widget):
             plugin_type = content.get("plugin_type", "drag_words")
             unique_id = content.get("unique_id", self.unique_id)
             answer = content.get("answer")
+
+            if self.local_data is not None:
+                stored_answer = self.local_data.get("choices", [])
+                results = [answer_item == correct_item for
+                           answer_item, correct_item in zip(answer, stored_answer)]
+                self.send({
+                    "command": "verify_result",
+                    "results": results
+                })
+                return
+
             try:
                 response = global_session.post(
                     f"http://localhost:5001/plugin/verify/{unique_id}",
@@ -87,9 +102,9 @@ class SortTheParagraphs(anywidget.AnyWidget, Widget):
     plugin_type = traitlets.Unicode("sort_paragraphs").tag(sync=True)
     data = traitlets.Dict().tag(sync=True)
 
-    def __init__(self, unique_id):
+    def __init__(self, unique_id, local_data=None):
         anywidget.AnyWidget.__init__(self)
-        Widget.__init__(self, unique_id, "sort_paragraphs")
+        Widget.__init__(self, unique_id, "sort_paragraphs", local_data)
 
         self.question = self.data.get("question", self.question)
         original = self.data.get("texts", self.texts)
@@ -105,6 +120,18 @@ class SortTheParagraphs(anywidget.AnyWidget, Widget):
             plugin_type = content.get("plugin_type")
             unique_id = content.get("unique_id")
             answer = content.get("answer")
+
+            if self.local_data is not None:
+                stored_texts = self.local_data.get("texts", [])
+                results = [answer_text == correct_text for
+                           answer_text, correct_text in zip(answer, stored_texts)]
+
+                self.send({
+                    "command": "verify_result",
+                    "results": results
+                })
+                return
+
             try:
                 response = global_session.post(
                     f"http://localhost:5001/plugin/verify/{unique_id}",
@@ -147,9 +174,9 @@ class MultipleChoice(anywidget.AnyWidget, Widget):
     plugin_type = traitlets.Unicode("multiple_choice").tag(sync=True)
     data = traitlets.Dict().tag(sync=True)
 
-    def __init__(self, unique_id):
+    def __init__(self, unique_id, local_data=None):
         anywidget.AnyWidget.__init__(self)
-        Widget.__init__(self, unique_id, "multiple_choice")
+        Widget.__init__(self, unique_id, "multiple_choice", local_data)
 
         self.question = self.data.get("question", self.question)
         self.options = self.data.get("options", self.options)
@@ -160,6 +187,16 @@ class MultipleChoice(anywidget.AnyWidget, Widget):
             plugin_type = content.get("plugin_type")
             unique_id = content.get("unique_id")
             answer = content.get("answer")
+
+            if self.local_data is not None:
+                stored_answer = self.local_data.get("answer", 0)
+                results = 1 if answer == stored_answer else 0
+                self.send({
+                    "command": "verify_result",
+                    "results": results
+                })
+                return
+
             try:
                 response = global_session.post(
                     f"http://localhost:5001/plugin/verify/{unique_id}",
@@ -200,12 +237,16 @@ class StructureStrip(anywidget.AnyWidget, Widget):
     plugin_type = traitlets.Unicode("structure_strip").tag(sync=True)
     data = traitlets.Dict().tag(sync=True)
 
-    def __init__(self, unique_id):
+    def __init__(self, unique_id, local_data=None, image_path=None):
         anywidget.AnyWidget.__init__(self)
-        Widget.__init__(self, unique_id, "structure_strip")
-        image_path = self._module_dir / "assets" / "london.jpg"
+        Widget.__init__(self, unique_id, "structure_strip", local_data)
 
-        self.image_path = self._file_to_data_url(image_path)
+        if image_path:
+            self.image_path = self._file_to_data_url(pathlib.Path(image_path))
+        else:
+            default_image_path = self._module_dir / "assets" / "london.jpg"
+            self.image_path = self._file_to_data_url(default_image_path)
+
         self.sections = self.data.get("sections", self.sections)
         self.title = self.data.get("title", self.title)
         self.description = self.data.get("description", self.description)
@@ -223,6 +264,14 @@ class StructureStrip(anywidget.AnyWidget, Widget):
             plugin_type = content.get("plugin_type")
             unique_id = content.get("unique_id")
             answer = content.get("answer")
+
+            if self.local_data is not None:
+                self.send({
+                    "command": "verify_result",
+                    "results": "Completed"
+                })
+                return
+
             try:
                 response = global_session.post(
                     f"http://localhost:5001/plugin/verify/{unique_id}",
@@ -262,12 +311,9 @@ class FindTheWords(anywidget.AnyWidget, Widget):
     def __init__(self, unique_id):
         anywidget.AnyWidget.__init__(self)
         Widget.__init__(self, unique_id, "find_words")
-
         self.validate_input()
 
     def validate_input(self):
-        # TODO: handle validation for all configuration options
-        # Ensure that gridWidth and gridHeight are valid given the words
         words = self.data.get("words", [])
         config = self.data.get("config", {})
         gridWidth = config.get("gridWidth", 10)
@@ -277,7 +323,6 @@ class FindTheWords(anywidget.AnyWidget, Widget):
         if gridWidth < longest_word_length or gridHeight < longest_word_length:
             raise ValueError(
                 f"gridWidth and gridHeight must be at least {longest_word_length}")
-
 
     def _handle_custom_msg(self, content, buffers):
         command = content.get("command", "")
@@ -319,5 +364,46 @@ def create_str(unique_id):
 def create_drag(unique_id):
     return DragWordsWidget(unique_id)
 
+
 def create_ftw(unique_id=6):
     return FindTheWords(unique_id)
+
+
+def create_local_stp(question, texts):
+    local_data = {
+        "question": question,
+        "texts": texts
+    }
+
+    return SortTheParagraphs("local", local_data)
+
+
+def create_local_mc(question, options, answer):
+    local_data = {
+        "question": question,
+        "options": options,
+        "answer": answer
+    }
+
+    return MultipleChoice("local", local_data)
+
+
+def create_local_str(title, description, sections, image_path=None):
+    local_data = {
+        "title": title,
+        "description": description,
+        "sections": sections,
+        "user_inputs": {}
+    }
+
+    return StructureStrip("local", local_data, image_path)
+
+
+def create_local_drag(instruction, question, choices):
+    local_data = {
+        "instruction": instruction,
+        "question": question,
+        "choices": choices
+    }
+
+    return DragWordsWidget("local", local_data)
