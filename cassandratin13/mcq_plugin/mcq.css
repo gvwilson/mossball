@@ -1,4 +1,4 @@
-.mc {
+/* .mc {
     --grey: #e2e2e2;
     --light-grey: #eeeeee;
     --light-blue: #c1dafd;
@@ -9,6 +9,10 @@
     --light-red: #ff9494;
     --dark-red: #8f0000;
     --font-size: 1.1rem;
+    padding: 1.5rem;
+} */
+
+.mc {
     padding: 1.5rem;
 }
 
@@ -23,7 +27,7 @@
     align-items: center;
     vertical-align: middle;
     font-size: 1rem;
-    background-color: var(--grey);
+    background-color: var(--options-colour);
     height: 3rem;
     margin-bottom: 10px;
     padding: 1rem;

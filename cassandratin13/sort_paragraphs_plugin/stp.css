@@ -1,4 +1,4 @@
-.stp {
+/* .stp {
   --grey: #e2e2e2;
   --light-grey: #eeeeee;
   --light-blue: #c1dafd;
@@ -12,6 +12,11 @@
   --font-size: 1.1rem;
   --gap: 5px;
 
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+} */
+
+.stp {
   margin-bottom: 2rem;
   padding: 1.5rem;
 }
@@ -128,11 +133,11 @@
   align-items: center;
   vertical-align: middle;
   width: 100%;
-  background-color: var(--grey);
+  background-color: var(--options-colour);
   height: min-content;
   min-height: 3rem;
   padding: 0.5rem;
-  margin: var(--gap) 0;
+  margin: 5px 0;
   border-radius: 5px;
   cursor: pointer;
 
@@ -144,7 +149,7 @@
 
 .stp .draggable {
   cursor: move;
-  background-color: var(--grey);
+  background-color: var(--options-colour);
 }
 
 .stp .dragging {

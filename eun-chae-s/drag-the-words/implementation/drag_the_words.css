@@ -52,14 +52,14 @@
 
     div.correct {
       border: none;
-      background-color: var(--green);
-      color: var(--dark-green);
+      background-color: var(--background-correct-colour);
+      color: var(--main-correct-colour);
     }
 
     div.incorrect {
       border: none;
-      background-color: var(--light-red);
-      color: var(--dark-red);
+      background-color: var(--background-incorrect-colour);
+      color: var(--main-incorrect-colour);
     }
 
     .blank.incorrect {
@@ -140,7 +140,7 @@
   .result {
     font-weight: bolder;
     font-size: 1.3rem;
-    color: var(--dark-blue);
+    color: var(--main-button-colour);
     margin-top: 1rem;
   }
   
