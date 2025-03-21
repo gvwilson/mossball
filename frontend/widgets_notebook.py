@@ -4,6 +4,9 @@ __generated_with = "0.11.17"
 app = marimo.App(width="full")
 
 
+from pathlib import Path
+
+
 @app.cell(hide_code=True)
 def _(__file__):
     import marimo as mo
@@ -99,16 +102,20 @@ def _(WordSearch):
 @app.cell(hide_code=True)
 def _():
     from widgets import create_mc
+    CURRENT_DIR_1 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
+    CUSTOM_CSS_PATH_1 = CURRENT_DIR_1 / "custom_theme.css"
 
-    create_mc("3")
+    create_mc("3", custom_css_path=str(CUSTOM_CSS_PATH_1))
     return (create_mc,)
 
 
 @app.cell
 def _():
     from widgets import create_str
+    CURRENT_DIR_2 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
+    CUSTOM_CSS_PATH_2 = CURRENT_DIR_2 / "custom_theme.css"
 
-    create_str("4")
+    create_str("4", custom_css_path=str(CUSTOM_CSS_PATH_2))
     return (create_str,)
 
 
@@ -144,16 +151,20 @@ def _(DragWordsWidget):
 @app.cell
 def _():
     from widgets import create_drag
+    CURRENT_DIR_3 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
+    CUSTOM_CSS_PATH_3 = CURRENT_DIR_3 / "custom_theme.css"
 
-    create_drag("5")
+    create_drag("5", custom_css_path=str(CUSTOM_CSS_PATH_3))
     return (create_drag,)
 
 
 @app.cell(hide_code=True)
 def _():
     from widgets import create_stp
+    CURRENT_DIR_4 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
+    CUSTOM_CSS_PATH_4 = CURRENT_DIR_4 / "custom_theme.css"
 
-    create_stp("1")
+    create_stp("1", custom_css_path=str(CUSTOM_CSS_PATH_4))
     return (create_stp,)
 
 
