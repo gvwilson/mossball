@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.11.17"
+__generated_with = "0.10.9"
 app = marimo.App(width="full")
 
 
@@ -39,6 +39,46 @@ def _(__file__):
     )
 
 
+@app.cell
+def _():
+    import json
+    from widgets import create_widget
+
+    with open('data.json', 'r') as file:
+        questions = json.load(file)
+    return create_widget, file, json, questions
+
+
+@app.cell
+def _(create_widget, questions):
+    create_widget(questions["1"])
+    return
+
+
+@app.cell
+def _(create_widget, questions):
+    create_widget(questions["2"])
+    return
+
+
+@app.cell
+def _(create_widget, questions):
+    create_widget(questions["3"])
+    return
+
+
+@app.cell
+def _(create_widget, questions):
+    create_widget(questions["4"])
+    return
+
+
+@app.cell
+def _(create_widget, questions):
+    create_widget(questions["5"])
+    return
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""# 📚🧑‍🏫 Welcome to our demo!👩‍🏫📚""")
@@ -55,26 +95,6 @@ def _(mo):
     )
     return
 
-
-# @app.cell(hide_code=True)
-# def _(WordSearch):
-#     data = {
-#         "title": "Select the words in the grid below:",
-#         "words": ["Apple", "Orange", "Banana", "Pineapple"],
-#         "instructions": "Click and drag the words on the grid to select them",
-#         "config": {
-#             "gridWidth": 15,  # dimensions must fit the longest word
-#             "gridHeight": 15,
-#             "gameMode": {
-#                 "timed": True,
-#                 "countdown": 60,  # in seconds, ignored if timed is false
-#             },
-#             "barColor": "green",  # accept any valid css color
-#         },
-#     }
-
-#     WordSearch(data=data)
-#     return (data,)
 
 @app.cell
 def _():
@@ -175,6 +195,7 @@ def _():
         ]
     )
     return (create_local_drag,)
+
 
 @app.cell
 def _():
