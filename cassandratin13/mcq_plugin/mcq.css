@@ -43,7 +43,7 @@
         background-color: var(--hover-light-blue);
         border-width: 2px;
         border-color: var(--main-button-colour);
-        color: var(--background-button-colour);
+        color: var(--main-button-hover-colour);
         font-weight: bolder;
     }
 }

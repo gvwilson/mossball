@@ -2,7 +2,7 @@
     --tooltip-colour: #0077cc;
     --hover-light-colour: #c1dafd;
     --main-button-colour: #2858b3;
-    --background-button-colour: #123767;
+    --main-button-hover-colour: #123767;
     --background-correct-colour: #9ae9b3;
     --main-correct-colour: #0a6000;
     --background-incorrect-colour: #ff9494;
@@ -100,7 +100,7 @@ button {
     margin: 10px 0px;
 
     &:hover {
-        background-color: var(--background-button-colour);
+        background-color: var(--main-button-hover-colour);
         transition: background-color 0.2s ease;
     }
 
@@ -130,7 +130,7 @@ button {
     margin: 10px 0px;
 
     &:hover {
-        background-color: var(--background-button-colour);
+        background-color: var(--main-button-hover-colour);
         transition: background-color 0.2s ease;
     }
 

@@ -296,7 +296,7 @@
     transition: background-color 0.2s ease;
 
     &:hover {
-        background-color: var(--background-button-colour);
+        background-color: var(--main-button-hover-colour);
     }
 
     &:disabled {
@@ -309,7 +309,7 @@
     align-self: center; /* Centers in flex containers */
     padding: 8px 15px;
     background: var(--main-button-colour);
-    border: 1px solid var(--background-button-colour);
+    border: 1px solid var(--main-button-hover-colour);
     border-radius: 18px;
     cursor: pointer;
     color: white;
@@ -323,7 +323,7 @@
 
 .create-bucket-btn:hover,
 .refresh-buckets:hover {
-    background: var(--background-button-colour);
+    background: var(--main-button-hover-colour);
 }
 
 .confirmation-modal {
@@ -361,7 +361,7 @@
     align-self: center; /* Centers in flex containers */
     padding: 8px 15px;
     background: var(--main-button-colour);
-    border: 1px solid var(--background-button-colour);
+    border: 1px solid var(--main-button-hover-colour);
     border-radius: 18px;
     cursor: pointer;
     color: white;
@@ -377,7 +377,7 @@
     align-self: center; /* Centers in flex containers */
     padding: 8px 15px;
     background: var(--main-button-colour);
-    border: 1px solid var(--background-button-colour);
+    border: 1px solid var(--main-button-hover-colour);
     border-radius: 18px;
     cursor: pointer;
     color: white;
@@ -393,7 +393,7 @@
     align-self: center; /* Centers in flex containers */
     padding: 8px 15px;
     background: var(--main-button-colour);
-    border: 1px solid var(--background-button-colour);
+    border: 1px solid var(--main-button-hover-colour);
     border-radius: 18px;
     cursor: pointer;
     color: white;
@@ -408,7 +408,7 @@
 .switch-confirm-yes:hover,
 .creation-confirm-no:hover,
 .switch-confirm-no:hover {
-    background: var(--background-button-colour);
+    background: var(--main-button-hover-colour);
 }
 .message-container {
     margin: 10px 0;
