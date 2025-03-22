@@ -29,7 +29,7 @@ class Widget():
             return {}
 
 
-class DragWordsWidget(anywidget.AnyWidget, Widget):
+class DragWords(anywidget.AnyWidget, Widget):
     _module_dir = ROOT_DIR / "eun-chae-s/drag-the-words/implementation"
     _esm = _module_dir / "drag_the_words.js"
     _widget_css = _module_dir / "drag_the_words.css"
@@ -308,9 +308,11 @@ class FindTheWords(anywidget.AnyWidget, Widget):
     data = traitlets.Dict().tag(sync=True)
     error_ = traitlets.Unicode().tag(sync=True)
 
-    def __init__(self, unique_id):
+    def __init__(self, unique_id, local_data=None):
         anywidget.AnyWidget.__init__(self)
         Widget.__init__(self, unique_id, "find_words")
+        if local_data:
+            self.data = local_data
         self.validate_input()
 
     def validate_input(self):
@@ -362,7 +364,7 @@ def create_str(unique_id):
 
 
 def create_drag(unique_id):
-    return DragWordsWidget(unique_id)
+    return DragWords(unique_id)
 
 
 def create_ftw(unique_id=6):
@@ -406,4 +408,21 @@ def create_local_drag(instruction, question, choices):
         "choices": choices
     }
 
-    return DragWordsWidget("local", local_data)
+    return DragWords("local", local_data)
+
+def create_local_ftw(title, words, instructions, gridWidth, gridHeight, timed, countdown, barColor):
+    local_data = {
+        "title": title,
+        "words": words,
+        "instructions": instructions,
+        "config": {
+            "gridWidth": gridWidth,
+            "gridHeight": gridHeight,
+            "gameMode": {
+                "timed": timed,
+                "countdown": countdown,
+            },
+            "barColor": barColor,
+        },
+    }
+    return FindTheWords("local", local_data)
