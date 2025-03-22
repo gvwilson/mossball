@@ -9,6 +9,14 @@ ROOT_DIR = pathlib.Path(__file__).parent.parent
 DESIGN_SYSTEM_ROOT = ROOT_DIR / "design-system"
 
 
+def load_css(*css_paths):
+    """Helper function to load and join CSS contents from given file paths."""
+    css_list = []
+    for path in css_paths:
+        css_list.append(path.read_text(encoding="utf-8"))
+    return "\n".join(css_list)
+
+
 class Widget():
     def __init__(self, unique_id, plugin_type):
         self.unique_id = unique_id
@@ -30,18 +38,21 @@ class DragWordsWidget(anywidget.AnyWidget, Widget):
     _esm = _module_dir / "drag_the_words.js"
     _widget_css = _module_dir / "drag_the_words.css"
     _global_css = DESIGN_SYSTEM_ROOT / "global.css"
-    _css = "\n".join([
-        _global_css.read_text(encoding="utf-8"),
-        _widget_css.read_text(encoding="utf-8"),
-    ])
+    _default_css = load_css(_global_css, _widget_css)
+    _css = _default_css
 
     data = traitlets.Dict({}).tag(sync=True)
     unique_id = traitlets.Unicode("drag_words_1").tag(sync=True)
     plugin_type = traitlets.Unicode("drag_words").tag(sync=True)
 
-    def __init__(self, unique_id):
+    def __init__(self, unique_id, custom_css_path=None):
         anywidget.AnyWidget.__init__(self)
         Widget.__init__(self, unique_id, "drag_words")
+        if custom_css_path:
+            custom_css = pathlib.Path(custom_css_path).read_text(encoding="utf-8")
+            self._css = self._default_css + "\n" + custom_css
+        else:
+            self._css = self._default_css
 
     def _handle_custom_msg(self, content, buffers):
         command = content.get("command", "")
@@ -73,12 +84,8 @@ class SortTheParagraphs(anywidget.AnyWidget, Widget):
     _esm = _module_dir / "stp.js"
     _widget_css = _module_dir / "stp.css"
     _global_css = DESIGN_SYSTEM_ROOT / "global.css"
-    _css = "\n".join(
-        [
-            _global_css.read_text(encoding="utf-8"),
-            _widget_css.read_text(encoding="utf-8"),
-        ]
-    )
+    _default_css = load_css(_global_css, _widget_css)
+    _css = _default_css
 
     question = traitlets.Unicode(default_value="Sort the texts").tag(sync=True)
     texts = traitlets.List(
@@ -87,14 +94,19 @@ class SortTheParagraphs(anywidget.AnyWidget, Widget):
     plugin_type = traitlets.Unicode("sort_paragraphs").tag(sync=True)
     data = traitlets.Dict().tag(sync=True)
 
-    def __init__(self, unique_id):
+    def __init__(self, unique_id, custom_css_path=None):
         anywidget.AnyWidget.__init__(self)
         Widget.__init__(self, unique_id, "sort_paragraphs")
+
+        if custom_css_path:
+            custom_css = pathlib.Path(custom_css_path).read_text(encoding="utf-8")
+            self._css = self._default_css + "\n" + custom_css
+        else:
+            self._css = self._default_css
 
         self.question = self.data.get("question", self.question)
         original = self.data.get("texts", self.texts)
         self.texts = original[:]
-
         if len(self.texts) > 1:
             while self.texts == original:
                 random.shuffle(self.texts)
@@ -129,12 +141,8 @@ class MultipleChoice(anywidget.AnyWidget, Widget):
     _esm = _module_dir / "mcq.js"
     _widget_css = _module_dir / "mcq.css"
     _global_css = DESIGN_SYSTEM_ROOT / "global.css"
-    _css = "\n".join(
-        [
-            _global_css.read_text(encoding="utf-8"),
-            _widget_css.read_text(encoding="utf-8"),
-        ]
-    )
+    _default_css = load_css(_global_css, _widget_css)
+    _css = _default_css
 
     question = traitlets.Unicode(
         default_value="Choose an option"
@@ -147,9 +155,14 @@ class MultipleChoice(anywidget.AnyWidget, Widget):
     plugin_type = traitlets.Unicode("multiple_choice").tag(sync=True)
     data = traitlets.Dict().tag(sync=True)
 
-    def __init__(self, unique_id):
+    def __init__(self, unique_id, custom_css_path=None):
         anywidget.AnyWidget.__init__(self)
         Widget.__init__(self, unique_id, "multiple_choice")
+        if custom_css_path:
+            custom_css = pathlib.Path(custom_css_path).read_text(encoding="utf-8")
+            self._css = self._default_css + "\n" + custom_css
+        else:
+            self._css = self._default_css
 
         self.question = self.data.get("question", self.question)
         self.options = self.data.get("options", self.options)
@@ -184,12 +197,8 @@ class StructureStrip(anywidget.AnyWidget, Widget):
     _esm = _module_dir / "str.js"
     _widget_css = _module_dir / "str.css"
     _global_css = DESIGN_SYSTEM_ROOT / "global.css"
-    _css = "\n".join(
-        [
-            _global_css.read_text(encoding="utf-8"),
-            _widget_css.read_text(encoding="utf-8"),
-        ]
-    )
+    _default_css = load_css(_global_css, _widget_css)
+    _css = _default_css
 
     title = traitlets.Unicode().tag(sync=True)
     description = traitlets.Unicode().tag(sync=True)
@@ -200,11 +209,16 @@ class StructureStrip(anywidget.AnyWidget, Widget):
     plugin_type = traitlets.Unicode("structure_strip").tag(sync=True)
     data = traitlets.Dict().tag(sync=True)
 
-    def __init__(self, unique_id):
+    def __init__(self, unique_id, custom_css_path=None):
         anywidget.AnyWidget.__init__(self)
         Widget.__init__(self, unique_id, "structure_strip")
-        image_path = self._module_dir / "assets" / "london.jpg"
+        if custom_css_path:
+            custom_css = pathlib.Path(custom_css_path).read_text(encoding="utf-8")
+            self._css = self._default_css + "\n" + custom_css
+        else:
+            self._css = self._default_css
 
+        image_path = self._module_dir / "assets" / "london.jpg"
         self.image_path = self._file_to_data_url(image_path)
         self.sections = self.data.get("sections", self.sections)
         self.title = self.data.get("title", self.title)
@@ -247,21 +261,22 @@ class FindTheWords(anywidget.AnyWidget, Widget):
     _esm = _module_dir / "widget.js"
     _widget_css = _module_dir / "widget.css"
     _global_css = DESIGN_SYSTEM_ROOT / "global.css"
-    _css = "\n".join(
-        [
-            _global_css.read_text(encoding="utf-8"),
-            _widget_css.read_text(encoding="utf-8"),
-        ]
-    )
+    _default_css = load_css(_global_css, _widget_css)
+    _css = _default_css
 
     unique_id = traitlets.Unicode("6").tag(sync=True)
     plugin_type = traitlets.Unicode("find_words").tag(sync=True)
     data = traitlets.Dict().tag(sync=True)
     error_ = traitlets.Unicode().tag(sync=True)
 
-    def __init__(self, unique_id):
+    def __init__(self, unique_id, custom_css_path=None):
         anywidget.AnyWidget.__init__(self)
         Widget.__init__(self, unique_id, "find_words")
+        if custom_css_path:
+            custom_css = pathlib.Path(custom_css_path).read_text(encoding="utf-8")
+            self._css = self._default_css + "\n" + custom_css
+        else:
+            self._css = self._default_css
 
         self.validate_input()
 
@@ -304,20 +319,17 @@ class FindTheWords(anywidget.AnyWidget, Widget):
             })
 
 
-def create_stp(unique_id):
-    return SortTheParagraphs(unique_id)
+def create_stp(unique_id, custom_css_path=None):
+    return SortTheParagraphs(unique_id, custom_css_path=custom_css_path)
 
+def create_mc(unique_id, custom_css_path=None):
+    return MultipleChoice(unique_id, custom_css_path=custom_css_path)
 
-def create_mc(unique_id):
-    return MultipleChoice(unique_id)
+def create_str(unique_id, custom_css_path=None):
+    return StructureStrip(unique_id, custom_css_path=custom_css_path)
 
+def create_drag(unique_id, custom_css_path=None):
+    return DragWordsWidget(unique_id, custom_css_path=custom_css_path)
 
-def create_str(unique_id):
-    return StructureStrip(unique_id)
-
-
-def create_drag(unique_id):
-    return DragWordsWidget(unique_id)
-
-def create_ftw(unique_id=6):
-    return FindTheWords(unique_id)
+def create_ftw(unique_id=6, custom_css_path=None):
+    return FindTheWords(unique_id, custom_css_path=custom_css_path)

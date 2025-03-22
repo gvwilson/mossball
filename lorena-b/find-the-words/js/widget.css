@@ -96,12 +96,12 @@
 }
 
 .word[data-state="found"] {
-  color: var(--dark-green);
+  color: var(--main-correct-colour);
   text-decoration: line-through;
 }
 
 .word[data-state="unfound"] {
-  color: var(--dark-red);
+  color: var(--main-incorrect-colour);
 }
 
 .bottom-wrapper {
