@@ -258,8 +258,10 @@ function createSubmitButton(model, userInputs, container) {
   submitBtn.textContent = "Check";
     
   submitBtn.addEventListener("click", () => {
+    let userAnswer = {};
     model.get("sections").forEach((section, index) => {
       const text = userInputs[section.id] || "";
+      userAnswer[section.id] = text;
       const feedback = container.querySelectorAll(".feedback")[index];
 
       if (section.max_length) {
@@ -276,6 +278,12 @@ function createSubmitButton(model, userInputs, container) {
         feedback.style.display = "block";
       }
     });
+    model.send({
+      command: "verify",
+      plugin_type: model.get("plugin_type") || "structure_strip",
+      unique_id: model.get("unique_id") || "1",
+      answer: userAnswer
+    })
   });
 
   return submitBtn;

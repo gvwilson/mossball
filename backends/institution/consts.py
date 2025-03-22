@@ -7,3 +7,4 @@ class PLUGIN_TYPES(Enum):
     MULTIPLE_CHOICE = "multiple_choice"
     STRUCTRUE_STRIP = "structure_strip"
     DRAG_WORDS = "drag_words"
+    FIND_WORDS = "find_words"

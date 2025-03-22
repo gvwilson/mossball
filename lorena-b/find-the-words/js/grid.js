@@ -2,7 +2,6 @@
  * @file grid.js
  * @description Grid class and utils to generate and render the word search grid.
  */
-import seedrandom from "https://esm.sh/seedrandom@3.0.5";
 import CONSTANTS from "./constants";
 import { createElement } from "./utils";
 
@@ -12,9 +11,6 @@ const DIRECTIONS = [
   [1, 1], // Diagonal down
   [1, -1], // Diagonal up
 ];
-
-const SEED = 1234;
-seedrandom(SEED, { global: true });
 
 class Grid {
   constructor(words, width, height) {

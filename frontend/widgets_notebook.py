@@ -1,7 +1,57 @@
 import marimo
 
-__generated_with = "0.10.11"
-app = marimo.App(width="medium")
+__generated_with = "0.11.17"
+app = marimo.App(width="full")
+
+
+@app.cell(hide_code=True)
+def _(__file__):
+    import marimo as mo
+    import sys
+    from pathlib import Path
+    import importlib
+
+    # Set the project root folder dynamically
+    project_root = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(project_root))  # Add project root to sys.path
+
+    # Now import the plugins
+    from find_the_words import WordSearch
+    from cassandratin13.mcq_plugin.MCQPlugin import MultipleChoice
+    from cassandratin13.sort_paragraphs_plugin.SortTheParagraphs import SortTheParagraphs
+    DragWordsWidget = getattr(importlib.import_module("eun-chae-s.drag-the-words.implementation.DragWordsWidget"), "DragWordsWidget")
+    from evence_wang.FileUploaderModule.FileUploader import FileUploader
+    StructureStripWidget = getattr(importlib.import_module("Barsamyan-D.str-strip-plugin-david.StructureStripWidget"), "StructureStripWidget")
+    return (
+        DragWordsWidget,
+        FileUploader,
+        MultipleChoice,
+        Path,
+        SortTheParagraphs,
+        StructureStripWidget,
+        WordSearch,
+        importlib,
+        mo,
+        project_root,
+        sys,
+    )
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""# 📚🧑‍🏫 Welcome to our demo!👩‍🏫📚""")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        """
+        ### **From this project... ✨**
+        Our goal is to create **interactive learning experiences**, which allow students to explore different tools that enhance their learning and help instructors with student engagement and evaluation.
+        """
+    )
+    return
 
 
 @app.cell(hide_code=True)
@@ -9,7 +59,7 @@ def _():
     from sessions.login import LoginWidget
 
     login_widget = LoginWidget()
-    login_widget.institution_id = "inst2"
+    login_widget.institution_id = "inst2" # need to create `inst2`
     login_widget.login()
     return LoginWidget, login_widget
 
@@ -54,80 +104,12 @@ def _():
     return (create_mc,)
 
 
-@app.cell(hide_code=True)
-def _(__file__):
-    import marimo as mo
-    import sys
-    from pathlib import Path
-    import importlib
+@app.cell
+def _():
+    from widgets import create_str
 
-    # Set the project root folder dynamically
-    project_root = Path(__file__).resolve().parent.parent
-    sys.path.insert(0, str(project_root))  # Add project root to sys.path
-
-    # Now import the plugins
-    from find_the_words import WordSearch
-    from cassandratin13.mcq_plugin.MCQPlugin import MultipleChoice
-    from cassandratin13.sort_paragraphs_plugin.SortTheParagraphs import SortTheParagraphs
-    DragWordsWidget = getattr(importlib.import_module("eun-chae-s.drag-the-words.implementation.DragWordsWidget"), "DragWordsWidget")
-    from evence_wang.FileUploaderModule.FileUploader import FileUploader
-    StructureStripWidget = getattr(importlib.import_module("Barsamyan-D.str-strip-plugin-david.StructureStripWidget"), "StructureStripWidget")
-    return (
-        DragWordsWidget,
-        FileUploader,
-        MultipleChoice,
-        Path,
-        SortTheParagraphs,
-        StructureStripWidget,
-        WordSearch,
-        importlib,
-        mo,
-        project_root,
-        sys,
-    )
-
-
-@app.cell(hide_code=True)
-def _(StructureStripWidget):
-    str_title = "London Docklands Evaluation"
-    str_description = "Make yourself familiar with the Docklands in London that underwent major changes. To what extend was the Docklands Regeneration successful? Your evaluation of the successes and the failures each should be roughly three times the size of your introduction and your conclusion."
-    str_sections = [
-            {
-                "id": "introduction",
-                "label": "Introduction",
-                "prompt": "Describe how the London Docklands has changed and why. Where is the London Docklands? What was the function before 1980? What happened after 1980?",
-                "rows": 6,
-                "max_length": 200
-            },
-            {
-                "id": "body1",
-                "label": "Successes",
-                "prompt": "What were the successes of the change in function? How was the regeneration successful for the people? What were the successes of the change in land use? Keywords that you should include: hospitals, schools, facilities, infrastructure, inner city, and community. Remember to include facts and statistics to support your points.",
-                "rows": 6,
-                "max_length": 600
-            },
-            {
-                "id": "body2",
-                "label": "Failures",
-                "prompt": "What were the failures in the change in function? How was the regeneration a failure for the people? What were the failures of the change in land use? Keywords that you should include: hospitals, schools, facilities, infrastructure, inner city, and community. Remember to include facts and statistics to support your points.",
-                "rows": 6,
-                "max_length": 600
-            },
-            {
-                "id": "conclusion",
-                "label": "Conclusion",
-                "prompt": "Summarise the overall successes of the regeneration. Summarise the overall failures of the regeneration. To what extend was the regeneration a success overall? Use specific evidence to support your points.",
-                "rows": 6,
-                "max_length": 200
-            }
-        ]
-
-    StructureStripWidget(
-        title=str_title,
-        description="Make yourself familiar with the Docklands in London that underwent major changes. To what extend was the Docklands Regeneration successful? Your evaluation of the successes and the failures each should be roughly three times the size of your introduction and your conclusion.",
-        sections=str_sections
-    )
-    return str_description, str_sections, str_title
+    create_str("4")
+    return (create_str,)
 
 
 @app.cell(hide_code=True)
@@ -144,7 +126,7 @@ def _(uploader):
 
 @app.cell
 def _(uploader):
-    uploader.contents(0, True)
+    uploader.contents(2, True)
     return
 
 
@@ -157,6 +139,14 @@ def _(DragWordsWidget):
 
     DragWordsWidget(data=drag_the_words_data)
     return (drag_the_words_data,)
+
+
+@app.cell
+def _():
+    from widgets import create_drag
+
+    create_drag("5")
+    return (create_drag,)
 
 
 @app.cell(hide_code=True)

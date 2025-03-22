@@ -8,10 +8,6 @@
 
 - **Testing (20%)** - unit tests
 
-    - Individual (15%)
-
-    - Team (5%)
-
 - **Teamwork (20%)** - good version control practices, completing tasks on time, active communication, etc.
 
 - **Report with video demo (10%)** - project overview, file organization, etc.
