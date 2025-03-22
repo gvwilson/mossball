@@ -1,37 +1,19 @@
 import marimo
 
-__generated_with = "0.10.9"
+__generated_with = "0.11.8"
 app = marimo.App(width="medium")
 
 
 @app.cell
 def _():
-    import marimo as mo
-    import anywidget
-    import traitlets
-
-    class MultipleChoice(anywidget.AnyWidget):
-        _esm = "mcq.js"
-        _css = "mcq.css"
-        question = traitlets.Unicode(default_value="Choose an option")
-        options = traitlets.List(default_value=["Option 1", "Option 2", "Option 3", "Option 4"]).tag(sync=True)
-        currOption = traitlets.Int(-1).tag(sync=True)
-        correctOption = traitlets.Int(0).tag(sync=True)
+    from MCQPlugin import MultipleChoice
 
     mcQuestion = "What is the capital city of Ontario?"
     mcOptions = ["Ottawa", "Toronto", "Vancouver", "Montreal"]
     answer = 1
 
     MultipleChoice(question=mcQuestion, options=mcOptions, correctOption=answer)
-    return (
-        MultipleChoice,
-        answer,
-        anywidget,
-        mcOptions,
-        mcQuestion,
-        mo,
-        traitlets,
-    )
+    return MultipleChoice, answer, mcOptions, mcQuestion
 
 
 if __name__ == "__main__":

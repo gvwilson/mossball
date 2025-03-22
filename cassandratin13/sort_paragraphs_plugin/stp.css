@@ -4,7 +4,6 @@
   --light-blue: #c1dafd;
   --lightest-blue: #d3e5ff;
   --med-blue: #2858b3;
-  --dark-blue: #123767;
   --darker-blue: #0c2654;
   --green: #9ae9b3;
   --dark-green: #0a6000;
@@ -14,6 +13,7 @@
   --gap: 5px;
 
   margin-bottom: 2rem;
+  padding: 1.5rem;
 }
 
 .stp .disabled {
