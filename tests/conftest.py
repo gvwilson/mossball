@@ -61,6 +61,7 @@ def start_marimo(request):
 # Mock backend
 dummy_data = {
     "drag_words": {
+        "content": {
             "instruction": "Drag the words to the correct positions",
             "question": (
                 "In a multitasking operating system, {{}} share the CPU by using {{}} such as Round Robin and First Come, First Served. "
@@ -71,16 +72,26 @@ dummy_data = {
                 "processes", "scheduling algorithms", "memory allocation",
                 "resources", "deadlocks", "preemption"
             ]
-        }
+        },
+        "success": {'results': [True, True, True, True, True, True], 'unique_id': '5'}
+    }
 }
 
 @app.route("/plugin/query/<unique_id>", methods=["GET"])
 def mock_get_plugin(unique_id):
     plugin_type = request.args.get("plugin_type")
     if plugin_type == "drag_words":
-        return jsonify(dummy_data["drag_words"]), 200
+        return jsonify(dummy_data["drag_words"]["content"]), 200
     else:
         return jsonify({"error": "Not found"}), 404
+
+@app.route("/plugin/verify/<unique_id>", methods=["POST"])
+def mock_verify_plugin(unique_id):
+    plugin_type = request.args.get("plugin_type")
+    if plugin_type == "drag_words":
+        return jsonify(dummy_data["drag_words"]["success"]), 200
+    else:
+        return jsonify({"error": "Request failed"}), 500
     
 @pytest.fixture(scope="session", autouse=True)
 def mock_server():
