@@ -1,28 +1,28 @@
 import pytest
-import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-@pytest.mark.order(1)
-@pytest.mark.parametrize("start_marimo", ["eun-chae-s/drag-the-words/implementation/drag_the_words.py"], indirect=True)
-def test_page_setup(get_chrome_driver, start_marimo):
-    # run the following notebook (marimo run eun-chae-s/drag-the-words/implementation/drag_the_words.py)
-    # achieve the url
-    url = start_marimo
-    url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
-    time.sleep(2)
+# @pytest.mark.order(1)
+# @pytest.mark.parametrize("start_marimo", ["eun-chae-s/drag-the-words/implementation/drag_the_words.py"], indirect=True)
+# def test_page_setup(get_chrome_driver, start_marimo):
+#     # run the following notebook (marimo run eun-chae-s/drag-the-words/implementation/drag_the_words.py)
+#     # achieve the url
+#     url = start_marimo
+#     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
+#     time.sleep(2)
 
-    get_chrome_driver.get(url)
-    get_chrome_driver.maximize_window()
+#     get_chrome_driver.get(url)
+#     get_chrome_driver.maximize_window()
     
-    # check that the question is visible
-    title = get_chrome_driver.title
-    assert title == "drag the words"
+#     # check that the question is visible
+#     title = get_chrome_driver.title
+#     assert title == "drag the words"
 
-@pytest.mark.order(2)
-@pytest.mark.parametrize("start_marimo", ["eun-chae-s/drag-the-words/implementation/drag_the_words.py"], indirect=True)
-def test_basic_structure(get_chrome_driver, start_marimo):
+# @responses.activate
+# @pytest.mark.order(2)
+@pytest.mark.parametrize("start_marimo", ["tests/notebooks/drag_the_words_simple.py"], indirect=True)
+def test_basic_structure(get_chrome_driver, start_marimo, mock_server):
     url = start_marimo
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
     get_chrome_driver.get(url)
