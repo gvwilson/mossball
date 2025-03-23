@@ -2,25 +2,11 @@ import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.actions.mouse_button import MouseButton
+from selenium.webdriver.common.actions.action_builder import ActionBuilder
+from selenium.webdriver import ActionChains
 
-# @pytest.mark.order(1)
-# @pytest.mark.parametrize("start_marimo", ["eun-chae-s/drag-the-words/implementation/drag_the_words.py"], indirect=True)
-# def test_page_setup(get_chrome_driver, start_marimo):
-#     # run the following notebook (marimo run eun-chae-s/drag-the-words/implementation/drag_the_words.py)
-#     # achieve the url
-#     url = start_marimo
-#     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
-#     time.sleep(2)
-
-#     get_chrome_driver.get(url)
-#     get_chrome_driver.maximize_window()
-    
-#     # check that the question is visible
-#     title = get_chrome_driver.title
-#     assert title == "drag the words"
-
-# @responses.activate
-# @pytest.mark.order(2)
+@pytest.mark.order(1)
 @pytest.mark.parametrize("start_marimo", ["tests/notebooks/drag_the_words_simple.py"], indirect=True)
 def test_basic_structure(get_chrome_driver, start_marimo, mock_server):
     url = start_marimo
@@ -36,6 +22,68 @@ def test_basic_structure(get_chrome_driver, start_marimo, mock_server):
     widget = marimo_root.find_element(By.CLASS_NAME, "drag-words-widget")
     title = widget.find_element(By.CLASS_NAME, "title")
     assert title.get_attribute("innerText") == "Drag the words to the correct positions"
-    
 
+    question = widget.find_element(By.CLASS_NAME, "question")
+    assert question.is_displayed() == True
+
+    words_container = widget.find_element(By.CLASS_NAME, "words-container")
+    assert words_container.is_displayed() == True
+
+    words = words_container.find_elements(By.CLASS_NAME, "word-box")
+    assert len(words) > 0
+
+    bottom_banner = widget.find_element(By.CLASS_NAME, "bottom-banner")
+    assert bottom_banner.is_displayed() == True
+
+    check_button = bottom_banner.find_element(By.CLASS_NAME, "check-button")
+    reset_button = bottom_banner.find_element(By.CLASS_NAME, "try-button")
+
+    assert check_button.is_displayed() and reset_button.is_displayed()
+
+@pytest.mark.order(2)
+@pytest.mark.parametrize("start_marimo", ["tests/notebooks/drag_the_words_simple.py"], indirect=True)
+def test_drag_words(get_chrome_driver, start_marimo, mock_server):
+    url = start_marimo
+    url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
+    get_chrome_driver.get(url)
+    get_chrome_driver.maximize_window()
+    # Wait for the browser to settle all the required DOMs
+    WebDriverWait(get_chrome_driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".output-area")))
+
+    shadow_host = get_chrome_driver.find_element(By.CSS_SELECTOR, "marimo-anywidget")
+    marimo_root = shadow_host.shadow_root
+    widget = marimo_root.find_element(By.CLASS_NAME, "drag-words-widget")
     
+    question = widget.find_element(By.CLASS_NAME, "question")
+    blank_answers = question.find_elements(By.CLASS_NAME, "blank")
+    words_container = widget.find_element(By.CLASS_NAME, "words-container")
+    assert words_container.is_displayed() == True
+
+    words = words_container.find_elements(By.CLASS_NAME, "word-box")
+    assert len(words) > 0
+
+    for i in range(len(words)):
+        draggable = words[i]
+        droppable = blank_answers[i]
+
+        ActionChains(get_chrome_driver).drag_and_drop(draggable, droppable).perform()
+
+        assert draggable.get_attribute("draggable") == "false"
+        assert droppable.get_attribute("class") == "filled"
+        assert droppable.find_element(By.ID, f"remove-{droppable.get_attribute('id')}").is_displayed()
+
+    # Click the reset button
+    bottom_banner = widget.find_element(By.CLASS_NAME, "bottom-banner")
+    check_button = bottom_banner.find_element(By.CLASS_NAME, "check-button")
+    reset_button = bottom_banner.find_element(By.CLASS_NAME, "try-button")
+    
+    assert reset_button.is_displayed()
+    reset_button.click()
+
+    for i in range(len(words)):
+        draggable = words[i]
+        droppable = blank_answers[i]
+
+        assert draggable.get_attribute("draggable") == "true"
+        assert droppable.get_attribute("class") == "blank"
+        assert len(droppable.find_elements(By.ID, f"remove-{droppable.get_attribute('id')}")) == 0
