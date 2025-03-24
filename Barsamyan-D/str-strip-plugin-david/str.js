@@ -75,7 +75,7 @@ function createImageSection(model) {
   const headerContainer = document.createElement("div");
   headerContainer.style.display = "flex";
   headerContainer.style.justifyContent = "space-between";
-  headerContainer.style.alignItems = "center";
+  headerContainer.style.alignItems = "flex-start";
 
   const title = document.createElement("h2");
   title.textContent = model.get("title");

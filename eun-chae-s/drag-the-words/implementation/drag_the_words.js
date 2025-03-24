@@ -1,3 +1,5 @@
+import tippy from "https://esm.sh/tippy.js@6";
+
 const correctAnswerIcon = `<svg fill="#0a6000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" class="checkmark">
   <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
   <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -26,6 +28,37 @@ let answerStatus = {};
 let wordCount = {};
 
 // helper functions
+
+
+/**
+ * Create an info tooltip button for the DragWords widget.
+ * This button displays additional instructions when hovered.
+ * @returns {HTMLElement} The tooltip button element.
+ */
+function createDragInfoTooltip() {
+  const infoButton = document.createElement("button");
+  infoButton.className = "info-tooltip";
+  infoButton.textContent = "i";
+
+  tippy(infoButton, {
+      content: "Drag the words into the correct positions. Alternatively, click the blank to choose an option.",
+      allowHTML: true,
+      interactive: true,
+      arrow: true,
+      placement: "right",
+      onShow(instance) {
+          const tooltipBox = instance.popper.querySelector(".tippy-box");
+          if (tooltipBox) {
+              tooltipBox.style.width = "max-content";
+              tooltipBox.style.textAlign = "left";
+              tooltipBox.style.maxWidth = "max-content";
+          }
+      }
+  });
+
+  return infoButton;
+}
+
 
 /**
  * Shuffle the list of words in a random order to be placed in its container
@@ -231,9 +264,18 @@ function render({ model, el }) {
   container.className = "drag-words-widget";
   const content = model.get("data");
 
+  const instructionContainer = document.createElement("div");
+  instructionContainer.style.display = "flex";
+  instructionContainer.style.justifyContent = "space-between";
+  instructionContainer.style.alignItems = "flex-start";
+
   let instruction = document.createElement("div");
   instruction.className = "title";
   instruction.innerHTML = content.instruction;
+
+  const dragInfoTooltip = createDragInfoTooltip();
+  instructionContainer.appendChild(instruction);
+  instructionContainer.appendChild(dragInfoTooltip);
 
   let question = createQuestionContainer(content.question);
   let box_container = createWordBoxes(content.choices);
@@ -308,7 +350,7 @@ function render({ model, el }) {
   button_container.appendChild(submit_button);
   button_container.appendChild(reset_button);
 
-  container.appendChild(instruction);
+  container.appendChild(instructionContainer);
   container.appendChild(question);
   container.appendChild(box_container);
   container.appendChild(result);
