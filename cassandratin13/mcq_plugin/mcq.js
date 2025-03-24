@@ -1,4 +1,5 @@
 import swal from "https://esm.sh/sweetalert2@11";
+import tippy from "https://esm.sh/tippy.js@6";
 
 /**
  * Creates an HTML element with the given attributes
@@ -17,6 +18,36 @@ function createElement(tag, { classNames = "", children = [], ...attrs } = {}) {
     children.forEach((child) => element.appendChild(child));
     return element;
 }
+
+
+/**
+ * Create an info tooltip button for the Multiple Choice widget.
+ * @returns {HTMLElement} The tooltip button element.
+ */
+function createMCInfoTooltip() {
+    const infoButton = document.createElement("button");
+    infoButton.className = "info-tooltip";
+    infoButton.textContent = "i";
+    infoButton.style.alignSelf = "flex-start";
+
+    tippy(infoButton, {
+        content: "Select an option and submit your answer.",
+        allowHTML: true,
+        interactive: true,
+        arrow: true,
+        placement: "right",
+        onShow(instance) {
+            const tooltipBox = instance.popper.querySelector(".tippy-box");
+            if (tooltipBox) {
+                tooltipBox.style.width = "max-content";
+                tooltipBox.style.textAlign = "left";
+                tooltipBox.style.maxWidth = "max-content";
+            }
+        }
+    });
+    return infoButton;
+}
+
 
 /**
  * Render modal
@@ -141,23 +172,43 @@ function createOption(option, index, model) {
 }
 
 function render({ model, el }) {
-    // Create question, form, and buttons
-    let question = createElement("p", {
+    // Create question text element.
+    let questionText = createElement("p", {
         classNames: ["question", "title"],
         innerHTML: model.get("question"),
     });
+
+    // Create a flex container to hold the question and tooltip.
+    const questionContainer = document.createElement("div");
+    questionContainer.style.display = "flex";
+    questionContainer.style.justifyContent = "space-between";
+    questionContainer.style.alignItems = "flex-start";
+    questionContainer.appendChild(questionText);
+
+    // Create the info tooltip and add it to the question container.
+    const mcInfoTooltip = createMCInfoTooltip();
+    questionContainer.appendChild(mcInfoTooltip);
+
+    // Create the form for options.
     let options = model.get("options");
     let mc = createElement("form", { action: "javascript:void(0);" });
+    options.forEach((option, index) => {
+        let container = createOption(option, index, model);
+        mc.appendChild(container);
+    });
+
     let submitButton = createElement("button", {
         classNames: "check-button",
         innerHTML: "Check",
         type: "submit",
     });
+    mc.appendChild(submitButton);
 
     let result = createElement("div", {
         className: "result",
         style: "display: none;",
     });
+
     let restart_button = createElement("button", {
         classNames: "try-button",
         innerHTML: "Try again",
@@ -169,13 +220,9 @@ function render({ model, el }) {
         restart_button.disabled = true;
     });
 
-    // Create radio button, label, and container for each option
-    options.forEach((option, index) => {
-        let container = createOption(option, index, model);
-        mc.appendChild(container);
-    });
+    el.classList.add("mc");
+    el.append(...[questionContainer, mc, result, restart_button]);
 
-    mc.appendChild(submitButton);
     mc.addEventListener("submit", (event) => {
         event.preventDefault();
         if (!submitButton.disabled) {
@@ -192,10 +239,7 @@ function render({ model, el }) {
         }
     });
 
-    el.classList.add("mc");
-    el.append(...[question, mc, result, restart_button]);
-
-    // Listen for custom msgs from the plugin backend
+    // Listen for custom messages from the plugin backend.
     model.on("msg:custom", (msg) => {
         if (msg.command && msg.command === "verify_result") {
             const correct = msg.results;
@@ -205,7 +249,6 @@ function render({ model, el }) {
                 icon,
                 selected.querySelector("input[type='radio']")
             );
-
             if (correct) {
                 result.innerHTML = "Correct!";
                 selected.id = "correct";
