@@ -46,18 +46,15 @@ const showModal = (title, text, icon, buttonText, closeAction) => {
 /**
  * Checks whether the selected option is correct and shows the results on screen
  * @param {Number} currOption The index of the currently selected option within the list of options
- * @param {HTMLElement} el The widget element
  * @param {HTMLElement} result The element displaying the result of the answered question
  * @param {HTMLElement} mc The multiple question form element
+ * @param {String} uniqueId The ID of the question
+ * @param {String} pluginType The type of widget
+ * @param {DOMWidgetModel} model The widget model
  */
-function checkAnswer(currOption, result, mc, model) {
-    // Add an icon before the selected option
-
+function checkAnswer(currOption, result, mc, uniqueId, pluginType, model) {
     result.innerHTML = "Verifying...";
     result.style.display = "block";
-
-    const uniqueId = model.get("unique_id") || "3";
-    const pluginType = model.get("plugin_type") || "multiple_choice";
 
     // Send a custom msg to backend of the plugin
     model.send({
@@ -141,12 +138,16 @@ function createOption(option, index, model) {
 }
 
 function render({ model, el }) {
+    const data = model.get("data");
+    const uniqueId = data["unique_id"] || "3";
+    const pluginType = data["plugin_type"] || "multiple_choice";
+
     // Create question, form, and buttons
     let question = createElement("p", {
         classNames: ["question", "title"],
-        innerHTML: model.get("question"),
+        innerHTML: data["question"],
     });
-    let options = model.get("options");
+    let options = data["options"];
     let mc = createElement("form", { action: "javascript:void(0);" });
     let submitButton = createElement("button", {
         classNames: "check-button",
@@ -188,7 +189,7 @@ function render({ model, el }) {
                     "OK",
                     () => {}
                 );
-            else checkAnswer(currOption, result, mc, model);
+            else checkAnswer(currOption, result, mc, uniqueId, pluginType, model);
         }
     });
 

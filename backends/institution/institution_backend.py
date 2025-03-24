@@ -60,7 +60,7 @@ def query_drag(unique_id):
     else:
         return jsonify({"error": "Data not found"}), 404
     
-def query_find(unique_id):
+def query_ftw(unique_id):
     data = find_the_words_data.get(unique_id)
     if data:
         return jsonify({
@@ -91,7 +91,7 @@ def institution_query():
     elif plugin_type == PLUGIN_TYPES.DRAG_WORDS.value:
         return query_drag(unique_id)
     elif plugin_type == PLUGIN_TYPES.FIND_WORDS.value:
-        return query_find(unique_id)
+        return query_ftw(unique_id)
     return jsonify({"error": "Unsupported plugin type"}), 400
 
 

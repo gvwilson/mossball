@@ -10,13 +10,28 @@ DESIGN_SYSTEM_ROOT = ROOT_DIR / "design-system"
 
 
 class Widget():
+    """
+    Base class representing a classroom activity widget for Marimo.
+    """
     def __init__(self, unique_id, plugin_type, local_data=None):
+        """
+        Initialize an instance of the widget class given the question data.
+
+        Parameters:
+        - unique_id (str): ID of the question (must be unique within the notebook if fetching questions from backend)
+        - plugin_type (str): Identifier for the type of widget being created (see backends/institution/consts.py)
+        - local_data (optional dict): Question data passed in directly if no backend server is used 
+        """
         self.unique_id = unique_id
         self.plugin_type = plugin_type
         self.local_data = local_data
         self.data = self.fetch_data()
 
     def fetch_data(self):
+        """
+        Return the widget data from the institution's backend server, if applicable.
+        Otherwise, if data is passed in locally, return the local data
+        """
         if self.local_data is not None:
             return self.local_data
 
@@ -30,6 +45,15 @@ class Widget():
 
 
 class DragWords(anywidget.AnyWidget, Widget):
+    """
+    A widget class for the "drag the words" plugin. 
+
+    Attributes:
+    - data (dict): Contains data for the question (either locally or from the institution's server)
+    - unique_id (str): ID of the question (must be unique within the notebook)
+    - plugin_type (str): Identifier for the type of widget being created (see backends/institution/consts.py)
+    """
+    # js and css files
     _module_dir = ROOT_DIR / "eun-chae-s/drag-the-words/implementation"
     _esm = _module_dir / "drag_the_words.js"
     _widget_css = _module_dir / "drag_the_words.css"
@@ -84,6 +108,16 @@ class DragWords(anywidget.AnyWidget, Widget):
 
 
 class SortTheParagraphs(anywidget.AnyWidget, Widget):
+    """
+    A widget class for the "sort the paragraphs" plugin. 
+
+    Attributes:
+    - data (dict): Contains data for the question (either locally or from the institution's server)
+    - unique_id (str): ID of the question (must be unique within the notebook)
+    - plugin_type (str): Identifier for the type of widget being created (see backends/institution/consts.py)
+    - texts (list[str]): List of shuffled text options to rearrange
+    """
+    # js and css files
     _module_dir = ROOT_DIR / "cassandratin13/sort_paragraphs_plugin"
     _esm = _module_dir / "stp.js"
     _widget_css = _module_dir / "stp.css"
@@ -95,18 +129,17 @@ class SortTheParagraphs(anywidget.AnyWidget, Widget):
         ]
     )
 
-    question = traitlets.Unicode(default_value="Sort the texts").tag(sync=True)
+    data = traitlets.Dict().tag(sync=True)
+    unique_id = traitlets.Unicode("sort_paragraphs_1").tag(sync=True)
+    plugin_type = traitlets.Unicode("sort_paragraphs").tag(sync=True)
     texts = traitlets.List(
         default_value=["Text 1", "Text 2", "Text 3", "Text 4"]).tag(sync=True)
-    unique_id = traitlets.Unicode("1").tag(sync=True)
-    plugin_type = traitlets.Unicode("sort_paragraphs").tag(sync=True)
-    data = traitlets.Dict().tag(sync=True)
+    
 
     def __init__(self, unique_id, local_data=None):
         anywidget.AnyWidget.__init__(self)
         Widget.__init__(self, unique_id, "sort_paragraphs", local_data)
 
-        self.question = self.data.get("question", self.question)
         original = self.data.get("texts", self.texts)
         self.texts = original[:]
 
@@ -152,6 +185,16 @@ class SortTheParagraphs(anywidget.AnyWidget, Widget):
 
 
 class MultipleChoice(anywidget.AnyWidget, Widget):
+    """
+    A widget class for the "sort the paragraphs" plugin. 
+
+    Attributes:
+    - data (dict): Contains data for the question (either locally or from the institution's server)
+    - unique_id (str): ID of the question (must be unique within the notebook)
+    - plugin_type (str): Identifier for the type of widget being created (see backends/institution/consts.py)
+    - currOption (int): Index of the currently selected option, or -1 if none or selected
+    """
+    # js and css files
     _module_dir = ROOT_DIR / "cassandratin13/mcq_plugin"
     _esm = _module_dir / "mcq.js"
     _widget_css = _module_dir / "mcq.css"
@@ -163,23 +206,14 @@ class MultipleChoice(anywidget.AnyWidget, Widget):
         ]
     )
 
-    question = traitlets.Unicode(
-        default_value="Choose an option"
-    ).tag(sync=True)
-    options = traitlets.List(
-        default_value=["Option 1", "Option 2", "Option 3", "Option 4"]
-    ).tag(sync=True)
-    currOption = traitlets.Int(-1).tag(sync=True)
-    unique_id = traitlets.Unicode("3").tag(sync=True)
-    plugin_type = traitlets.Unicode("multiple_choice").tag(sync=True)
     data = traitlets.Dict().tag(sync=True)
+    unique_id = traitlets.Unicode("multiple_choice_3").tag(sync=True)
+    plugin_type = traitlets.Unicode("multiple_choice").tag(sync=True)
+    currOption = traitlets.Int(-1).tag(sync=True)
 
     def __init__(self, unique_id, local_data=None):
         anywidget.AnyWidget.__init__(self)
         Widget.__init__(self, unique_id, "multiple_choice", local_data)
-
-        self.question = self.data.get("question", self.question)
-        self.options = self.data.get("options", self.options)
 
     def _handle_custom_msg(self, content, buffers):
         command = content.get("command", "")
@@ -217,6 +251,17 @@ class MultipleChoice(anywidget.AnyWidget, Widget):
 
 
 class StructureStrip(anywidget.AnyWidget, Widget):
+    """
+    A widget class for the "structure strip" plugin. 
+
+    Attributes:
+    - data (dict): Contains data for the question (either locally or from the institution's server)
+    - unique_id (str): ID of the question (must be unique within the notebook)
+    - plugin_type (str): Identifier for the type of widget being created (see backends/institution/consts.py)
+    - image_path (str): The path to the directory containing any images for display
+    - user_inputs (dict): The user's answers
+    """
+    # js and css files
     _module_dir = ROOT_DIR / "Barsamyan-D/str-strip-plugin-david"
     _esm = _module_dir / "str.js"
     _widget_css = _module_dir / "str.css"
@@ -227,15 +272,12 @@ class StructureStrip(anywidget.AnyWidget, Widget):
             _widget_css.read_text(encoding="utf-8"),
         ]
     )
-
-    title = traitlets.Unicode().tag(sync=True)
-    description = traitlets.Unicode().tag(sync=True)
-    sections = traitlets.List().tag(sync=True)
-    image_path = traitlets.Unicode().tag(sync=True)
-    user_inputs = traitlets.Dict().tag(sync=True)
+    
+    data = traitlets.Dict().tag(sync=True)
     unique_id = traitlets.Unicode("3").tag(sync=True)
     plugin_type = traitlets.Unicode("structure_strip").tag(sync=True)
-    data = traitlets.Dict().tag(sync=True)
+    image_path = traitlets.Unicode().tag(sync=True)
+    user_inputs = traitlets.Dict().tag(sync=True)
 
     def __init__(self, unique_id, local_data=None, image_path=None):
         anywidget.AnyWidget.__init__(self)
@@ -246,11 +288,6 @@ class StructureStrip(anywidget.AnyWidget, Widget):
         else:
             default_image_path = self._module_dir / "assets" / "london.jpg"
             self.image_path = self._file_to_data_url(default_image_path)
-
-        self.sections = self.data.get("sections", self.sections)
-        self.title = self.data.get("title", self.title)
-        self.description = self.data.get("description", self.description)
-        self.user_inputs = self.data.get("user_inputs", self.user_inputs)
 
     def _file_to_data_url(self, file_path):
         import base64
@@ -292,6 +329,14 @@ class StructureStrip(anywidget.AnyWidget, Widget):
 
 
 class FindTheWords(anywidget.AnyWidget, Widget):
+    """
+    A widget class for the "find the words" plugin. 
+
+    Attributes:
+    - data (dict): Contains data for the question (either locally or from the institution's server)
+    - unique_id (str): ID of the question (must be unique within the notebook)
+    - plugin_type (str): Identifier for the type of widget being created (see backends/institution/consts.py)
+    """
     _module_dir = ROOT_DIR / "lorena-b/find-the-words/src/find_the_words/static"
     _esm = _module_dir / "widget.js"
     _widget_css = _module_dir / "widget.css"
@@ -303,9 +348,9 @@ class FindTheWords(anywidget.AnyWidget, Widget):
         ]
     )
 
+    data = traitlets.Dict().tag(sync=True)
     unique_id = traitlets.Unicode("6").tag(sync=True)
     plugin_type = traitlets.Unicode("find_words").tag(sync=True)
-    data = traitlets.Dict().tag(sync=True)
     error_ = traitlets.Unicode().tag(sync=True)
 
     def __init__(self, unique_id, local_data=None):
@@ -316,6 +361,9 @@ class FindTheWords(anywidget.AnyWidget, Widget):
         self.validate_input()
 
     def validate_input(self):
+        """
+        Check that the grid size fits all the words.
+        """
         words = self.data.get("words", [])
         config = self.data.get("config", {})
         gridWidth = config.get("gridWidth", 10)
@@ -326,6 +374,8 @@ class FindTheWords(anywidget.AnyWidget, Widget):
             raise ValueError(
                 f"gridWidth and gridHeight must be at least {longest_word_length}")
 
+
+# Functions for creating the widgets from the instutition's backend server
 
 def create_stp(unique_id):
     return SortTheParagraphs(unique_id)
@@ -346,6 +396,8 @@ def create_drag(unique_id):
 def create_ftw(unique_id=6):
     return FindTheWords(unique_id)
 
+
+# Functions for locally creating the widgets with id "local"
 
 def create_local_stp(question, texts):
     local_data = {
@@ -403,7 +455,14 @@ def create_local_ftw(title, words, instructions, gridWidth, gridHeight, timed, c
     }
     return FindTheWords("local", local_data)
 
+
 def create_widget(widget):
+    """
+    Creates and returns a widget of the given type and with the given local data.
+
+    Parameters:
+    - widget (dict): Contains the widget type with key "widget" and data with key "data" (see frontend/data.json)
+    """
     widget_type = widget.get("widget", "")
     widget_data = widget.get("data", "")
     if not widget_data or not widget_type:
