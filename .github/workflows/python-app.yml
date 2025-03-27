@@ -23,14 +23,22 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: "3.10"
+    - name: Set up virtual environment
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+    - name: Install uv
+      run: |
+        pip install uv
     - name: Install dependencies
       run: |
-        pip install -e .
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        uv pip install -r pyproject.toml
+        if [ -f requirements.txt ]; then uv -r requirements.txt; fi
+      shell: bash
     - name: Install testing dependencies
       run: |
         cd tests
-        pip install -r requirements.txt
+        uv pip install -r requirements.txt
         cd ..
     - name: Test with pytest
       run: |
