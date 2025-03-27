@@ -41,9 +41,6 @@ jobs:
         cd tests
         uv pip install -r requirements.txt
         cd ..
-    - name: Install pytest
-      run: |
-        uv pip install pytest
     - name: Test with pytest
       run: |
         pytest
