@@ -1,21 +1,26 @@
 function render({ model, el }) {
+  const data = model.get("data");
+  const uniqueId = data["unique_id"] || "1";
+  const pluginType = data["plugin_type"] || "structure_strip";
+
   const styleSheet = document.createElement("style");
   document.head.appendChild(styleSheet);
   const container = createContainer();
   const userInputs = model.get("user_inputs") || {};
 
   // Create image section
-  const { imageContainer, title, description } = createImageSection(model);
+  const { imageContainer, title, description } = createImageSection(model, data);
   container.append(title, imageContainer, description);
 
   // Create input sections
-  model.get("sections").forEach((section) => {
+  const sections = data["sections"]
+  sections.forEach((section) => {
     const sectionDiv = createSection(section, userInputs, model);
     container.appendChild(sectionDiv);
   });
 
   // Create buttons
-  const buttonContainer = createButtonContainer(model, userInputs, container);
+  const buttonContainer = createButtonContainer(model, userInputs, container, uniqueId, pluginType, sections);
   container.appendChild(buttonContainer);
   el.appendChild(container);
 }
@@ -32,15 +37,16 @@ function createContainer() {
 
 /**
  * Creates the image section components including container, title, image, and description
- * @param {Object} model - The data model containing title, image path, and description
+ * @param {DOMWidgetModel} model The widget model
+ * @param {Object} data - The widget data containing title, image path, and description
  * @returns {Object} Object containing imageContainer, title, and description elements
  */
-function createImageSection(model) {
+function createImageSection(model, data) {
   const imageContainer = document.createElement("div");
   imageContainer.className = "image-container";
 
   const title = document.createElement("h2");
-  title.textContent = model.get("title");
+  title.textContent = data["title"];
   title.className = "structure-title title";
 
   const image = document.createElement("img");
@@ -52,7 +58,7 @@ function createImageSection(model) {
   imageContainer.append(image, toggleBtn);
 
   const description = document.createElement("p");
-  description.textContent = model.get("description");
+  description.textContent = data["description"];
   description.className = "structure-description instruction";
 
   return { imageContainer, title, description };
@@ -232,13 +238,16 @@ function createInputHandler(section, userInputs, model) {
  * @param {Object} model - The main data model
  * @param {Object} userInputs - User input storage object
  * @param {HTMLElement} container - Main container element for feedback lookup
+ * @param {String} uniqueId The ID of the question
+ * @param {String} pluginType The type of widget
+ * @param {DOMWidgetModel} model The widget model
  * @returns {HTMLDivElement} Button container with styled action buttons
  */
-function createButtonContainer(model, userInputs, container) {
+function createButtonContainer(model, userInputs, container, uniqueId, pluginType, sections) {
   const buttonContainer = document.createElement("div");
   buttonContainer.className = "button-container";
 
-  const submitBtn = createSubmitButton(model, userInputs, container);
+  const submitBtn = createSubmitButton(model, userInputs, container, sections, uniqueId, pluginType);
   const copyBtn = createCopyButton(model, userInputs);
 
   buttonContainer.append(submitBtn, copyBtn);
@@ -250,16 +259,19 @@ function createButtonContainer(model, userInputs, container) {
  * @param {Object} model - The main data model
  * @param {Object} userInputs - User input storage object
  * @param {HTMLElement} container - Main container element for feedback lookup
+ * @param {String} uniqueId The ID of the question
+ * @param {String} pluginType The type of widget
+ * @param {DOMWidgetModel} model The widget model
  * @returns {HTMLButtonElement} Configured submit button with click handler
  */
-function createSubmitButton(model, userInputs, container) {
+function createSubmitButton(model, userInputs, container, sections, uniqueId, pluginType) {
   const submitBtn = document.createElement("button");
   submitBtn.className = "check-button";
   submitBtn.textContent = "Check";
     
   submitBtn.addEventListener("click", () => {
     let userAnswer = {};
-    model.get("sections").forEach((section, index) => {
+    sections.forEach((section, index) => {
       const text = userInputs[section.id] || "";
       userAnswer[section.id] = text;
       const feedback = container.querySelectorAll(".feedback")[index];
@@ -280,8 +292,8 @@ function createSubmitButton(model, userInputs, container) {
     });
     model.send({
       command: "verify",
-      plugin_type: model.get("plugin_type") || "structure_strip",
-      unique_id: model.get("unique_id") || "1",
+      plugin_type: pluginType || "structure_strip",
+      unique_id: uniqueId || "1",
       answer: userAnswer
     })
   });
