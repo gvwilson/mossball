@@ -24,7 +24,6 @@ def test_find_the_words_untimed(get_chrome_driver, start_marimo):
     assert title == "find the words untimed test"
 
     # wait for plugin to load
-    # TODO: find a way to not use timeouts
     output_area = WebDriverWait(chrome_driver, 10).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, ".output-area"))
     )
@@ -122,7 +121,6 @@ def test_find_the_words_timed(get_chrome_driver, start_marimo):
     assert title == "find the words timed test"
 
     # wait for plugin to load
-    # TODO: find a way to not use timeouts
     output_area = WebDriverWait(chrome_driver, 10).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, ".output-area"))
     )
