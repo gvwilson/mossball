@@ -155,7 +155,7 @@ function createAnswerBox(index) {
 
 function createQuestionContainer(question_text) {
   let question = document.createElement("div");
-  question.className = "question";
+  question.className = "question instruction";
   question.innerHTML = "";
   let lastIndex = 0;
   let matchIndex = 0;

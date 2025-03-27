@@ -37,8 +37,8 @@
       width: auto;
       height: 100%;
       padding: 5px 10px 5px 10px;
-      border: 1px solid #4299e1;
-      color: #4299e1;
+      border: 1px solid var(--tooltip-colour);
+      color: var(--tooltip-colour);
     }
 
     .revealed {
@@ -83,18 +83,18 @@
       display: inline-block;
       padding: 5px 10px 5px 10px;
       border-radius: 18px;
-      background-color: #4299e1;
+      background-color: var(--tooltip-colour);
       color: white;
       cursor: pointer;
     }
 
     .word-box:hover {
-      background-color: #3182ce;
+      background-color: var(--main-button-colour);
       color: white;
     }
 
     .word-box.selected {
-      background-color: #939393;
+      background-color: var(--border-color);
       color: white;
     }
   }
