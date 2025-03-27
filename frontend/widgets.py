@@ -438,7 +438,7 @@ def create_local_drag(instruction, question, choices):
 
     return DragWords("local", local_data)
 
-def create_local_ftw(title, words, instructions, gridWidth, gridHeight, timed, countdown, barColor):
+def create_local_ftw(title, words, instructions, gridWidth, gridHeight, timed, countdown, barColor, seed = None):
     local_data = {
         "title": title,
         "words": words,
@@ -453,6 +453,8 @@ def create_local_ftw(title, words, instructions, gridWidth, gridHeight, timed, c
             "barColor": barColor,
         },
     }
+    if seed:
+        local_data["config"]["seed"] = seed
     return FindTheWords("local", local_data)
 
 
