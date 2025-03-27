@@ -19,21 +19,22 @@
  *   --options-colour:               Color for option elements.
  *   --background-color:             General background color.
  *   --border-color:                 Border color for widgets.
+ *   --text-colour:                  General text color.
  */
 
  
-/*
+
 .marimo {
-    --tooltip-colour: #0077cc;
-    --hover-light-colour: #c1dafd;
-    --main-button-colour: #2858b3;
-    --main-button-hover-colour: #123767;
-    --background-correct-colour: #9ae9b3;
-    --main-correct-colour: #0a6000;
-    --background-incorrect-colour: #ff9494;
-    --main-incorrect-colour: #8f0000;
-    --options-colour: #e2e2e2;
-    --background-color: #f8f9fa;
-    --border-color: #e0e0e0;
+    --tooltip-colour: #5D4037;
+    --hover-light-colour: #D7CCC8;
+    --main-button-colour: #8D6E63;
+    --main-button-hover-colour: #6D4C41;
+    --background-correct-colour: #F0E5D8;
+    --main-correct-colour: #5D4037;
+    --background-incorrect-colour: #FFCCBC;
+    --main-incorrect-colour: #A15C43;
+    --options-colour: #C8B8A6;
+    --background-color: #F5F5DC;
+    --border-color: #D3CAB9;
+    --text-colour: #3E2723;
 }
-*/
