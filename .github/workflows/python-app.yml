@@ -33,13 +33,16 @@ jobs:
     - name: Install dependencies
       run: |
         uv pip install -r pyproject.toml
-        if [ -f requirements.txt ]; then uv -r requirements.txt; fi
+        if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
       shell: bash
     - name: Install testing dependencies
       run: |
         cd tests
         uv pip install -r requirements.txt
         cd ..
+    - name: Install pytest
+      run: |
+        uv pip install pytest
     - name: Test with pytest
       run: |
         pytest
