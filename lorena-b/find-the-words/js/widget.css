@@ -20,7 +20,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #f0f0f0;
+  background-color: var(--background-color);
   z-index: 100;
   border-radius: 8px;
 }
@@ -93,6 +93,7 @@
   font-size: 15px;
   display: flex;
   align-items: center;
+  color: var(--text-colour);
 }
 
 .word[data-state="found"] {
@@ -124,4 +125,5 @@
   font-size: 16px;
   align-items: center;
   gap: 5px;
+  color: var(--text-colour);
 }

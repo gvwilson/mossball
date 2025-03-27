@@ -44,7 +44,7 @@ function render({ model, el }) {
 
     let wordTitle = createElement("h4", {
         innerText: CONSTANTS.SEARCH_COPY,
-        id: "word-title",
+        className: "title",
     });
 
     wordBank.appendChild(wordTitle);
@@ -174,7 +174,7 @@ function render({ model, el }) {
     };
 
     let scoreCounter = createElement("div", {
-        className: "score-counter",
+        className: "instruction",
         innerHTML: setScoreCounter(0),
     });
 

@@ -52,6 +52,10 @@
     cursor: pointer;
 }
 
+.mc label{
+    color: var(--text-colour);
+}
+
 .mc input[type="radio"] {
     margin-top: 1px;
     margin-right: 1rem;
