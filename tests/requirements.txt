@@ -1,3 +1,9 @@
 selenium
 webdriver-manager
 pytest
+pytest-order
+responses
+flask
+requests
+flask-cors
+pymongo
