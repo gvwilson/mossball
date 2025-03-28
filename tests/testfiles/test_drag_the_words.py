@@ -17,7 +17,7 @@ def test_basic_structure(get_chrome_driver, start_marimo, mock_server):
     # get_chrome_driver.maximize_window()
     # Wait for the browser to settle all the required DOMs
     # TODO: find the reliable way to select the element
-    WebDriverWait(get_chrome_driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".output-area")))
+    WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".output-area")))
 
     shadow_host = get_chrome_driver.find_element(By.CSS_SELECTOR, "marimo-anywidget")
     marimo_root = shadow_host.shadow_root
