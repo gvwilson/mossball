@@ -132,8 +132,9 @@ def test_find_the_words_timed(get_chrome_driver, start_marimo):
     marimo_root = shadow_host.shadow_root
 
     # Get widget container
-    container = marimo_root.find_element(
-        By.CSS_SELECTOR, ".container")
+    container = WebDriverWait(marimo_root, 10).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, ".container"))
+    )
     assert container.is_displayed()
 
     start_button = container.find_element(
