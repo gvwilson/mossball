@@ -41,6 +41,13 @@ jobs:
         cd tests
         uv pip install -r requirements.txt
         cd ..
+    - name: Build static assets
+      run: |
+        cd lorena-b/find-the-words
+        npm install
+        npm run build
+        uv pip install -e ".[dev]"
+        cd ../..
     - name: Test with pytest
       run: |
         pytest
