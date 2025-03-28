@@ -79,7 +79,8 @@ def _():
 
 
 @app.cell(hide_code=True)
-def _(WordSearch):
+def _():
+    from widgets import create_ftw
     data = {
         "title": "Select the words in the grid below:",
         "words": ["Apple", "Orange", "Banana", "Pineapple"],
@@ -95,7 +96,9 @@ def _(WordSearch):
         },
     }
 
-    WordSearch(data=data)
+    CURRENT_DIR_WS = Path(__file__).resolve().parent  # 'frontend' folder
+    CUSTOM_CSS_PATH_WS = CURRENT_DIR_WS / "custom_theme.css"
+    create_ftw("6", custom_css_path=str(CUSTOM_CSS_PATH_WS))
     return (data,)
 
 
@@ -121,7 +124,10 @@ def _():
 
 @app.cell(hide_code=True)
 def _(FileUploader):
-    uploader = FileUploader(multiple=True, to_disk=True, cloud_only=True)
+    CURRENT_DIR_5 = Path(__file__).resolve().parent
+    CUSTOM_CSS_PATH_5 = CURRENT_DIR_5 / "custom_theme.css"
+
+    uploader = FileUploader(multiple=True, to_disk=True, cloud_only=True, custom_css_path=str(CUSTOM_CSS_PATH_5))
     return (uploader,)
 
 
