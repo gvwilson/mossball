@@ -4,3 +4,5 @@ pytest
 pytest-order
 responses
 flask
+requests
+unittest
