@@ -12,8 +12,9 @@ import time
 def test_basic_structure(get_chrome_driver, start_marimo, mock_server):
     url = start_marimo
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
+    print("check url: ", url)
     get_chrome_driver.get(url)
-    get_chrome_driver.maximize_window()
+    # get_chrome_driver.maximize_window()
     # Wait for the browser to settle all the required DOMs
     # TODO: find the reliable way to select the element
     WebDriverWait(get_chrome_driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".output-area")))

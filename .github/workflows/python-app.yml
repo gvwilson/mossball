@@ -35,6 +35,9 @@ jobs:
       run: |
         uv pip install -r pyproject.toml
         if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
+        cd evence_wang/FileUploaderModule
+        uv pip install -r requirements.txt
+        cd ../..
       shell: bash
     - name: Install testing dependencies
       run: |
