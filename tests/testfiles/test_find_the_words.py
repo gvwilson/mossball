@@ -24,7 +24,7 @@ def test_find_the_words_untimed(get_chrome_driver, start_marimo):
     assert title == "find the words untimed test"
 
     # wait for plugin to load
-    output_area = WebDriverWait(chrome_driver, 50).until(
+    output_area = WebDriverWait(chrome_driver, 10).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, ".output-area"))
     )
     output_area.is_displayed()
@@ -35,7 +35,7 @@ def test_find_the_words_untimed(get_chrome_driver, start_marimo):
     marimo_root = shadow_host.shadow_root
 
     # Get widget container
-    container = WebDriverWait(marimo_root, 30).until(
+    container = WebDriverWait(marimo_root, 10).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, ".container"))
     )
     assert container.is_displayed()
@@ -121,7 +121,7 @@ def test_find_the_words_timed(get_chrome_driver, start_marimo):
     assert title == "find the words timed test"
 
     # wait for plugin to load
-    output_area = WebDriverWait(chrome_driver, 30).until(
+    output_area = WebDriverWait(chrome_driver, 10).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, ".output-area"))
     )
     output_area.is_displayed()
