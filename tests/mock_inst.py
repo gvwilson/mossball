@@ -2,6 +2,9 @@ import requests
 from backends.institution.dummy_data import sort_paragraphs_data, mc_data, str_data, drag_the_words_data, find_the_words_data
 
 class MockResponse:
+    """
+    A class representing a mock response and status code from requests to an institution backend
+    """
     def __init__(self, status_code, json_data):
         self.status_code = status_code
         self._json_data = json_data
@@ -14,6 +17,9 @@ class MockResponse:
             raise requests.exceptions.RequestException(f"Error {self.status_code}: {self._json_data.get('error', 'Unknown error')}")
         
 def mock_query(url, params, timeout):
+    """
+    Returns a mock response to a GET request for querying the plugin data
+    """
     if params["plugin_type"] == "sort_paragraphs":
         return MockResponse(200, sort_paragraphs_data[params["unique_id"]])
     elif params["plugin_type"] == "multiple_choice":
@@ -28,6 +34,9 @@ def mock_query(url, params, timeout):
         return MockResponse(500, {"error": "Unsupported plugin type"})
 
 def get_id(plugin_type):
+    """
+    Returns the unique_id of the first question of the given plugin_type within backends/institution/dummy_data.py
+    """
     if plugin_type == "sort_paragraphs":
         return list(sort_paragraphs_data.keys())[0]
     elif plugin_type == "multiple_choice":
@@ -41,6 +50,9 @@ def get_id(plugin_type):
     
     
 def get_data(plugin_type):
+    """
+    Returns the data of the first question of the given plugin_type within backends/institution/dummy_data.py
+    """
     if plugin_type == "sort_paragraphs":
         return list(sort_paragraphs_data.values())[0]
     elif plugin_type == "multiple_choice":
