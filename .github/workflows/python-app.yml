@@ -38,6 +38,9 @@ jobs:
         cd evence_wang/FileUploaderModule
         uv pip install -r requirements.txt
         cd ../..
+        cd backends
+        uv pip install -r requirements.txt
+        cd ..
       shell: bash
     - name: Install testing dependencies
       run: |
