@@ -5,6 +5,5 @@ pytest-order
 responses
 flask
 requests
-unittest
 flask-cors
 pymongo
