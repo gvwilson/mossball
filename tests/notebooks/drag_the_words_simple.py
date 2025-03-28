@@ -13,7 +13,7 @@ def _(__file__):
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../frontend")))
 
-    from frontend.widgets import create_drag
+    from widgets import create_drag
     from sessions.login import LoginWidget, StudentLoginWidget
 
     login_widget = LoginWidget()
@@ -35,6 +35,22 @@ def _(__file__):
         os,
         sys,
     )
+
+
+@app.cell
+def _():
+    # import json
+    # from widgets import create_widget
+
+    # with open('data.json', 'r') as file:
+    #     questions = json.load(file)
+    return
+
+
+@app.cell
+def _():
+    # create_widget(questions["4"])
+    return
 
 
 if __name__ == "__main__":
