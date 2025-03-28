@@ -11,7 +11,7 @@ import time
 
 app = Flask(__name__)
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def get_chrome_driver():
     service = Service(ChromeDriverManager().install())
     options = webdriver.ChromeOptions()
@@ -26,7 +26,7 @@ def get_chrome_driver():
     chrome_driver.quit()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def start_marimo(request):
     '''
     Start Marimo and capture the running localhost URL
