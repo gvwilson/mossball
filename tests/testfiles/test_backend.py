@@ -162,14 +162,14 @@ def test_query_plugin(client, institution_id, plugin_type, unique_id, expected_s
         None,
         401,
         {"error": "You must be a student of this institution to use this endpoint"}
-    ), # missing institution_id
+    ), # missing institution_id (not logged in)
     (
         {"institution_id": "unknown_inst", "student_id": "1"},
         {"plugin_type": "sort_paragraphs", "unique_id": "1"},
         None,
         404,
         {"error": "Institution not registered"}
-    ) # unknown institution
+    ) # institution_id doesn't exist
 ])
 def test_verify_plugin(client, session_data, request_data, mock_response, expected_status, expected_content):
     with client.session_transaction() as session:
@@ -183,6 +183,54 @@ def test_verify_plugin(client, session_data, request_data, mock_response, expect
             mock_post.side_effect = mock_response
 
         response = client.post(f"/plugin/verify/1", json=request_data)
+
+        assert response.status_code == expected_status
+        assert response.get_json() == expected_content
+
+
+@pytest.mark.order(6)
+@pytest.mark.parametrize("session_data,request_data,mock_response,expected_status,expected_content", [
+    (
+        {"institution_id": "dummy_inst"},
+        {"plugin_type": "sort_paragraphs", "extra_data": "some_value"},
+        {"success": True, "message": "Saved successfully!"},
+        200,
+        {"success": True, "message": "Saved successfully!"}
+    ), # successful save
+    (
+        {"institution_id": "dummy_inst"},
+        {"extra_data": "some_value"},
+        None,
+        400,
+        {"error": "Missing plugin_type in JSON data"}
+    ), # missing plugin_type
+    (
+        {},
+        {"plugin_type": "sort_paragraphs"},
+        None,
+        401,
+        {"error": "You must log in to use this endpoint"}
+    ), # missing institution_id (not logged in)
+    (
+        {"institution_id": "unknown_inst"},
+        {"plugin_type": "sort_paragraphs"},
+        None,
+        404,
+        {"error": "Institution not registered"}
+    ), # institution_id doesn't exist
+])
+def test_save_plugin(client, session_data, request_data, mock_response, expected_status, expected_content):
+    with client.session_transaction() as session:
+        for key, value in session_data.items():
+            session[key] = value
+
+    with mock.patch("backends.plugin.plugin_backend.requests.post") as mock_post:
+        if isinstance(mock_response, dict):
+            mock_post.return_value = MockResponse(200, mock_response)
+        elif isinstance(mock_response, Exception):
+            mock_post.side_effect = mock_response
+
+        response = client.post("/plugin/save/1", json=request_data)
 
         assert response.status_code == expected_status
         assert response.get_json() == expected_content
