@@ -55,7 +55,8 @@ jobs:
         uv pip install -r requirements.txt
         cd ..
     - name: Wait for MongoDB to start
-    - run: sleep 30
+      run: |
+        sleep 30
     - name: Test with pytest
       run: |
         pytest
