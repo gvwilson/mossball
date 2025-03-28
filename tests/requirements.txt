@@ -6,3 +6,5 @@ responses
 flask
 requests
 unittest
+flask-cors
+pymongo
