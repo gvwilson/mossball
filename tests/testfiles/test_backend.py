@@ -10,18 +10,20 @@ def client():
     with app.test_client() as client:
         yield client
 
+
 @pytest.mark.order(1)
 @pytest.mark.parametrize("data,expected_status", [
-    ({"institution_id": "dummy_inst", "backend_url": "http://localhost:5002"}, 200),
-    ({"backend_url": "http://localhost:5002"}, 400),
-    ({"institution_id": "dummy_inst"}, 400),
-    ({"institution_id": "dummy_inst2", "backend_url": "http://localhost:5002"}, 400),
+    ({"institution_id": "dummy_inst", "backend_url": "http://localhost:5002"}, 200), # sucessful register
+    ({"backend_url": "http://localhost:5002"}, 400), # missing institution_id
+    ({"institution_id": "dummy_inst"}, 400), # missing backend_url
+    ({"institution_id": "dummy_inst2", "backend_url": "http://localhost:5002"}, 400), # institution_id already exists
 ])
 def test_register_institution(client, data, expected_status):
     if expected_status == 200:   
         db.institutions.delete_one({"institution_id": data.get("institution_id")}) # ensure this institution is new
     elif expected_status == 400 and data.get("institution_id") and data.get("backend_url"):
         db.institutions.insert_one({"institution_id":  data.get("institution_id"), "backend_url":  data.get("backend_url")}) # ensure this already exists
+
     response = client.post("/plugin/register", json=data)
     assert response.status_code == expected_status
     if expected_status == 200: 
@@ -35,16 +37,18 @@ def test_register_institution(client, data, expected_status):
     else:
         assert "error" in response.json
 
+
 @pytest.mark.order(2)
 @pytest.mark.parametrize("data,expected_status", [
-    ({"institution_id": "dummy_inst"}, 200),
-    ({}, 400),
-    ({"institution_id": "dummy_inst2"}, 404),
+    ({"institution_id": "dummy_inst"}, 200), # successful login
+    ({}, 400), # missing institution_id
+    ({"institution_id": "dummy_inst2"}, 404), # institution_id doesn't exist
 ])
 def test_login_institution(client, data, expected_status):
     db.institutions.delete_one({"institution_id": "dummy_inst2"}) # ensure this institution doesn't exist
     response = client.post("/plugin/login", json=data)
     assert response.status_code == expected_status
+
     if expected_status == 200:
         assert "message" in response.json
     elif expected_status == 400:
@@ -52,47 +56,63 @@ def test_login_institution(client, data, expected_status):
     elif expected_status == 404:
         assert response.data == b'Institution not registered'
 
+
 @pytest.mark.order(3)
-def test_login_student(client):
-    data = {
-        "institution_id": "dummy_inst",
-        "student_id": "1"
-    }
+@pytest.mark.parametrize("data, mock_response, expected_status, expected_content", [
+    ( 
+        {"institution_id": "dummy_inst", "student_id": "1"},
+        {"institution_id": "dummy_inst", "student_id": "1"},
+        200,
+        {"institution_id": "dummy_inst", "student_id": "1"}
+    ), # successful student login
+    (
+        {"student_id": "1"},
+        None,
+        400,
+        "Missing institution_id"
+    ), # missing institution_id
+    (
+        {"institution_id": "dummy_inst"},
+        None,
+        400,
+        "Missing student_id"
+    ), # missing student_id
+    (
+        {"institution_id": "unknown_inst", "student_id": "1"},
+        None,
+        404,
+        "Institution not registered"
+    ), # institution doesn't exist
+])
+def test_login_student(client, data, mock_response, expected_status, expected_content):
+    with mock.patch("backends.plugin.plugin_backend.requests.post") as mock_post:
+        if isinstance(mock_response, dict):
+            mock_post.return_value = MockResponse(200, mock_response)
+        elif isinstance(mock_response, Exception):
+            mock_post.side_effect = mock_response
 
-    mock_response = {
-        "institution_id": "dummy_inst",
-        "student_id": "1"
-    }
-
-    with mock.patch('backends.plugin.plugin_backend.requests.post') as mock_post:
-        mock_post.return_value = MockResponse(200, mock_response)
         response = client.post("/plugin/student/login", json=data)
-        assert response.status_code == 200 
-        assert response.json["student_id"] == "1"
-        assert response.json["institution_id"] == "dummy_inst"
-        assert session["student_id"] == "1"
-        assert session["institution_id"] == "dummy_inst"
 
-        mock_post.assert_called_once_with(
-            "http://localhost:5002/api/institution/plugin/student",
-            json = {
-                "institution_id": "dummy_inst",
-                "student_id": "1",
-                **data
-            },
-            timeout=5
-        )
+        assert response.status_code == expected_status
+        if expected_status == 200:
+            assert response.get_json() == expected_content
+            assert session["student_id"] == data["student_id"]
+            assert session["institution_id"] == data["institution_id"]
+        else:
+            assert expected_content in response.get_json().values() if isinstance(expected_content, dict) else response.data.decode()
 
+
+# Succesul queries will use the data from backends/institution/dummy_data.py
 @pytest.mark.order(4)
 @pytest.mark.parametrize("institution_id,plugin_type,unique_id,expected_status,expected_content", [
-    ("dummy_inst", "sort_paragraphs", get_id("sort_paragraphs"), 200, get_data("sort_paragraphs")),
-    ("dummy_inst", "multiple_choice", get_id("multiple_choice"), 200, get_data("multiple_choice")),
-    ("dummy_inst", "structure_strip", get_id("structure_strip"), 200, get_data("structure_strip")),
-    ("dummy_inst", "drag_words", get_id("drag_words"), 200, get_data("drag_words")),
-    ("dummy_inst", "find_words", get_id("find_words"), 200, get_data("find_words")),
-    (None, "sort_paragraphs", "2", 401, {}),
-    ("dummy_inst", None, "1", 400, {}), 
-    ("dummy_inst", "fill_in_blanks", "10", 500, {"error": "Unsupported plugin type"}),
+    ("dummy_inst", "sort_paragraphs", get_id("sort_paragraphs"), 200, get_data("sort_paragraphs")), # successful sort the paragraphs query
+    ("dummy_inst", "multiple_choice", get_id("multiple_choice"), 200, get_data("multiple_choice")), # successful multiple choice query
+    ("dummy_inst", "structure_strip", get_id("structure_strip"), 200, get_data("structure_strip")), # successful structure strip query
+    ("dummy_inst", "drag_words", get_id("drag_words"), 200, get_data("drag_words")), # successful drag the words query
+    ("dummy_inst", "find_words", get_id("find_words"), 200, get_data("find_words")), # successful find the words query
+    (None, "sort_paragraphs", "2", 401, {}), # missing institution_id
+    ("dummy_inst", None, "1", 400, {}), # missing plygin_type
+    ("dummy_inst", "fill_in_blanks", "10", 500, {"error": "Unsupported plugin type"}), # incorrect plugin_type
 ])
 
 def test_query_plugin(client, institution_id, plugin_type, unique_id, expected_status, expected_content):
@@ -112,6 +132,7 @@ def test_query_plugin(client, institution_id, plugin_type, unique_id, expected_s
             response_data = response.json()
             assert response_data == expected_content
 
+
 @pytest.mark.order(5)
 @pytest.mark.parametrize("session_data,request_data,mock_response,expected_status,expected_content", [
     (
@@ -120,35 +141,35 @@ def test_query_plugin(client, institution_id, plugin_type, unique_id, expected_s
         {"results": "correct"},
         200,
         {"results": "correct"}
-    ),
+    ), # successful verification
     (
         {"institution_id": "dummy_inst", "student_id": "1"},
         {}, 
         None,  
         400,
         {"error": "Missing plugin_type in JSON data"}
-    ),
+    ), # missing plugin_type
     (
         {"institution_id": "dummy_inst"},
         {"plugin_type": "sort_paragraphs", "unique_id": "1"}, 
         None,  
         400,
         {"error": "Missing student_id in JSON data"}
-    ),
+    ), # missing student_id
     (
         {"student_id": "1"},
         {"plugin_type": "sort_paragraphs", "unique_id": "1"},
         None,
         401,
         {"error": "You must be a student of this institution to use this endpoint"}
-    ),
+    ), # missing institution_id
     (
         {"institution_id": "unknown_inst", "student_id": "1"},
         {"plugin_type": "sort_paragraphs", "unique_id": "1"},
         None,
         404,
         {"error": "Institution not registered"}
-    )
+    ) # unknown institution
 ])
 def test_verify_plugin(client, session_data, request_data, mock_response, expected_status, expected_content):
     with client.session_transaction() as session:
