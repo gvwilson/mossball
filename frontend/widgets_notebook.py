@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.11.17"
+__generated_with = "0.11.31"
 app = marimo.App(width="full")
 
 
@@ -16,7 +16,6 @@ def _(__file__):
     sys.path.insert(0, str(project_root))  # Add project root to sys.path
 
     # Now import the plugins
-    from find_the_words import WordSearch
     from cassandratin13.mcq_plugin.MCQPlugin import MultipleChoice
     from cassandratin13.sort_paragraphs_plugin.SortTheParagraphs import SortTheParagraphs
     DragWordsWidget = getattr(importlib.import_module(
@@ -31,7 +30,6 @@ def _(__file__):
         Path,
         SortTheParagraphs,
         StructureStripWidget,
-        WordSearch,
         importlib,
         mo,
         project_root,
@@ -116,6 +114,7 @@ def _(uploader):
 def _(uploader):
     uploader.contents(2, True)
     return
+
 
 @app.cell
 def _():

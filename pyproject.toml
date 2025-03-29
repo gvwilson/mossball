@@ -38,6 +38,11 @@ dependencies = [
     "boto3",
     "python-dotenv",
     "requests",
+    "flask",
+    "flask-cors",
+    "pymongo",
+    "matplotlib",
+    "numpy"
 ]
 
 [project.optional-dependencies]
