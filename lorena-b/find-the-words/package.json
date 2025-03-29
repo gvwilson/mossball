@@ -1,7 +1,8 @@
 {
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "esbuild js/widget.js --minify --format=esm --bundle --outdir=src/find_the_words/static"
+		"build": "esbuild js/widget.js --minify --format=esm --bundle --outdir=src/find_the_words/static",
+		"dev-build": "npm install && npm run build"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.19.0",

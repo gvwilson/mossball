@@ -3,11 +3,20 @@ import marimo
 __generated_with = "0.11.8"
 app = marimo.App(width="medium")
 
+@app.cell(hide_code=True)
+def _(__file__):
+    import sys
+    import os
+
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../frontend")))
+
+    from widgets import create_local_ftw
+    return create_local_ftw, os, sys
+
 
 @app.cell
-def _():
-    from find_the_words import WordSearch
-
+def _(create_local_ftw):
     data = {
         "title": "Select the words in the grid below:",
         "words": ["Apple", "Orange", "Banana", "Pineapple"],
@@ -24,8 +33,18 @@ def _():
         },
     }
 
-    WordSearch(data=data)
-    return WordSearch, data
+    create_local_ftw(
+        data["title"],
+        data["words"],
+        data["instructions"],
+        data["config"]["gridWidth"],
+        data["config"]["gridHeight"],
+        data["config"]["gameMode"]["timed"],
+        data["config"]["gameMode"]["countdown"],
+        data["config"]["barColor"],
+        data["config"]["seed"],
+    )
+    return (data,)
 
 
 if __name__ == "__main__":
