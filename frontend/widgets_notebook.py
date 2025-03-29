@@ -97,7 +97,7 @@ def _():
     }
 
     CURRENT_DIR_WS = Path(__file__).resolve().parent  # 'frontend' folder
-    CUSTOM_CSS_PATH_WS = CURRENT_DIR_WS / "custom_theme.css"
+    CUSTOM_CSS_PATH_WS = CURRENT_DIR_WS / "custom_theme_orange_yellow.css"
     create_ftw("6", custom_css_path=str(CUSTOM_CSS_PATH_WS))
     return (data,)
 
@@ -106,7 +106,7 @@ def _():
 def _():
     from widgets import create_mc
     CURRENT_DIR_1 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
-    CUSTOM_CSS_PATH_1 = CURRENT_DIR_1 / "custom_theme.css"
+    CUSTOM_CSS_PATH_1 = CURRENT_DIR_1 / "custom_theme_orange_yellow.css"
 
     create_mc("3", custom_css_path=str(CUSTOM_CSS_PATH_1))
     return (create_mc,)
@@ -116,7 +116,7 @@ def _():
 def _():
     from widgets import create_str
     CURRENT_DIR_2 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
-    CUSTOM_CSS_PATH_2 = CURRENT_DIR_2 / "custom_theme.css"
+    CUSTOM_CSS_PATH_2 = CURRENT_DIR_2 / "custom_theme_orange_yellow.css"
 
     create_str("4", custom_css_path=str(CUSTOM_CSS_PATH_2))
     return (create_str,)
@@ -125,7 +125,7 @@ def _():
 @app.cell(hide_code=True)
 def _(FileUploader):
     CURRENT_DIR_5 = Path(__file__).resolve().parent
-    CUSTOM_CSS_PATH_5 = CURRENT_DIR_5 / "custom_theme.css"
+    CUSTOM_CSS_PATH_5 = CURRENT_DIR_5 / "custom_theme_orange_yellow.css"
 
     uploader = FileUploader(multiple=True, to_disk=True, cloud_only=True, custom_css_path=str(CUSTOM_CSS_PATH_5))
     return (uploader,)
@@ -158,7 +158,7 @@ def _(DragWordsWidget):
 def _():
     from widgets import create_drag
     CURRENT_DIR_3 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
-    CUSTOM_CSS_PATH_3 = CURRENT_DIR_3 / "custom_theme.css"
+    CUSTOM_CSS_PATH_3 = CURRENT_DIR_3 / "custom_theme_orange_yellow.css"
 
     create_drag("5", custom_css_path=str(CUSTOM_CSS_PATH_3))
     return (create_drag,)
@@ -168,7 +168,7 @@ def _():
 def _():
     from widgets import create_stp
     CURRENT_DIR_4 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
-    CUSTOM_CSS_PATH_4 = CURRENT_DIR_4 / "custom_theme.css"
+    CUSTOM_CSS_PATH_4 = CURRENT_DIR_4 / "custom_theme_orange_yellow.css"
 
     create_stp("1", custom_css_path=str(CUSTOM_CSS_PATH_4))
     return (create_stp,)
