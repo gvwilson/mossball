@@ -173,43 +173,37 @@ function render({ model, el }) {
     const uniqueId = data["unique_id"] || "3";
     const pluginType = data["plugin_type"] || "multiple_choice";
 
-    // Create question, form, and buttons
+    // Create question element
     let question = createElement("p", {
         classNames: ["question", "title"],
         innerHTML: data["question"],
     });
 
     // Create a flex container to hold the question and tooltip.
-    const questionContainer = document.createElement("div");
+    let questionContainer = document.createElement("div");
     questionContainer.style.display = "flex";
     questionContainer.style.justifyContent = "space-between";
     questionContainer.style.alignItems = "flex-start";
-    questionContainer.appendChild(questionText);
+    // Append the question element (renamed correctly)
+    questionContainer.appendChild(question);
 
     // Create the info tooltip and add it to the question container.
-    const mcInfoTooltip = createMCInfoTooltip();
+    let mcInfoTooltip = createMCInfoTooltip();
     questionContainer.appendChild(mcInfoTooltip);
 
     // Create the form for options.
     let options = data["options"];
     let mc = createElement("form", { action: "javascript:void(0);" });
-    options.forEach((option, index) => {
-        let container = createOption(option, index, model);
-        mc.appendChild(container);
-    });
-
     let submitButton = createElement("button", {
         classNames: "check-button",
         innerHTML: "Check",
         type: "submit",
     });
-    mc.appendChild(submitButton);
 
     let result = createElement("div", {
         className: "result",
         style: "display: none;",
     });
-
     let restart_button = createElement("button", {
         classNames: "try-button",
         innerHTML: "Try again",
@@ -221,9 +215,13 @@ function render({ model, el }) {
         restart_button.disabled = true;
     });
 
-    el.classList.add("mc");
-    el.append(...[questionContainer, mc, result, restart_button]);
+    // Create radio button, label, and container for each option
+    options.forEach((option, index) => {
+        let container = createOption(option, index, model);
+        mc.appendChild(container);
+    });
 
+    mc.appendChild(submitButton);
     mc.addEventListener("submit", (event) => {
         event.preventDefault();
         if (!submitButton.disabled) {
@@ -240,7 +238,11 @@ function render({ model, el }) {
         }
     });
 
-    // Listen for custom messages from the plugin backend.
+    el.classList.add("mc");
+    // Append the question container (with tooltip), form, result, and restart button
+    el.append(...[questionContainer, mc, result, restart_button]);
+
+    // Listen for custom messages from the plugin backend
     model.on("msg:custom", (msg) => {
         if (msg.command && msg.command === "verify_result") {
             const correct = msg.results;
@@ -250,6 +252,7 @@ function render({ model, el }) {
                 icon,
                 selected.querySelector("input[type='radio']")
             );
+
             if (correct) {
                 result.innerHTML = "Correct!";
                 selected.id = "correct";
