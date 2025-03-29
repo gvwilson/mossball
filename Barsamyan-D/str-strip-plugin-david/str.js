@@ -39,7 +39,7 @@ function createInfoTooltip() {
   infoButton.textContent = "i";
 
   tippy(infoButton, {
-      content: "Enter your content for each section. Provide detailed instructions as needed.",
+      content: "Write each section based on the provided details. Make sure your response is meets the required number of characters.",
       allowHTML: true,
       interactive: true,
       arrow: true,

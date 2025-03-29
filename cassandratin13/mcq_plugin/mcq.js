@@ -31,7 +31,7 @@ function createMCInfoTooltip() {
     infoButton.style.alignSelf = "flex-start";
 
     tippy(infoButton, {
-        content: "Select an option and submit your answer.",
+        content: "Select the best answer from the options and submit.",
         allowHTML: true,
         interactive: true,
         arrow: true,
