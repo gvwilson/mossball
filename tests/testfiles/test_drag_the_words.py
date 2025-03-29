@@ -7,10 +7,9 @@ from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver import ActionChains
 import time
 
-@pytest.mark.order(1)
 @pytest.mark.parametrize("start_marimo", ["tests/notebooks/drag_the_words_simple.py"], indirect=True)
 def test_basic_structure(get_chrome_driver, start_marimo, mock_server):
-    url = start_marimo
+    url, process = start_marimo
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
     print("check url: ", url)
     get_chrome_driver.get(url)
@@ -41,11 +40,15 @@ def test_basic_structure(get_chrome_driver, start_marimo, mock_server):
     reset_button = bottom_banner.find_element(By.CLASS_NAME, "try-button")
 
     assert check_button.is_displayed() and reset_button.is_displayed()
+    
+    process.terminate()
+    process.wait()
+    get_chrome_driver.quit()
 
-@pytest.mark.order(2)
+
 @pytest.mark.parametrize("start_marimo", ["tests/notebooks/drag_the_words_simple.py"], indirect=True)
 def test_drag_words(get_chrome_driver, start_marimo, mock_server):
-    url = start_marimo
+    url, process = start_marimo
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
     get_chrome_driver.get(url)
     # get_chrome_driver.maximize_window()
@@ -92,10 +95,14 @@ def test_drag_words(get_chrome_driver, start_marimo, mock_server):
         assert droppable.get_attribute("innerText") == ''
         assert len(droppable.find_elements(By.ID, f"remove-{droppable.get_attribute('id')}")) == 0
 
-@pytest.mark.order(3)
+    process.terminate()
+    process.wait()
+    get_chrome_driver.quit()
+
+
 @pytest.mark.parametrize("start_marimo", ["tests/notebooks/drag_the_words_simple.py"], indirect=True)
 def test_answer_success(get_chrome_driver, start_marimo, mock_server):
-    url = start_marimo
+    url, process = start_marimo
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
     get_chrome_driver.get(url)
     # get_chrome_driver.maximize_window()
@@ -146,3 +153,7 @@ def test_answer_success(get_chrome_driver, start_marimo, mock_server):
 
         assert "correct" in droppable.get_attribute("class")
         assert len(droppable.find_elements(By.ID, f"remove-{droppable.get_attribute('id')}")) == 0
+    
+    process.terminate()
+    process.wait()
+    get_chrome_driver.quit()

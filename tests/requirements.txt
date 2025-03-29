@@ -1,6 +1,0 @@
-selenium
-webdriver-manager
-pytest
-pytest-order
-responses
-flask

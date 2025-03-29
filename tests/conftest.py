@@ -11,7 +11,7 @@ import time
 
 app = Flask(__name__)
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def get_chrome_driver():
     service = Service(ChromeDriverManager().install())
     options = webdriver.ChromeOptions()
@@ -30,7 +30,7 @@ def get_chrome_driver():
     return webdriver.Chrome(service=service, options=options)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def start_marimo(request):
     '''
     Start Marimo and capture the running localhost URL
@@ -55,7 +55,7 @@ def start_marimo(request):
         raise RuntimeError("Failed to detect Marimo server URL")
     
     print(f"Returning marimo_url: {marimo_url}, process: {process}")
-    yield marimo_url
+    yield marimo_url, process
 
     # Clean up the process after the test
     process.terminate()
