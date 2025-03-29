@@ -187,7 +187,7 @@ function render({ model, el }) {
     };
 
     let scoreCounter = createElement("div", {
-        className: "instruction",
+        className: "score-counter",
         innerHTML: setScoreCounter(0),
     });
 
