@@ -1,7 +1,0 @@
-anywidget
-traitlets
-pymupdf
-pillow
-marimo
-boto3
-python-dotenv
