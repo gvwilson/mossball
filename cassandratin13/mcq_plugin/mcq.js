@@ -1,4 +1,5 @@
 import swal from "https://esm.sh/sweetalert2@11";
+import tippy from "https://esm.sh/tippy.js@6";
 
 /**
  * Creates an HTML element with the given attributes
@@ -17,6 +18,36 @@ function createElement(tag, { classNames = "", children = [], ...attrs } = {}) {
     children.forEach((child) => element.appendChild(child));
     return element;
 }
+
+
+/**
+ * Create an info tooltip button for the Multiple Choice widget.
+ * @returns {HTMLElement} The tooltip button element.
+ */
+function createMCInfoTooltip() {
+    const infoButton = document.createElement("button");
+    infoButton.className = "info-tooltip";
+    infoButton.textContent = "i";
+    infoButton.style.alignSelf = "flex-start";
+
+    tippy(infoButton, {
+        content: "Select the best answer from the options and submit.",
+        allowHTML: true,
+        interactive: true,
+        arrow: true,
+        placement: "right",
+        onShow(instance) {
+            const tooltipBox = instance.popper.querySelector(".tippy-box");
+            if (tooltipBox) {
+                tooltipBox.style.width = "max-content";
+                tooltipBox.style.textAlign = "left";
+                tooltipBox.style.maxWidth = "max-content";
+            }
+        }
+    });
+    return infoButton;
+}
+
 
 /**
  * Render modal
@@ -142,11 +173,25 @@ function render({ model, el }) {
     const uniqueId = data["unique_id"] || "3";
     const pluginType = data["plugin_type"] || "multiple_choice";
 
-    // Create question, form, and buttons
+    // Create question element
     let question = createElement("p", {
         classNames: ["question", "title"],
         innerHTML: data["question"],
     });
+
+    // Create a flex container to hold the question and tooltip.
+    let questionContainer = document.createElement("div");
+    questionContainer.style.display = "flex";
+    questionContainer.style.justifyContent = "space-between";
+    questionContainer.style.alignItems = "flex-start";
+    // Append the question element (renamed correctly)
+    questionContainer.appendChild(question);
+
+    // Create the info tooltip and add it to the question container.
+    let mcInfoTooltip = createMCInfoTooltip();
+    questionContainer.appendChild(mcInfoTooltip);
+
+    // Create the form for options.
     let options = data["options"];
     let mc = createElement("form", { action: "javascript:void(0);" });
     let submitButton = createElement("button", {
@@ -194,9 +239,10 @@ function render({ model, el }) {
     });
 
     el.classList.add("mc");
-    el.append(...[question, mc, result, restart_button]);
+    // Append the question container (with tooltip), form, result, and restart button
+    el.append(...[questionContainer, mc, result, restart_button]);
 
-    // Listen for custom msgs from the plugin backend
+    // Listen for custom messages from the plugin backend
     model.on("msg:custom", (msg) => {
         if (msg.command && msg.command === "verify_result") {
             const correct = msg.results;

@@ -1,0 +1,40 @@
+/*
+ * Theme Customization Guide:
+ *
+ * This section enables authors to override the default CSS so that institutions 
+ * can match their required theming. By adjusting the variables below, you can 
+ * customize the appearance of Marimo widgets to fit your organization's colour theme.
+ *
+ * To apply changes, simply uncomment the block below and modify the values as needed.
+ *
+ * Available variables:
+ *   --tooltip-colour:               Color used for tooltips.
+ *   --hover-light-colour:           Light color shown on hover effects.
+ *   --main-button-colour:           Primary color for buttons.
+ *   --main-button-hover-colour:     Primary Button hover color.
+ *   --background-correct-colour:    Background color for correct responses.
+ *   --main-correct-colour:          Text or icon color for correct responses.
+ *   --background-incorrect-colour:  Background color for incorrect responses.
+ *   --main-incorrect-colour:        Text or icon color for incorrect responses.
+ *   --options-colour:               Color for option elements.
+ *   --background-color:             General background color.
+ *   --border-color:                 Border color for widgets.
+ *   --text-colour:                  General text color.
+ */
+
+ 
+
+.marimo {
+    --tooltip-colour: #FF8C00;
+    --hover-light-colour: #FFF4E0;
+    --main-button-colour: #E65100;
+    --main-button-hover-colour: #BF360C;
+    --background-correct-colour: #9ae9b3;
+    --main-correct-colour: #0a6000;
+    --background-incorrect-colour: #ff9494;
+    --main-incorrect-colour: #8f0000;
+    --options-colour: #FFE0B2;
+    --background-color: #FFF8E1;
+    --border-color: #E0CDA9;
+    --text-colour: black;
+}

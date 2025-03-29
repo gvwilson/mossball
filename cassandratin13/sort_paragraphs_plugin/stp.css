@@ -1,4 +1,4 @@
-.stp {
+/* .stp {
   --grey: #e2e2e2;
   --light-grey: #eeeeee;
   --light-blue: #c1dafd;
@@ -12,6 +12,11 @@
   --font-size: 1.1rem;
   --gap: 5px;
 
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+} */
+
+.stp {
   margin-bottom: 2rem;
   padding: 1.5rem;
 }
@@ -81,7 +86,7 @@
   padding: 3px;
 
   &:hover {
-    background-color: var(--lightest-blue);
+    background-color: var(--hover-light-colour);
     transition: background-color 0.2s ease;
   }
 
@@ -118,7 +123,7 @@
     }
 
   &:hover {
-    background-color: var(--light-blue) !important;
+    background-color: var(--hover-light-colour) !important;
   }
 }
 
@@ -128,38 +133,38 @@
   align-items: center;
   vertical-align: middle;
   width: 100%;
-  background-color: var(--grey);
+  background-color: var(--options-colour);
   height: min-content;
   min-height: 3rem;
   padding: 0.5rem;
-  margin: var(--gap) 0;
+  margin: 5px 0;
   border-radius: 5px;
   cursor: pointer;
 
   &:hover {
-    border: 2px solid var(--dark-blue);
+    border: 2px solid var(--main-button-colour);
     transition: border 0.1s ease;
   }
 }
 
 .stp .draggable {
   cursor: move;
-  background-color: var(--grey);
+  background-color: var(--options-colour);
 }
 
 .stp .dragging {
-  background-color: var(--light-blue);
+  background-color: var(--hover-light-colour);
   border-width: 2px;
-  border-color: var(--dark-blue);
-  color: var(--darker-blue);
+  border-color: var(--main-button-colour);
+  color: var(--main-button-hover-colour);
   font-weight: bolder;
   opacity: 1;
 }
 
 .stp .placeholder {
     min-height: 3rem;
-    border: 2px dotted var(--dark-blue);
-    background-color: var(--light-blue);
+    border: 2px dotted var(--main-button-colour);
+    background-color: var(--hover-light-colour);
     border-radius: 5px;
     font-size: 0;
     opacity: 1;
@@ -170,16 +175,16 @@
 }
 
 .stp .correct {
-  background-color: var(--green);
+  background-color: var(--background-correct-colour);
   border-width: 0;
-  color: var(--dark-green);
+  color: var(--main-correct-colour);
   font-weight: bolder;
 }
 
 .stp .incorrect {
-  background-color: var(--light-red);
+  background-color: var(--background-incorrect-colour);
   border-width: 0;
-  color: var(--dark-red);
+  color: var(--main-incorrect-colour);
   font-weight: bolder;
 }
 
@@ -202,7 +207,7 @@
 
 /* Check button and results */
 .stp .form-button {
-  background-color: var(--med-blue);
+  background-color: var(--tooltip-colour);
   color: white;
   border-radius: 18px;
   display: inline-flex;
@@ -210,7 +215,7 @@
   margin: 10px 0px;
 
   &:hover {
-    background-color: var(--dark-blue);
+    background-color: var(--main-button-colour);
     transition: background-color 0.2s ease;
   }
 
@@ -221,15 +226,15 @@
 
 .stp .checkmark-circle {
   fill: white;
-  width: var(--font-size);
+  width: 1.1rem;
   margin: auto;
   margin-right: 8px;
   display: block;
 }
 
 .stp .result {
-  font-weight: bolder;
-  font-size: 1.3rem;
-  color: var(--med-blue);
-  margin-top: 1rem;
+    font-weight: bolder;
+    font-size: 1.3rem;
+    color: var(--tooltip-colour);
+    margin-top: 1rem;
 }
