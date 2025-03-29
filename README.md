@@ -15,8 +15,8 @@ multiple choice, fill in the blanks, and so on.
 1.  Create and activate a Python virtual environment.
     -   E.g., if you are using [uv][uv], run `uv venv` and then `source .venv/bin/activate`.
 
-1.  Install the dependencies in `pyproject.toml`.
-    -   E.g., run `uv pip install -r pyproject.toml`.
+1.  Install the package in `pyproject.toml` for development.
+    -   E.g., run `uv pip install -e ".[dev]"`.
 
 You may also want to clone the [Marimo repository][marimo-repo].
 
