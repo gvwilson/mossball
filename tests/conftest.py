@@ -14,6 +14,9 @@ def get_chrome_driver():
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     
+    driver = webdriver.Chrome(service=service, options=options)
+    driver.set_page_load_timeout(30)
+
     return webdriver.Chrome(service=service, options=options)
 
 @pytest.fixture
