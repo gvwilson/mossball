@@ -172,12 +172,91 @@ def test_answer_success(get_chrome_driver, start_marimo, mock_server):
         time.sleep(0.5)
 
         filled_answers = question.find_elements(By.CLASS_NAME, "filled")
-        for i in range(len(words)):
-            droppable = filled_answers[i]
-
+        for droppable in filled_answers:
             assert "correct" in droppable.get_attribute("class")
-            assert len(droppable.find_elements(By.ID, f"remove-{droppable.get_attribute('id')}")) == 0
     
+    process.terminate()
+    process.wait()
+    get_chrome_driver.quit()
+
+@pytest.mark.parametrize("start_marimo", ["tests/notebooks/drag_the_words_simple.py"], indirect=True)
+def test_answer_failure(get_chrome_driver, start_marimo, mock_server):
+    url, process = start_marimo
+    url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
+    get_chrome_driver.get(url)
+    # get_chrome_driver.maximize_window()
+    # Wait for the browser to settle all the required DOMs
+    output_area = WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".output-area")))
+
+    incorrect_answers = {
+        "light": [0, 2, 4],
+        "water": [1, 6],
+        "heat": [3, 5],
+        "energy": [7]
+    }
+
+    shadow_host = get_chrome_driver.find_elements(By.CSS_SELECTOR, "marimo-anywidget")[1]
+    marimo_root = shadow_host.shadow_root
+    widget = marimo_root.find_element(By.CLASS_NAME, "drag-words-widget")
+    
+    question = widget.find_element(By.CLASS_NAME, "question")
+    words_container = widget.find_element(By.CLASS_NAME, "words-container")
+    assert words_container.is_displayed() == True
+
+    words = words_container.find_elements(By.CLASS_NAME, "word-box")
+    assert len(words) > 0
+
+    for i in range(len(words)):
+        draggable = words[i]
+        draggable_text = draggable.get_attribute("innerText")
+        for j in incorrect_answers[draggable_text]:
+            droppable_id = f"answer-{j}"
+            droppable = question.find_element(By.ID, droppable_id)
+
+            ActionChains(get_chrome_driver).drag_and_drop(draggable, droppable).perform()
+
+            assert droppable.get_attribute("class") == "filled"
+            assert droppable.get_attribute("innerText") == draggable.get_attribute("innerText")
+            assert droppable.find_element(By.ID, f"remove-{droppable_id}").is_displayed()
+        
+        assert draggable.get_attribute("draggable") == "false"
+
+    # Click the reset button
+    bottom_banner = widget.find_element(By.CLASS_NAME, "bottom-banner")
+    check_button = bottom_banner.find_element(By.CLASS_NAME, "check-button")
+
+    assert check_button.is_displayed()
+    check_button.click()
+    time.sleep(0.5)
+
+    filled_answers = question.find_elements(By.CLASS_NAME, "filled")
+    for i, droppable in enumerate(filled_answers):
+        if i < 4:
+            assert "correct" in droppable.get_attribute("class")
+        else:
+            assert "incorrect" in droppable.get_attribute("class")
+    
+    retry_button = bottom_banner.find_element(By.CLASS_NAME, "try-button")
+
+    assert retry_button.is_displayed()
+    retry_button.click()
+    time.sleep(0.5)
+
+    correct_answers = ["light","water","light","heat","energy","water","heat","light"]
+
+    for i in range(8):
+        answer_box = question.find_element(By.ID, f"answer-{i}")
+
+        if i < 4:
+            assert "filled" in answer_box.get_attribute("class")
+            assert "correct" in answer_box.get_attribute("class")
+            assert answer_box.get_attribute("innerText") == correct_answers[i]
+            assert len(answer_box.find_elements(By.ID, f"remove-{answer_box.get_attribute('id')}")) == 0
+        else:
+            assert "blank" == answer_box.get_attribute("class")
+            assert answer_box.get_attribute("innerText") == ''
+            assert len(answer_box.find_elements(By.ID, f"remove-{answer_box.get_attribute('id')}")) == 0
+
     process.terminate()
     process.wait()
     get_chrome_driver.quit()
