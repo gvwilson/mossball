@@ -1,5 +1,19 @@
 # Find the Words
 
+The widget front-end code bundles it's JavaScript dependencies. After setting up Python,
+make sure to install these dependencies locally:
+
+```
+npm i
+```
+
+While developing, you can run the following in a separate terminal to automatically
+rebuild JavaScript as you make changes:
+
+```
+npm run dev
+```
+
 ## Mockups
 
 ![mockups](image.png)
