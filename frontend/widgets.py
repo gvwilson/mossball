@@ -403,12 +403,11 @@ def create_mc(unique_id, custom_css_path=None):
 def create_str(unique_id, custom_css_path=None):
     return StructureStrip(unique_id, custom_css_path=custom_css_path)
 
-def create_drag(unique_id):
-    return DragWords(unique_id)
+def create_drag(unique_id, custom_css_path=None):
+    return DragWords(unique_id, custom_css_path=custom_css_path)
 
-
-def create_ftw(unique_id=6):
-    return FindTheWords(unique_id)
+def create_ftw(unique_id=6, custom_css_path=None):
+    return FindTheWords(unique_id, custom_css_path=custom_css_path)
 
 
 # Functions for locally creating the widgets with id "local"
