@@ -1,9 +1,16 @@
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.setuptools]
-packages = ["mossball"]
+[tool.hatch.build.targets.wheel]
+packages = ["mossball", "find_the_words"]
+
+[tool.hatch.build.targets.wheel.sources]
+"." = "mossball"
+"lorena-b/find-the-words/src/find_the_words" = "find_the_words"
+
+[tool.hatch.build.targets.wheel.force-include]
+"lorena-b/find-the-words/src/find_the_words/static" = "find_the_words/static"
 
 [project]
 name = "mossball"
@@ -24,4 +31,30 @@ classifiers = [
 ]
 dependencies = [
     "marimo>=0.9.0",
+    "anywidget",
+    "traitlets",
+    "pymupdf",
+    "pillow",
+    "boto3",
+    "python-dotenv",
+    "requests",
+    "flask",
+    "flask-cors",
+    "pymongo",
+    "matplotlib",
+    "numpy"
 ]
+
+[project.optional-dependencies]
+dev = ["watchfiles", "selenium", "webdriver-manager", "pytest"]
+
+# build find-the-words
+[tool.hatch.build.hooks.jupyter-builder]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = ["lorena-b/find-the-words/src/find_the_words/static/widget.js"]
+dependencies = ["hatch-jupyter-builder>=0.5.0"]
+
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
+npm = "npm"
+build_cmd = "dev-build"
+path = "lorena-b/find-the-words"
