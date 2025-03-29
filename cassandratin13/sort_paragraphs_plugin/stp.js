@@ -84,14 +84,14 @@ function createOptions(texts) {
 
 /**
  * Create a header container with the title of the widget, instructions, and the question
- * @param {DOMWidgetModel} model The widget model
+ * @param {DOMWidgetModel} data The widget data
  * @returns Elements for the title, instructions, and question
  */
-function createHeader(model) {
+function createHeader(data) {
     let infoContainer = createInfoContainer();
     let question = createElement("p", {
         classNames: ["question", "title"],
-        innerHTML: model.get("question"),
+        innerHTML: data["question"],
         children: [infoContainer],
     });
 
@@ -280,9 +280,12 @@ function dragOver(event, textsContainer) {
  * Create the submit and restart buttons, and add event listeners for when they are clicked
  * @param {HTMLElement} result The element containing the resulting score after submission
  * @param {HTMLElement} textsContainer The container with all the textboxes
+ * @param {String} uniqueId The ID of the question
+ * @param {String} pluginType The type of widget
+ * @param {DOMWidgetModel} model The widget model
  * @returns The two button elements
  */
-function createFormButtons(result, textsContainer, model) {
+function createFormButtons(result, textsContainer, uniqueId, pluginType, model) {
     let submitButton = createElement("button", {
         classNames: "check-button",
         innerHTML: "Check",
@@ -297,7 +300,7 @@ function createFormButtons(result, textsContainer, model) {
 
     submitButton.addEventListener("click", (event) => {
         event.preventDefault();
-        submit(textsContainer, submitButton, result, model);
+        submit(textsContainer, submitButton, result, uniqueId, pluginType, model);
     });
 
     restartButton.addEventListener("click", () => {
@@ -342,16 +345,16 @@ function restart(textsContainer, result) {
  * Highlights the correct and incorrect answers and calculates the score.
  * @param {HTMLElement} textsContainer The container with all the textboxes
  * @param {HTMLElement} submitButton The submit button element
+ * @param {String} uniqueId The ID of the question
+ * @param {String} pluginType The type of widget
+ * @param {DOMWidgetModel} model The widget model
  * @returns The number of correctly placed texts in the sequence
  */
-function submit(textsContainer, submitButton, result, model) {
+function submit(textsContainer, submitButton, result, uniqueId, pluginType, model) {
     const userAnswer = Array.from(textsContainer.children).map(child => child.dataset.text);
     submitButton.disabled = true;
     result.innerHTML = "Verifying...";
     result.style.display = "block";
-
-    const uniqueId = model.get("unique_id") || "1";
-    const pluginType = model.get("plugin_type") || "sort_paragraphs";
 
     // Send a custom msg to backend of the plugin
     model.send({
@@ -363,8 +366,13 @@ function submit(textsContainer, submitButton, result, model) {
 }
 
 function render({ model, el }) {
-    // Create the header and container for the draggable text boces
-    let question = createHeader(model);
+    // Create the header and container for the draggable text boxes
+    const data = model.get("data");
+    const uniqueId = data["unique_id"] || "1";
+    const pluginType = data["plugin_type"] || "sort_paragraphs";
+    let question = createHeader(data);
+    
+    // let question = createHeader(model);
 
     let textsContainer = createElement("div", {
         classNames: "texts-container",
@@ -374,7 +382,7 @@ function render({ model, el }) {
         action: "javascript:void(0);",
         children: [textsContainer],
     });
-    let texts = model.get("texts");
+    let texts = model.get("texts") || [];
 
     texts.forEach((text, index) => {
         let container = createRow(text, index + 1);
@@ -406,7 +414,7 @@ function render({ model, el }) {
 
     // Create the result, score, submit button, and restart button elements
     let result = createElement("div", { className: "result", style: "display: none;" });
-    let [submitButton, restartButton] = createFormButtons(result, textsContainer, model);
+    let [submitButton, restartButton] = createFormButtons(result, textsContainer, uniqueId, pluginType, model);
     form.appendChild(submitButton);
 
     el.classList.add("stp");
