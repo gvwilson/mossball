@@ -96,15 +96,15 @@ dummy_data = {
 @app.route("/plugin/query/<unique_id>", methods=["GET"])
 def mock_get_plugin(unique_id):
     plugin_type = request.args.get("plugin_type")
-    if plugin_type != "":
+    if plugin_type:
         return jsonify(dummy_data[plugin_type]["content"]), 200
     else:
         return jsonify({"error": "Not found"}), 404
 
 @app.route("/plugin/verify/<unique_id>", methods=["POST"])
 def mock_verify_plugin(unique_id):
-    plugin_type = request.args.get("plugin_type")
-    if plugin_type != "":
+    plugin_type = request.json.get("plugin_type")
+    if plugin_type:
         return jsonify(dummy_data[plugin_type]["success"]), 200
     else:
         return jsonify({"error": "Request failed"}), 500

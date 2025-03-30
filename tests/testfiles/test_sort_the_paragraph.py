@@ -149,7 +149,7 @@ def test_dropdown_arrows(get_chrome_driver, start_marimo, mock_server):
         assert expected_paragraphs_text == new_paragraphs_text
 
         # move down
-        last_paragraph = paragraphs[-1]
+        last_paragraph = new_paragraphs[-1]
 
         # click dropdown arrow
         last_paragraph.find_element(By.CLASS_NAME, "arrow-button").click()
@@ -167,6 +167,139 @@ def test_dropdown_arrows(get_chrome_driver, start_marimo, mock_server):
         
         assert expected_paragraphs_text == new_paragraphs_text
     
+    process.terminate()
+    process.wait()
+    get_chrome_driver.quit()
+
+# for the backend support plugin
+@pytest.mark.parametrize("start_marimo", ["tests/notebooks/sort_the_paragraph.py"], indirect=True)
+def test_answer_success(get_chrome_driver, start_marimo, mock_server):
+    url, process = start_marimo
+    url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
+    get_chrome_driver.get(url)
+
+    WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_element_located((By.TAG_NAME, "marimo-anywidget")))
+    shadow_hosts = get_chrome_driver.find_elements(By.CSS_SELECTOR, "marimo-anywidget")
+    assert len(shadow_hosts) == 2
+
+    shadow_host = shadow_hosts[0]
+    marimo_root = shadow_host.shadow_root
+    widget = marimo_root.find_element(By.CLASS_NAME, "stp")
+
+    form = widget.find_element(By.CLASS_NAME, "main-container")
+    assert form.is_displayed()
+
+    paragraphs = form.find_element(By.CLASS_NAME, "texts-container").find_elements(By.CLASS_NAME, "container")
+    first_paragraph = paragraphs[0]
+
+    # click dropdown arrow & move up
+    first_paragraph.find_element(By.CLASS_NAME, "arrow-button").click()
+    option_list = first_paragraph.find_element(By.CLASS_NAME, "option-list")
+    assert option_list.is_displayed()
+    option_list.find_elements(By.CLASS_NAME, "option")[2].click() # click text3 to move it to the 1st place
+    
+    new_paragraphs = form.find_element(By.CLASS_NAME, "texts-container").find_elements(By.CLASS_NAME, "container")
+    # drag up
+    last_paragraph = new_paragraphs[-1]
+    ActionChains(get_chrome_driver).drag_and_drop(last_paragraph, new_paragraphs[1]).perform()
+    final_answer_paragraphs = form.find_element(By.CLASS_NAME, "texts-container").find_elements(By.CLASS_NAME, "container")
+    print([para.get_attribute("data-text") for para in final_answer_paragraphs])
+
+    check_button = form.find_element(By.CLASS_NAME, "check-button")
+    assert check_button.is_displayed()
+    check_button.click()
+    time.sleep(0.5)
+
+    result_paragraphs = form.find_element(By.CLASS_NAME, "texts-container").find_elements(By.CLASS_NAME, "container")
+    for paragraph in result_paragraphs:
+        assert "disabled" in paragraph.get_attribute("class")
+        assert "correct" in paragraph.get_attribute("class")
+    
+    score_text = widget.find_element(By.CLASS_NAME, "result")
+    assert score_text.is_displayed()
+    assert score_text.get_attribute("innerText") == "All correct!"
+    
+    process.terminate()
+    process.wait()
+    get_chrome_driver.quit()
+
+
+# for non-backend supported plugin
+@pytest.mark.parametrize("start_marimo", ["tests/notebooks/sort_the_paragraph.py"], indirect=True)
+def test_answer_failure(get_chrome_driver, start_marimo, mock_server):
+    url, process = start_marimo
+    url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
+    get_chrome_driver.get(url)
+
+    WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_element_located((By.TAG_NAME, "marimo-anywidget")))
+    shadow_hosts = get_chrome_driver.find_elements(By.CSS_SELECTOR, "marimo-anywidget")
+    assert len(shadow_hosts) == 2
+
+    shadow_host = shadow_hosts[1]
+    marimo_root = shadow_host.shadow_root
+    widget = marimo_root.find_element(By.CLASS_NAME, "stp")
+
+    correct_answers = [
+        "Water evaporates from the surface.",
+        "Water vapor condenses to form clouds.",
+        "Precipitation occurs as rain or snow.",
+        "Water collects in bodies of water."
+    ]
+
+    form = widget.find_element(By.CLASS_NAME, "main-container")
+    assert form.is_displayed()
+
+    paragraphs = form.find_element(By.CLASS_NAME, "texts-container").find_elements(By.CLASS_NAME, "container")
+    first_paragraph = paragraphs[0]
+
+    # click dropdown arrow & move up
+    first_paragraph.find_element(By.CLASS_NAME, "arrow-button").click()
+    option_list = first_paragraph.find_element(By.CLASS_NAME, "option-list")
+    assert option_list.is_displayed()
+    option_list.find_elements(By.CLASS_NAME, "option")[2].click() # click text3 to move it to the 1st place
+    
+    new_paragraphs = form.find_element(By.CLASS_NAME, "texts-container").find_elements(By.CLASS_NAME, "container")
+    # drag up
+    last_paragraph = new_paragraphs[-1]
+    ActionChains(get_chrome_driver).drag_and_drop(last_paragraph, new_paragraphs[1]).perform()
+
+    # in case if the paragraph order is indeed correct order, then do another drag
+    new_paragraphs = form.find_element(By.CLASS_NAME, "texts-container").find_elements(By.CLASS_NAME, "container")
+    new_paragraphs_text = [para.get_attribute("data-text") for para in new_paragraphs]
+
+    if new_paragraphs_text == correct_answers:
+        ActionChains(get_chrome_driver).drag_and_drop(new_paragraphs[0], new_paragraphs[2]).perform()
+
+    check_button = form.find_element(By.CLASS_NAME, "check-button")
+    check_button.click()
+    time.sleep(0.5)
+
+    result_paragraphs = form.find_element(By.CLASS_NAME, "texts-container").find_elements(By.CLASS_NAME, "container")
+    correct_count = 0
+    for i, paragraph in enumerate(result_paragraphs):
+        assert "disabled" in paragraph.get_attribute("class")
+        if paragraph.get_attribute("innerText") == correct_answers[i]:
+            assert "correct" in paragraph.get_attribute("class")
+            correct_count += 1
+        else:
+            assert "incorrect" in paragraph.get_attribute("class")
+    
+    score_text = widget.find_element(By.CLASS_NAME, "result")
+    assert score_text.is_displayed()
+    assert "All correct!" not in score_text.get_attribute("innerText")
+    assert f"Score: {correct_count} / 4" in score_text.get_attribute("innerText")
+
+    retry_button = widget.find_element(By.CLASS_NAME, "try-button")
+    assert retry_button.is_displayed()
+    retry_button.click()
+
+    retry_paragraphs = form.find_element(By.CLASS_NAME, "texts-container").find_elements(By.CLASS_NAME, "container")
+    for i, paragraph in enumerate(retry_paragraphs):
+        assert paragraph.get_attribute("innerText") == result_paragraphs[i].get_attribute("innerText")
+        assert "disabled" not in paragraph.get_attribute("class")
+        assert "correct" not in paragraph.get_attribute("class")
+        assert "incorrect" not in paragraph.get_attribute("class")
+
     process.terminate()
     process.wait()
     get_chrome_driver.quit()
