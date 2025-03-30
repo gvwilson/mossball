@@ -5,7 +5,11 @@ import re
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from flask import Flask, jsonify, request
+from threading import Thread
+import time
 
+app = Flask(__name__)
 
 @pytest.fixture
 def get_chrome_driver():
@@ -14,7 +18,15 @@ def get_chrome_driver():
     options.add_argument("--headless=new")  # Headless mode for CI/CD
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    
+    driver = webdriver.Chrome(service=service, options=options)
+    driver.set_page_load_timeout(30)
 
+    # chrome_driver = webdriver.Chrome(service=service, options=options)
+    # yield chrome_driver
+
+    # chrome_driver.quit()
     return webdriver.Chrome(service=service, options=options)
 
 
@@ -50,3 +62,49 @@ def start_marimo(request):
     process.terminate()
     process.wait()
     print(f"Terminated process with PID: {process.pid}")
+
+# Mock backend
+dummy_data = {
+    "drag_words": {
+        "content": {
+            "instruction": "Drag the words to the correct positions",
+            "question": (
+                "In a multitasking operating system, {{}} share the CPU by using {{}} such as Round Robin and First Come, First Served. "
+                "The OS also manages {{}}, ensuring that each process has access to the necessary {{}}, "
+                "to prevent {{}}, it employs techniques like resource ordering and {{}}."
+            ),
+            "choices": [
+                "processes", "scheduling algorithms", "memory allocation",
+                "resources", "deadlocks", "preemption"
+            ]
+        },
+        "success": {'results': [True, True, True, True, True, True], 'unique_id': '5'}
+    }
+}
+
+@app.route("/plugin/query/<unique_id>", methods=["GET"])
+def mock_get_plugin(unique_id):
+    plugin_type = request.args.get("plugin_type")
+    if plugin_type == "drag_words":
+        return jsonify(dummy_data["drag_words"]["content"]), 200
+    else:
+        return jsonify({"error": "Not found"}), 404
+
+@app.route("/plugin/verify/<unique_id>", methods=["POST"])
+def mock_verify_plugin(unique_id):
+    plugin_type = request.args.get("plugin_type")
+    if plugin_type == "drag_words":
+        return jsonify(dummy_data["drag_words"]["success"]), 200
+    else:
+        return jsonify({"error": "Request failed"}), 500
+    
+@pytest.fixture(scope="session", autouse=True)
+def mock_server():
+    def run():
+        app.run(port=5001, debug=False, use_reloader=False)
+    
+    thread = Thread(target=run, daemon=True)
+    thread.start()
+    time.sleep(1)  # Give time for the server to start
+
+    yield
