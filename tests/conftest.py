@@ -87,6 +87,14 @@ dummy_data = {
             ],
         },
         "success": {'results': [True, True, True, True], 'unique_id': '2', 'valid': True}
+    },
+    "multiple_choice": {
+        "content": {
+            "question": "What is the capital city of Ontario?",
+            "options": ["Ottawa", "Toronto", "Vancouver", "Montreal"],
+            "answer": 1
+        },
+        "success": {'results': 1, 'unique_id': '3'}
     }
 }
 
