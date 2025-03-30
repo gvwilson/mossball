@@ -70,6 +70,7 @@ def test_drag_paragraphs(get_chrome_driver, start_marimo, mock_server):
     url, process = start_marimo
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
     get_chrome_driver.get(url)
+    get_chrome_driver.maximize_window()
 
     # wait for plugin to load
     output_areas = WebDriverWait(get_chrome_driver, 30).until(
