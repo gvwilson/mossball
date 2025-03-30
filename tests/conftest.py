@@ -78,22 +78,34 @@ dummy_data = {
             ]
         },
         "success": {'results': [True, True, True, True, True, True], 'unique_id': '5'}
+    },
+    "sort_paragraphs": {
+        "content": {
+            "question": "Order the steps for problem solving:",
+            "texts": [
+                "Understand the problem",
+                "Make a plan",
+                "Carry out the plan",
+                "Look back and reflect"
+            ],
+        },
+        "success": {'results': [True, True, True, True], 'unique_id': '2', 'valid': True}
     }
 }
 
 @app.route("/plugin/query/<unique_id>", methods=["GET"])
 def mock_get_plugin(unique_id):
     plugin_type = request.args.get("plugin_type")
-    if plugin_type == "drag_words":
-        return jsonify(dummy_data["drag_words"]["content"]), 200
+    if plugin_type != "":
+        return jsonify(dummy_data[plugin_type]["content"]), 200
     else:
         return jsonify({"error": "Not found"}), 404
 
 @app.route("/plugin/verify/<unique_id>", methods=["POST"])
 def mock_verify_plugin(unique_id):
     plugin_type = request.args.get("plugin_type")
-    if plugin_type == "drag_words":
-        return jsonify(dummy_data["drag_words"]["success"]), 200
+    if plugin_type != "":
+        return jsonify(dummy_data[plugin_type]["success"]), 200
     else:
         return jsonify({"error": "Request failed"}), 500
     
