@@ -179,19 +179,22 @@ function createQuestionContainer(question_text) {
 }
 
 function createWordBoxes(choices) {
+  // some words appear multiple times, so create an array containing each unique word
+  var unique_choices = [];
   wordCount = {};
   choices.forEach((word) => {
     if (word in wordCount) {
       wordCount[word][0] += 1;
     } else {
       wordCount[word] = [1, 0];
+      unique_choices.push(word);
     }
   });
 
   let box_container = document.createElement("div");
   box_container.className = "words-container";
   box_container.innerHTML = "";
-  const random_order = shuffleArray(choices);
+  const random_order = shuffleArray(unique_choices);
   random_order.forEach((word, idx) => {
     let wordBox = document.createElement("div");
     wordBox.className = "word-box";

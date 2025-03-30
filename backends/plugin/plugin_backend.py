@@ -120,10 +120,6 @@ def verify_plugin(unique_id):
     if not plugin_type:
         return jsonify({"error": "Missing plugin_type in JSON data"}), 400
 
-    # institution_id = session.get("institution_id")
-    # if not institution_id:
-    #     return jsonify({"error": "You must log in to use this endpoint"}), 401
-
     institution_id = session.get("institution_id")
     if not institution_id:
         return jsonify({"error": "You must be a student of this institution to use this endpoint"}), 401

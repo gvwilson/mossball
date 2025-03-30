@@ -46,7 +46,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["watchfiles", "selenium", "webdriver-manager", "pytest"]
+dev = ["watchfiles", "selenium", "webdriver-manager", "pytest", "moto", "pytest-order"]
 
 # build find-the-words
 [tool.hatch.build.hooks.jupyter-builder]

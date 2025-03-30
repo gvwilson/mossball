@@ -17,6 +17,19 @@ jobs:
 
     runs-on: ubuntu-latest
 
+
+    services:
+      mongo:
+        image: mongo:5.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd mongo
+          --health-interval 10s
+          --health-retries 5
+          --health-start-period 30s
+
+
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python 3.10
@@ -35,6 +48,9 @@ jobs:
       run: |
         uv pip install -e ".[dev]"
       shell: bash
+    - name: Wait for MongoDB to start
+      run: |
+        sleep 30
     - name: Test with pytest
       run: |
         pytest
