@@ -15,10 +15,10 @@ def test_basic_structure(get_chrome_driver, start_marimo, mock_server):
     get_chrome_driver.get(url)
 
     # wait for plugin to load
-    output_area = WebDriverWait(get_chrome_driver, 10).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, ".output-area"))
+    output_areas = WebDriverWait(get_chrome_driver, 30).until(
+        EC.visibility_of_all_elements_located((By.CSS_SELECTOR, ".output-area"))
     )
-    assert output_area.is_displayed()
+    assert all(output_area.is_displayed() for output_area in output_areas)
 
     # Get shadow root
     shadow_hosts = WebDriverWait(get_chrome_driver, 10).until(
@@ -31,7 +31,7 @@ def test_basic_structure(get_chrome_driver, start_marimo, mock_server):
     for shadow_host in shadow_hosts:
         marimo_root = shadow_host.shadow_root
         widget = WebDriverWait(marimo_root, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "stp"))
+            EC.visibility_of_element_located((By.CLASS_NAME, "stp"))
         )
         assert widget.is_displayed()
         title = widget.find_element(By.CLASS_NAME, "title")
