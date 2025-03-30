@@ -88,6 +88,7 @@ def test_drag_paragraphs(get_chrome_driver, start_marimo, mock_server):
         widget = WebDriverWait(marimo_root, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "stp"))
         )
+        assert widget.is_displayed()
 
         form = widget.find_element(By.CLASS_NAME, "main-container")
         assert form.is_displayed()
@@ -103,7 +104,7 @@ def test_drag_paragraphs(get_chrome_driver, start_marimo, mock_server):
         next_paragraph = paragraphs[n_paragraphs - 1]
 
         # drag down
-        ActionChains(get_chrome_driver).drag_and_drop(first_paragraph, next_paragraph).perform() # drop position = start of the next paragraph
+        ActionChains(get_chrome_driver).move_to_element(first_paragraph).drag_and_drop(first_paragraph, next_paragraph).perform() # drop position = start of the next paragraph
 
         new_paragraphs = form.find_element(By.CLASS_NAME, "texts-container").find_elements(By.CLASS_NAME, "container")
         new_paragraphs_text = [para.get_attribute("data-text") for para in new_paragraphs]
@@ -152,6 +153,7 @@ def test_dropdown_arrows(get_chrome_driver, start_marimo, mock_server):
         widget = WebDriverWait(marimo_root, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "stp"))
         )
+        assert widget.is_displayed()
 
         form = widget.find_element(By.CLASS_NAME, "main-container")
         assert form.is_displayed()
