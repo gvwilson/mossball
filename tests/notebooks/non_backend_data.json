@@ -2,9 +2,9 @@
   "1": {
     "widget": "multiple_choice",
     "data": {
-      "question": "What is the capital city of Ontario?",
-      "options": ["Ottawa", "Toronto", "Vancouver", "Montreal"],
-      "answer": 1
+      "question": "What is the capital of France?",
+      "options": ["Berlin", "Madrid", "Paris", "Rome"],
+      "answer": 2
     }
   },
   "2": {
