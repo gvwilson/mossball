@@ -14,7 +14,7 @@ def test_basic_structure(get_chrome_driver, start_marimo, mock_server):
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
     get_chrome_driver.get(url)
 
-    WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_element_located((By.TAG_NAME, "marimo-anywidget")))
+    output_area = WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".output-area")))
     shadow_hosts = get_chrome_driver.find_elements(By.CSS_SELECTOR, "marimo-anywidget")
     assert len(shadow_hosts) == 2
 
@@ -60,7 +60,7 @@ def test_drag_paragraphs(get_chrome_driver, start_marimo, mock_server):
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
     get_chrome_driver.get(url)
 
-    WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_element_located((By.TAG_NAME, "marimo-anywidget")))
+    output_area = WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".output-area")))
     shadow_hosts = get_chrome_driver.find_elements(By.CSS_SELECTOR, "marimo-anywidget")
     assert len(shadow_hosts) == 2
 
@@ -114,7 +114,7 @@ def test_dropdown_arrows(get_chrome_driver, start_marimo, mock_server):
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
     get_chrome_driver.get(url)
 
-    WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_element_located((By.TAG_NAME, "marimo-anywidget")))
+    output_area = WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".output-area")))
     shadow_hosts = get_chrome_driver.find_elements(By.CSS_SELECTOR, "marimo-anywidget")
     assert len(shadow_hosts) == 2
 
@@ -180,7 +180,7 @@ def test_answer_success(get_chrome_driver, start_marimo, mock_server):
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
     get_chrome_driver.get(url)
 
-    WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_element_located((By.TAG_NAME, "marimo-anywidget")))
+    output_area = WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".output-area")))
     shadow_hosts = get_chrome_driver.find_elements(By.CSS_SELECTOR, "marimo-anywidget")
     assert len(shadow_hosts) == 2
 
@@ -233,7 +233,7 @@ def test_answer_failure(get_chrome_driver, start_marimo, mock_server):
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
     get_chrome_driver.get(url)
 
-    WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_element_located((By.TAG_NAME, "marimo-anywidget")))
+    output_area = WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".output-area")))
     shadow_hosts = get_chrome_driver.find_elements(By.CSS_SELECTOR, "marimo-anywidget")
     assert len(shadow_hosts) == 2
 
