@@ -127,9 +127,8 @@ def test_find_the_words_timed(get_chrome_driver, start_marimo):
     output_area.is_displayed()
 
     # Get shadow root
-    shadow_host = WebDriverWait(chrome_driver, 10).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, "marimo-anywidget"))
-    )
+    shadow_host = get_chrome_driver.find_element(
+        By.CSS_SELECTOR, "marimo-anywidget")
     marimo_root = shadow_host.shadow_root
 
     # Get widget container
