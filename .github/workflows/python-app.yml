@@ -48,11 +48,6 @@ jobs:
       run: |
         uv pip install -e ".[dev]"
       shell: bash
-    - name: Install testing dependencies
-      run: |
-        cd tests
-        uv pip install -r requirements.txt
-        cd ..
     - name: Wait for MongoDB to start
       run: |
         sleep 30
