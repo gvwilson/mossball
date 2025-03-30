@@ -7,6 +7,7 @@ from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver import ActionChains
 import time
 
+# test both backend and non-backend plugins
 @pytest.mark.parametrize("start_marimo", ["tests/notebooks/sort_the_paragraph.py"], indirect=True)
 def test_basic_structure(get_chrome_driver, start_marimo, mock_server):
     url, process = start_marimo
@@ -52,7 +53,7 @@ def test_basic_structure(get_chrome_driver, start_marimo, mock_server):
     process.wait()
     get_chrome_driver.quit()
 
-
+# test both backend and non-backend plugins
 @pytest.mark.parametrize("start_marimo", ["tests/notebooks/sort_the_paragraph.py"], indirect=True)
 def test_drag_paragraphs(get_chrome_driver, start_marimo, mock_server):
     url, process = start_marimo
@@ -106,6 +107,7 @@ def test_drag_paragraphs(get_chrome_driver, start_marimo, mock_server):
     process.wait()
     get_chrome_driver.quit()
 
+# test both backend and non-backend plugins
 @pytest.mark.parametrize("start_marimo", ["tests/notebooks/sort_the_paragraph.py"], indirect=True)
 def test_dropdown_arrows(get_chrome_driver, start_marimo, mock_server):
     url, process = start_marimo
