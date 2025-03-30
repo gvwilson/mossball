@@ -39,13 +39,6 @@ def start_marimo(request):
             marimo_url = url_matched.group(1)
             break
 
-    # DEBUG
-    stderr_output = process.stderr.read()
-    if stderr_output:
-        process.terminate()
-        raise RuntimeError(f"Marimo failed to start: {stderr_output}")
-
-
     if not marimo_url:
         process.terminate()
         raise RuntimeError("Failed to detect Marimo server URL")
