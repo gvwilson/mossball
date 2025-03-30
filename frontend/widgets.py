@@ -412,26 +412,26 @@ def create_ftw(unique_id=6, custom_css_path=None):
 
 # Functions for locally creating the widgets with id "local"
 
-def create_local_stp(question, texts):
+def create_local_stp(question, texts, custom_css_path=None):
     local_data = {
         "question": question,
         "texts": texts
     }
 
-    return SortTheParagraphs("local", local_data)
+    return SortTheParagraphs("local", local_data, custom_css_path=custom_css_path)
 
 
-def create_local_mc(question, options, answer):
+def create_local_mc(question, options, answer, custom_css_path=None):
     local_data = {
         "question": question,
         "options": options,
         "answer": answer
     }
 
-    return MultipleChoice("local", local_data)
+    return MultipleChoice("local", local_data, custom_css_path=custom_css_path)
 
 
-def create_local_str(title, description, sections, image_path=None):
+def create_local_str(title, description, sections, image_path=None, custom_css_path=None):
     local_data = {
         "title": title,
         "description": description,
@@ -439,19 +439,19 @@ def create_local_str(title, description, sections, image_path=None):
         "user_inputs": {}
     }
 
-    return StructureStrip("local", local_data, image_path)
+    return StructureStrip("local", local_data, image_path, custom_css_path=custom_css_path)
 
 
-def create_local_drag(instruction, question, choices):
+def create_local_drag(instruction, question, choices, custom_css_path=None):
     local_data = {
         "instruction": instruction,
         "question": question,
         "choices": choices
     }
 
-    return DragWords("local", local_data)
+    return DragWords("local", local_data, custom_css_path=custom_css_path)
 
-def create_local_ftw(title, words, instructions, gridWidth, gridHeight, timed, countdown, barColor, seed = None):
+def create_local_ftw(title, words, instructions, gridWidth, gridHeight, timed, countdown, barColor, seed = None, custom_css_path=None):
     local_data = {
         "title": title,
         "words": words,
@@ -468,10 +468,10 @@ def create_local_ftw(title, words, instructions, gridWidth, gridHeight, timed, c
     }
     if seed:
         local_data["config"]["seed"] = seed
-    return FindTheWords("local", local_data)
+    return FindTheWords("local", local_data, custom_css_path=custom_css_path)
 
 
-def create_widget(widget):
+def create_widget(widget, custom_css_path=None):
     """
     Creates and returns a widget of the given type and with the given local data.
 
@@ -483,12 +483,12 @@ def create_widget(widget):
     if not widget_data or not widget_type:
         return
     if widget_type == "multiple_choice":
-        return MultipleChoice("local", widget_data)
+        return MultipleChoice("local", widget_data, custom_css_path=custom_css_path)
     elif widget_type == "sort_paragraphs":
-        return SortTheParagraphs("local", widget_data)
+        return SortTheParagraphs("local", widget_data, custom_css_path=custom_css_path)
     elif widget_type == "drag_words":
-        return DragWords("local", widget_data)
+        return DragWords("local", widget_data, custom_css_path=custom_css_path)
     elif widget_type == "structure_strip":
-        return StructureStrip("local", widget_data, widget.get("image_path", ""))
+        return StructureStrip("local", widget_data, widget.get("image_path", ""), custom_css_path=custom_css_path)
     elif widget_type == "find_words":
-        return FindTheWords("local", widget_data)
+        return FindTheWords("local", widget_data, custom_css_path=custom_css_path)
