@@ -56,7 +56,7 @@ def start_marimo(request):
         raise RuntimeError("Failed to detect Marimo server URL")
 
     print(f"Returning marimo_url: {marimo_url}, process: {process}")
-    yield marimo_url
+    yield marimo_url, process
 
     # Clean up the process after the test
     process.terminate()
