@@ -32,7 +32,8 @@ def start_marimo(request):
     Start Marimo and capture the running localhost URL
     '''
     file_name = request.param
-    process = subprocess.Popen(["marimo", "run", file_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process = subprocess.Popen(["marimo", "run", file_name],
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     marimo_url = None
     while True:
@@ -41,15 +42,15 @@ def start_marimo(request):
         if not output:
             break
         url_matched = re.search(r"URL:\s*(\S+)", output)
-        
+
         if url_matched:
             marimo_url = url_matched.group(1)
             break
-    
+
     if not marimo_url:
         process.terminate()
         raise RuntimeError("Failed to detect Marimo server URL")
-    
+
     print(f"Returning marimo_url: {marimo_url}, process: {process}")
     yield marimo_url, process
 
