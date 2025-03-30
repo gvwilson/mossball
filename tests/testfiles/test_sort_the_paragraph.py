@@ -14,15 +14,26 @@ def test_basic_structure(get_chrome_driver, start_marimo, mock_server):
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
     get_chrome_driver.get(url)
 
-    output_area = WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".output-area")))
-    shadow_hosts = get_chrome_driver.find_elements(By.CSS_SELECTOR, "marimo-anywidget")
+    # wait for plugin to load
+    output_area = WebDriverWait(get_chrome_driver, 10).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, ".output-area"))
+    )
+    assert output_area.is_displayed()
+
+    # Get shadow root
+    shadow_hosts = WebDriverWait(get_chrome_driver, 10).until(
+        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "marimo-anywidget"))
+    )
     assert len(shadow_hosts) == 2
 
     tooltip_text = ["Drag the sequence items on the right into their correct positions.", "Alternatively, click the dropdown button to the right to select a sequence item to place in the current position."]
 
     for shadow_host in shadow_hosts:
         marimo_root = shadow_host.shadow_root
-        widget = marimo_root.find_element(By.CLASS_NAME, "stp")
+        widget = WebDriverWait(marimo_root, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "stp"))
+        )
+        assert widget.is_displayed()
         title = widget.find_element(By.CLASS_NAME, "title")
         assert title.is_displayed()
 

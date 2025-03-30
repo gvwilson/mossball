@@ -23,11 +23,7 @@ def get_chrome_driver():
     driver = webdriver.Chrome(service=service, options=options)
     driver.set_page_load_timeout(30)
 
-    # chrome_driver = webdriver.Chrome(service=service, options=options)
-    # yield chrome_driver
-
-    # chrome_driver.quit()
-    return webdriver.Chrome(service=service, options=options)
+    return driver
 
 
 @pytest.fixture
