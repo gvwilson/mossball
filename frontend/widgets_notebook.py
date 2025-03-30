@@ -82,9 +82,11 @@ def _():
 def _():
     from widgets import create_ftw
     CURRENT_DIR_WS = Path(__file__).resolve().parent  # 'frontend' folder
-    CUSTOM_CSS_PATH_WS = CURRENT_DIR_WS / "custom_theme_orange_yellow.css"
-    #change to "custom_theme_brown_beige.css" for brown beige theme
-    create_ftw("6", custom_css_path=str(CUSTOM_CSS_PATH_WS))
+    CUSTOM_CSS_PATH_WS = CURRENT_DIR_WS / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
+    # CUSTOM_CSS_PATH_WS = CURRENT_DIR_WS / "custom_theme_brown_beige.css" # uncomment for brown beige theme
+    
+    create_ftw("6")
+    # create_ftw("6", custom_css_path=str(CUSTOM_CSS_PATH_WS)) # uncomment for custom theme
     return (create_ftw,)
 
 
@@ -92,10 +94,11 @@ def _():
 def _():
     from widgets import create_mc
     CURRENT_DIR_1 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
-    CUSTOM_CSS_PATH_1 = CURRENT_DIR_1 / "custom_theme_orange_yellow.css"
-    #change to "custom_theme_brown_beige.css" for brown beige theme
+    CUSTOM_CSS_PATH_1 = CURRENT_DIR_1 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
+    # CUSTOM_CSS_PATH_1 = CURRENT_DIR_WS / "custom_theme_brown_beige.css" # uncomment for brown beige theme
 
-    create_mc("3", custom_css_path=str(CUSTOM_CSS_PATH_1))
+    create_mc("3")
+    # create_mc("3", custom_css_path=str(CUSTOM_CSS_PATH_1)) # uncomment for custom theme
     return (create_mc,)
 
 
@@ -103,20 +106,22 @@ def _():
 def _():
     from widgets import create_str
     CURRENT_DIR_2 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
-    CUSTOM_CSS_PATH_2 = CURRENT_DIR_2 / "custom_theme_orange_yellow.css"
-    #change to "custom_theme_brown_beige.css" for brown beige theme
+    CUSTOM_CSS_PATH_2 = CURRENT_DIR_2 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
+    # CUSTOM_CSS_PATH_2 = CURRENT_DIR_WS / "custom_theme_brown_beige.css" # uncomment for brown beige theme
 
-    create_str("4", custom_css_path=str(CUSTOM_CSS_PATH_2))
+    create_str("4")
+    # create_str("4", custom_css_path=str(CUSTOM_CSS_PATH_2)) # uncomment for custom theme
     return (create_str,)
 
 
 @app.cell(hide_code=True)
 def _(FileUploader):
     CURRENT_DIR_5 = Path(__file__).resolve().parent
-    CUSTOM_CSS_PATH_5 = CURRENT_DIR_5 / "custom_theme_orange_yellow.css"
-    #change to "custom_theme_brown_beige.css" for brown beige theme
+    CUSTOM_CSS_PATH_5 = CURRENT_DIR_5 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
+    # CUSTOM_CSS_PATH_5 = CURRENT_DIR_WS / "custom_theme_brown_beige.css" # uncomment for brown beige theme
 
-    uploader = FileUploader(multiple=True, to_disk=True, cloud_only=True, custom_css_path=str(CUSTOM_CSS_PATH_5))
+    uploader = FileUploader(multiple=True, to_disk=True, cloud_only=True)
+    # uploader = FileUploader(multiple=True, to_disk=True, cloud_only=True, custom_css_path=str(CUSTOM_CSS_PATH_5)) # uncomment for custom theme
     return (uploader,)
 
 
@@ -136,10 +141,11 @@ def _(uploader):
 def _():
     from widgets import create_drag
     CURRENT_DIR_3 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
-    CUSTOM_CSS_PATH_3 = CURRENT_DIR_3 / "custom_theme_orange_yellow.css"
-    #change to "custom_theme_brown_beige.css" for brown beige theme
+    CUSTOM_CSS_PATH_3 = CURRENT_DIR_3 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
+    # CUSTOM_CSS_PATH_3 = CURRENT_DIR_WS / "custom_theme_brown_beige.css" # uncomment for brown beige theme
 
-    create_drag("5", custom_css_path=str(CUSTOM_CSS_PATH_3))
+    create_drag("5") # uncomment for default theme
+    # create_drag("5", custom_css_path=str(CUSTOM_CSS_PATH_3)) # uncomment for custom theme
     return (create_drag,)
 
 
@@ -147,10 +153,11 @@ def _():
 def _():
     from widgets import create_stp
     CURRENT_DIR_4 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
-    CUSTOM_CSS_PATH_4 = CURRENT_DIR_4 / "custom_theme_orange_yellow.css"
-    #change to "custom_theme_brown_beige.css" for brown beige theme
+    CUSTOM_CSS_PATH_4 = CURRENT_DIR_4 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
+    # CUSTOM_CSS_PATH_4 = CURRENT_DIR_WS / "custom_theme_brown_beige.css" # uncomment for brown beige theme
 
-    create_stp("1", custom_css_path=str(CUSTOM_CSS_PATH_4))
+    create_stp("1") # uncomment for default theme
+    # create_stp("1", custom_css_path=str(CUSTOM_CSS_PATH_4)) # uncomment for custom theme
     return (create_stp,)
 
 
