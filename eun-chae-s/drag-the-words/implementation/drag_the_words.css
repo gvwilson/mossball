@@ -84,18 +84,18 @@
       padding: 5px 10px 5px 10px;
       border-radius: 18px;
       background-color: var(--tooltip-colour);
-      color: white;
+      color: var(--button-text-colour);
       cursor: pointer;
     }
 
     .word-box:hover {
       background-color: var(--main-button-colour);
-      color: white;
+      color: var(--button-text-colour);
     }
 
     .word-box.selected {
       background-color: var(--border-color);
-      color: white;
+      color: var(--button-text-colour);
     }
   }
 

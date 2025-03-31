@@ -20,6 +20,7 @@
  *   --background-color:             General background color.
  *   --border-color:                 Border color for widgets.
  *   --text-colour:                  General text color.
+ *   --button-text-colour:           Text color for buttons.
  */
 
  
@@ -37,4 +38,5 @@
     --background-color: #FFF8E1;
     --border-color: #E0CDA9;
     --text-colour: black;
+    --button-text-colour: #32269e;
 }

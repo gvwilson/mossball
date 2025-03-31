@@ -286,7 +286,7 @@
 .flip-to-create,
 .flip-to-select {
     background-color: var(--main-button-colour);
-    color: white;
+    color: var(--button-text-colour);
     border-radius: 18px;
     display: inline-flex;
     padding: 0.4rem 1.6rem 0.4rem 1.5rem;
@@ -312,7 +312,7 @@
     border: 1px solid var(--main-button-hover-colour);
     border-radius: 18px;
     cursor: pointer;
-    color: white;
+    color: var(--button-text-colour);
     transition: background-color 0.2s ease;
     text-align: center; /* Ensures text is centered */
     display: flex; /* Enables centering */
