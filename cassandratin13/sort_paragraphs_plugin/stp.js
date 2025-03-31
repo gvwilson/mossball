@@ -36,7 +36,7 @@ function createRow(text, idNum) {
     });
 
     let container = createElement("div", {
-        classNames: ["container", "draggable"],
+        classNames: ["container", "draggable", "instruction"],
         textContent: text,
         draggable: "true",
         id: `text${idNum}`,

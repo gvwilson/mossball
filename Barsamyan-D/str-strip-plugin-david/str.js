@@ -1,3 +1,5 @@
+import tippy from "https://esm.sh/tippy.js@6";
+
 function render({ model, el }) {
   const data = model.get("data");
   const uniqueId = data["unique_id"] || "1";
@@ -25,6 +27,37 @@ function render({ model, el }) {
   el.appendChild(container);
 }
 
+
+/**
+ * Create an info tooltip button for the Structure Strip widget.
+ * This button will display additional instructions when hovered.
+ * @returns {HTMLElement} The info tooltip button element.
+ */
+function createInfoTooltip() {
+  const infoButton = document.createElement("button");
+  infoButton.className = "info-tooltip";
+  infoButton.textContent = "i";
+
+  tippy(infoButton, {
+      content: "Write each section based on the provided details. Make sure your response is meets the required number of characters.",
+      allowHTML: true,
+      interactive: true,
+      arrow: true,
+      placement: "right",
+      onShow(instance) {
+          const tooltipBox = instance.popper.querySelector(".tippy-box");
+          if (tooltipBox) {
+              tooltipBox.style.width = "max-content";
+              tooltipBox.style.textAlign = "left";
+              tooltipBox.style.maxWidth = "max-content";
+          }
+      }
+  });
+
+  return infoButton;
+}
+
+
 /**
  * Creates the main container element for the widget
  * @returns {HTMLDivElement} The container div element with class 'structure-strip'
@@ -45,9 +78,19 @@ function createImageSection(model, data) {
   const imageContainer = document.createElement("div");
   imageContainer.className = "image-container";
 
+  const headerContainer = document.createElement("div");
+  headerContainer.style.display = "flex";
+  headerContainer.style.justifyContent = "space-between";
+  headerContainer.style.alignItems = "flex-start";
+
   const title = document.createElement("h2");
   title.textContent = data["title"];
   title.className = "structure-title title";
+
+  const infoTooltip = createInfoTooltip();
+
+  headerContainer.appendChild(title);
+  headerContainer.appendChild(infoTooltip);
 
   const image = document.createElement("img");
   image.src = model.get("image_path");
@@ -61,7 +104,7 @@ function createImageSection(model, data) {
   description.textContent = data["description"];
   description.className = "structure-description instruction";
 
-  return { imageContainer, title, description };
+  return { imageContainer, title: headerContainer, description };
 }
 
 /**

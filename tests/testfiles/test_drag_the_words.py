@@ -11,17 +11,28 @@ import time
 def test_basic_structure(get_chrome_driver, start_marimo, mock_server):
     url, process = start_marimo
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
-    print("check url: ", url)
     get_chrome_driver.get(url)
+    get_chrome_driver.maximize_window()
 
-    output_area = WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".output-area")))
-    print(output_area)
-    shadow_hosts = get_chrome_driver.find_elements(By.CSS_SELECTOR, "marimo-anywidget")
+    # wait for plugin to load
+    output_areas = WebDriverWait(get_chrome_driver, 30).until(
+        EC.visibility_of_all_elements_located((By.CSS_SELECTOR, ".output-area"))
+    )
+    assert all(output_area.is_displayed() for output_area in output_areas)
+
+    # Get shadow root
+    shadow_hosts = WebDriverWait(get_chrome_driver, 10).until(
+        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "marimo-anywidget"))
+    )
     assert len(shadow_hosts) == 2
 
     for shadow_host in shadow_hosts:
         marimo_root = shadow_host.shadow_root
-        widget = marimo_root.find_element(By.CLASS_NAME, "drag-words-widget")
+        widget = WebDriverWait(marimo_root, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "drag-words-widget"))
+        )
+        assert widget.is_displayed()
+
         title = widget.find_element(By.CLASS_NAME, "title")
         assert title.get_attribute("innerText") == "Drag the words to the correct positions"
 
@@ -52,11 +63,18 @@ def test_drag_words(get_chrome_driver, start_marimo, mock_server):
     url, process = start_marimo
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
     get_chrome_driver.get(url)
-    # get_chrome_driver.maximize_window()
-    # Wait for the browser to settle all the required DOMs
-    output_area = WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".output-area")))
+    get_chrome_driver.maximize_window()
+    
+    # wait for plugin to load
+    output_areas = WebDriverWait(get_chrome_driver, 30).until(
+        EC.visibility_of_all_elements_located((By.CSS_SELECTOR, ".output-area"))
+    )
+    assert all(output_area.is_displayed() for output_area in output_areas)
 
-    shadow_hosts = get_chrome_driver.find_elements(By.CSS_SELECTOR, "marimo-anywidget")
+    # Get shadow root
+    shadow_hosts = WebDriverWait(get_chrome_driver, 10).until(
+        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "marimo-anywidget"))
+    )
     assert len(shadow_hosts) == 2
 
     actual_answers = [
@@ -68,7 +86,10 @@ def test_drag_words(get_chrome_driver, start_marimo, mock_server):
     for index, shadow_host in enumerate(shadow_hosts):
         # shadow_host = get_chrome_driver.find_element(By.CSS_SELECTOR, "marimo-anywidget")
         marimo_root = shadow_host.shadow_root
-        widget = marimo_root.find_element(By.CLASS_NAME, "drag-words-widget")
+        widget = WebDriverWait(marimo_root, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "drag-words-widget"))
+        )
+        assert widget.is_displayed()
         
         question = widget.find_element(By.CLASS_NAME, "question")
         blank_answers = question.find_elements(By.CLASS_NAME, "blank")
@@ -119,9 +140,19 @@ def test_answer_success(get_chrome_driver, start_marimo, mock_server):
     url, process = start_marimo
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
     get_chrome_driver.get(url)
-    # get_chrome_driver.maximize_window()
-    # Wait for the browser to settle all the required DOMs
-    output_area = WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".output-area")))
+    get_chrome_driver.maximize_window()
+    
+    # wait for plugin to load
+    output_areas = WebDriverWait(get_chrome_driver, 30).until(
+        EC.visibility_of_all_elements_located((By.CSS_SELECTOR, ".output-area"))
+    )
+    assert all(output_area.is_displayed() for output_area in output_areas)
+
+    # Get shadow root
+    shadow_hosts = WebDriverWait(get_chrome_driver, 10).until(
+        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "marimo-anywidget"))
+    )
+    assert len(shadow_hosts) == 2
 
     correct_answers = [{
         "processes": [0], 
@@ -135,11 +166,12 @@ def test_answer_success(get_chrome_driver, start_marimo, mock_server):
         "energy": [4]
     }]
 
-    shadow_hosts = get_chrome_driver.find_elements(By.CSS_SELECTOR, "marimo-anywidget")
-
     for index, shadow_host in enumerate(shadow_hosts):
         marimo_root = shadow_host.shadow_root
-        widget = marimo_root.find_element(By.CLASS_NAME, "drag-words-widget")
+        widget = WebDriverWait(marimo_root, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "drag-words-widget"))
+        )
+        assert widget.is_displayed()
         
         question = widget.find_element(By.CLASS_NAME, "question")
         words_container = widget.find_element(By.CLASS_NAME, "words-container")
@@ -184,10 +216,20 @@ def test_answer_failure(get_chrome_driver, start_marimo, mock_server):
     url, process = start_marimo
     url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
     get_chrome_driver.get(url)
-    # get_chrome_driver.maximize_window()
-    # Wait for the browser to settle all the required DOMs
-    output_area = WebDriverWait(get_chrome_driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".output-area")))
+    get_chrome_driver.maximize_window()
+    
+    # wait for plugin to load
+    output_areas = WebDriverWait(get_chrome_driver, 30).until(
+        EC.visibility_of_all_elements_located((By.CSS_SELECTOR, ".output-area"))
+    )
+    assert all(output_area.is_displayed() for output_area in output_areas)
 
+    # Get shadow root
+    shadow_hosts = WebDriverWait(get_chrome_driver, 10).until(
+        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "marimo-anywidget"))
+    )
+    assert len(shadow_hosts) == 2
+    
     incorrect_answers = {
         "light": [0, 2, 4],
         "water": [1, 6],
@@ -195,9 +237,12 @@ def test_answer_failure(get_chrome_driver, start_marimo, mock_server):
         "energy": [7]
     }
 
-    shadow_host = get_chrome_driver.find_elements(By.CSS_SELECTOR, "marimo-anywidget")[1]
+    shadow_host = shadow_hosts[1]
     marimo_root = shadow_host.shadow_root
-    widget = marimo_root.find_element(By.CLASS_NAME, "drag-words-widget")
+    widget = WebDriverWait(marimo_root, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "drag-words-widget"))
+    )
+    assert widget.is_displayed()
     
     question = widget.find_element(By.CLASS_NAME, "question")
     words_container = widget.find_element(By.CLASS_NAME, "words-container")
