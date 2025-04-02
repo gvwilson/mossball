@@ -28,6 +28,8 @@
 - Marimo
     - Learn basic functionality: https://docs.marimo.io/guides/
     - Join their Discord community https://docs.marimo.io/community/
+ - esm imports:
+    - To easily import libraries: https://esm.sh/
     
 
 ### Testing
