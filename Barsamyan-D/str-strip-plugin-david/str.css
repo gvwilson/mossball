@@ -14,7 +14,6 @@
 }
 
 .structure-description {
-  color: #4a5568;
   margin-bottom: 1.5rem;
 }
 
@@ -39,14 +38,14 @@
 
 .section-prompt {
   font-size: 0.95rem;
-  color: #2d3748;
+  color: var(--text-colour);
 }
 
 .section-prompt strong {
   display: block;
   font-size: 1.1rem;
   margin-bottom: 0.4rem;
-  color: #1a365d;
+  color: var(--text-colour);
 }
 
 .prompt-text {
@@ -69,10 +68,10 @@
 .question-btn {
   width: 24px;
   height: 24px;
-  border: 1px solid #4299e1;
+  border: 1px solid var(--tooltip-colour);
   border-radius: 50%;
   background: none;
-  color: #4299e1;
+  color: var(--tooltip-colour);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -83,7 +82,7 @@
 }
 
 .question-btn:hover {
-  background: #4299e1;
+  background: var(--tooltip-colour);
   color: white;
 }
 
@@ -104,14 +103,13 @@
 }
 
 .section-content textarea:focus {
-  border-color: #4299e1;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+  box-shadow: 0 0 0 3px var(--border-color);
 }
 
 .char-counter {
   font-size: 0.8rem;
-  color: #718096;
+  color: var(--text-colour);
   text-align: right;
 }
 
@@ -147,7 +145,7 @@
   max-height: 0;
   overflow: hidden;
   transition: all 0.3s ease-out;
-  background: #f8f9fa;
+  background: var(--background-color);
   border-radius: 4px;
   margin-top: 4px;
   padding: 0 12px;
@@ -156,7 +154,7 @@
 .instructions-dropdown.active {
   max-height: 500px;
   padding: 12px;
-  border-color: #dee2e6;
+  border-color: var(--border-color);
   margin-bottom: 12px;
 }
 

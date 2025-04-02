@@ -37,8 +37,8 @@
       width: auto;
       height: 100%;
       padding: 5px 10px 5px 10px;
-      border: 1px solid #4299e1;
-      color: #4299e1;
+      border: 1px solid var(--tooltip-colour);
+      color: var(--tooltip-colour);
     }
 
     .revealed {
@@ -52,14 +52,14 @@
 
     div.correct {
       border: none;
-      background-color: var(--green);
-      color: var(--dark-green);
+      background-color: var(--background-correct-colour);
+      color: var(--main-correct-colour);
     }
 
     div.incorrect {
       border: none;
-      background-color: var(--light-red);
-      color: var(--dark-red);
+      background-color: var(--background-incorrect-colour);
+      color: var(--main-incorrect-colour);
     }
 
     .blank.incorrect {
@@ -83,19 +83,19 @@
       display: inline-block;
       padding: 5px 10px 5px 10px;
       border-radius: 18px;
-      background-color: #4299e1;
-      color: white;
+      background-color: var(--tooltip-colour);
+      color: var(--button-text-colour);
       cursor: pointer;
     }
 
     .word-box:hover {
-      background-color: #3182ce;
-      color: white;
+      background-color: var(--main-button-colour);
+      color: var(--button-text-colour);
     }
 
     .word-box.selected {
-      background-color: #939393;
-      color: white;
+      background-color: var(--border-color);
+      color: var(--button-text-colour);
     }
   }
 
@@ -140,7 +140,7 @@
   .result {
     font-weight: bolder;
     font-size: 1.3rem;
-    color: var(--dark-blue);
+    color: var(--main-button-colour);
     margin-top: 1rem;
   }
   

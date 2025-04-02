@@ -1,4 +1,4 @@
-.mc {
+/* .mc {
     --grey: #e2e2e2;
     --light-grey: #eeeeee;
     --light-blue: #c1dafd;
@@ -9,6 +9,10 @@
     --light-red: #ff9494;
     --dark-red: #8f0000;
     --font-size: 1.1rem;
+    padding: 1.5rem;
+} */
+
+.mc {
     padding: 1.5rem;
 }
 
@@ -23,7 +27,7 @@
     align-items: center;
     vertical-align: middle;
     font-size: 1rem;
-    background-color: var(--grey);
+    background-color: var(--options-colour);
     height: 3rem;
     margin-bottom: 10px;
     padding: 1rem;
@@ -31,21 +35,25 @@
     cursor: pointer;
 
     &:hover {
-        border: 2px solid var(--dark-blue);
+        border: 2px solid var(--main-button-colour);
         transition: border 0.1s ease;
     }
 
     &:has(input[type="radio"]:checked) {
-        background-color: var(--light-blue);
+        background-color: var(--hover-light-blue);
         border-width: 2px;
-        border-color: var(--dark-blue);
-        color: var(--darker-blue);
+        border-color: var(--main-button-colour);
+        color: var(--main-button-hover-colour);
         font-weight: bolder;
     }
 }
 
 .mc .choice * {
     cursor: pointer;
+}
+
+.mc label{
+    color: var(--text-colour);
 }
 
 .mc input[type="radio"] {
@@ -78,27 +86,27 @@
 }
 
 .mc input[type="radio"]:checked:before {
-    border-color: var(--dark-blue);
+    border-color: var(--main-button-colour);
 }
 
 .mc input[type="radio"]:checked:after {
     width: 0.5rem;
     height: 0.5rem;
-    background-color: var(--dark-blue);
+    background-color: var(--main-button-colour);
     z-index: 2;
 }
 
 .mc #correct {
-    background-color: var(--green);
+    background-color: var(--background-correct-colour);
     border-width: 0;
-    color: var(--dark-green);
+    color: var(--main-correct-colour);
     font-weight: bolder;
 }
 
 .mc #incorrect {
-    background-color: var(--light-red);
+    background-color: var(--background-incorrect-colour);
     border-width: 0;
-    color: var(--dark-red);
+    color: var(--main-incorrect-colour);
     font-weight: bolder;
 }
 
@@ -123,7 +131,7 @@
 
 .mc .checkmark-circle {
     fill: white;
-    width: var(--font-size);
+    width: 1.1rem;
     margin: auto;
     margin-right: 8px;
     display: block;
@@ -132,5 +140,5 @@
 .mc .result {
     font-weight: bolder;
     font-size: 1.3rem;
-    color: var(--med-blue);
+    color: var(--tooltip-colour);
 }

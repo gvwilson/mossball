@@ -20,7 +20,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #f0f0f0;
+  background-color: var(--background-color);
   z-index: 100;
   border-radius: 8px;
 }
@@ -93,15 +93,16 @@
   font-size: 15px;
   display: flex;
   align-items: center;
+  color: var(--text-colour);
 }
 
 .word[data-state="found"] {
-  color: var(--dark-green);
+  color: var(--main-correct-colour);
   text-decoration: line-through;
 }
 
 .word[data-state="unfound"] {
-  color: var(--dark-red);
+  color: var(--main-incorrect-colour);
 }
 
 .bottom-wrapper {
@@ -116,6 +117,7 @@
   margin-top: 10px;
   text-align: center;
   font-size: 14px;
+  color: var(--text-colour);
 }
 
 .timer {
@@ -124,4 +126,5 @@
   font-size: 16px;
   align-items: center;
   gap: 5px;
+  color: var(--text-colour);
 }

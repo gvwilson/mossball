@@ -50,7 +50,7 @@ class FileUploader(anywidget.AnyWidget):
     to_disk = traitlets.Bool(False).tag(sync=True)
     cloud_only = traitlets.Bool(False).tag(sync=True)
 
-    def __init__(self, multiple=False, to_disk=False, cloud_only=False):
+    def __init__(self, multiple=False, to_disk=False, cloud_only=False, custom_css_path=None):
         super().__init__()
         self.multiple = multiple
         self.to_disk = to_disk
@@ -71,6 +71,16 @@ class FileUploader(anywidget.AnyWidget):
         self.on_msg(self._handle_frontend_msg)
         self.observe(self._handle_file_deletions, names=["files"])
         self.observe(self._process_files, names=["files"])
+
+        default_css = "\n".join([
+            self._global_css.read_text(encoding="utf-8"),
+            self._widget_css.read_text(encoding="utf-8")
+        ])
+        if custom_css_path:
+            custom_css = pathlib.Path(custom_css_path).read_text(encoding="utf-8")
+            self._css = default_css + "\n" + custom_css
+        else:
+            self._css = default_css
 
     # S3 methods defined in s3_helpers.py
     _refresh_buckets = refresh_buckets

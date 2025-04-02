@@ -4,6 +4,9 @@ __generated_with = "0.11.31"
 app = marimo.App(width="full")
 
 
+from pathlib import Path
+
+
 @app.cell(hide_code=True)
 def _(__file__):
     import marimo as mo
@@ -59,7 +62,7 @@ def _():
     from sessions.login import LoginWidget
 
     login_widget = LoginWidget()
-    login_widget.institution_id = "inst1"  # need to create `inst2`
+    login_widget.institution_id = "inst2"  # need to create `inst2`
     login_widget.login()
     return LoginWidget, login_widget
 
@@ -69,7 +72,7 @@ def _():
     from sessions.login import StudentLoginWidget
 
     login = StudentLoginWidget()
-    login.institution_id = "inst1"
+    login.institution_id = "inst2"
     login.student_id = "1"
     login.login()
     return StudentLoginWidget, login
@@ -78,29 +81,47 @@ def _():
 @app.cell
 def _():
     from widgets import create_ftw
+    CURRENT_DIR_WS = Path(__file__).resolve().parent  # 'frontend' folder
+    CUSTOM_CSS_PATH_WS = CURRENT_DIR_WS / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
+    # CUSTOM_CSS_PATH_WS = CURRENT_DIR_WS / "custom_theme_brown_beige.css" # uncomment for brown beige theme
+    
     create_ftw("6")
+    # create_ftw("6", custom_css_path=str(CUSTOM_CSS_PATH_WS)) # uncomment for custom theme
     return (create_ftw,)
 
 
 @app.cell(hide_code=True)
 def _():
     from widgets import create_mc
+    CURRENT_DIR_1 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
+    CUSTOM_CSS_PATH_1 = CURRENT_DIR_1 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
+    # CUSTOM_CSS_PATH_1 = CURRENT_DIR_WS / "custom_theme_brown_beige.css" # uncomment for brown beige theme
 
     create_mc("3")
+    # create_mc("3", custom_css_path=str(CUSTOM_CSS_PATH_1)) # uncomment for custom theme
     return (create_mc,)
 
 
 @app.cell
 def _():
     from widgets import create_str
+    CURRENT_DIR_2 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
+    CUSTOM_CSS_PATH_2 = CURRENT_DIR_2 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
+    # CUSTOM_CSS_PATH_2 = CURRENT_DIR_WS / "custom_theme_brown_beige.css" # uncomment for brown beige theme
 
     create_str("4")
+    # create_str("4", custom_css_path=str(CUSTOM_CSS_PATH_2)) # uncomment for custom theme
     return (create_str,)
 
 
 @app.cell(hide_code=True)
 def _(FileUploader):
+    CURRENT_DIR_5 = Path(__file__).resolve().parent
+    CUSTOM_CSS_PATH_5 = CURRENT_DIR_5 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
+    # CUSTOM_CSS_PATH_5 = CURRENT_DIR_WS / "custom_theme_brown_beige.css" # uncomment for brown beige theme
+
     uploader = FileUploader(multiple=True, to_disk=True, cloud_only=True)
+    # uploader = FileUploader(multiple=True, to_disk=True, cloud_only=True, custom_css_path=str(CUSTOM_CSS_PATH_5)) # uncomment for custom theme
     return (uploader,)
 
 
@@ -119,16 +140,24 @@ def _(uploader):
 @app.cell
 def _():
     from widgets import create_drag
+    CURRENT_DIR_3 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
+    CUSTOM_CSS_PATH_3 = CURRENT_DIR_3 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
+    # CUSTOM_CSS_PATH_3 = CURRENT_DIR_WS / "custom_theme_brown_beige.css" # uncomment for brown beige theme
 
-    create_drag("5")
+    create_drag("5") # uncomment for default theme
+    # create_drag("5", custom_css_path=str(CUSTOM_CSS_PATH_3)) # uncomment for custom theme
     return (create_drag,)
 
 
 @app.cell
 def _():
     from widgets import create_stp
+    CURRENT_DIR_4 = Path(__file__).resolve().parent  # This gets the 'frontend' folder.
+    CUSTOM_CSS_PATH_4 = CURRENT_DIR_4 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
+    # CUSTOM_CSS_PATH_4 = CURRENT_DIR_WS / "custom_theme_brown_beige.css" # uncomment for brown beige theme
 
-    create_stp("1")
+    create_stp("1") # uncomment for default theme
+    # create_stp("1", custom_css_path=str(CUSTOM_CSS_PATH_4)) # uncomment for custom theme
     return (create_stp,)
 
 

@@ -1,0 +1,52 @@
+/*
+ * Theme Customization Guide:
+ *
+ * This section enables authors to override the default CSS so that institutions 
+ * can match their required theming. By adjusting the variables below, you can 
+ * customize the appearance of Marimo widgets to fit your organization's colour theme.
+ *
+ * To apply changes, simply uncomment the block below and modify the values as needed.
+ *
+ * Available variables:
+ *   --tooltip-colour:               Color used for tooltips.
+ *   --hover-light-colour:           Light color shown on hover effects.
+ *   --main-button-colour:           Primary color for buttons.
+ *   --main-button-hover-colour:     Primary Button hover color.
+ *   --background-correct-colour:    Background color for correct responses.
+ *   --main-correct-colour:          Text or icon color for correct responses.
+ *   --background-incorrect-colour:  Background color for incorrect responses.
+ *   --main-incorrect-colour:        Text or icon color for incorrect responses.
+ *   --options-colour:               Color for option elements.
+ *   --background-color:             General background color.
+ *   --border-color:                 Border color for widgets.
+ *   --text-colour:                  General text color.
+ *   --button-text-colour:           Text color for buttons.
+ *   --button-checkmark:             Checkmark icon for buttons.
+ */
+
+ 
+
+.marimo {
+    --tooltip-colour: #5D4037;
+    --hover-light-colour: #D7CCC8;
+    --main-button-colour: #8D6E63;
+    --main-button-hover-colour: #6D4C41;
+    --background-correct-colour: #F0E5D8;
+    --main-correct-colour: #5D4037;
+    --background-incorrect-colour: #FFCCBC;
+    --main-incorrect-colour: #A15C43;
+    --options-colour: #C8B8A6;
+    --background-color: #F5F5DC;
+    --border-color: #D3CAB9;
+    --text-colour: #3E2723;
+    --button-text-colour: #e4c3be;
+    /* 
+    To change the checkmark color of a button, modify the fill value in the data URI below.
+    Replace all instances of the current value (%23ffffff) which is white, with your desired color hex code.
+    For example:
+    - For black: use %23000000  (i.e., #000000)
+    - For red:   use %23ff0000  (i.e., #ff0000)
+    - For blue:  use %230000ff  (i.e., #0000ff)
+    */
+    --button-checkmark: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20class%3D%22checkmark-circle%22%20stroke%3D%22%23ffffff%22%3E%3Cg%20id%3D%22SVGRepo_bgCarrier%22%20stroke-width%3D%220%22%3E%3C/g%3E%3Cg%20id%3D%22SVGRepo_tracerCarrier%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C/g%3E%3Cg%20id%3D%22SVGRepo_iconCarrier%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M1%2012C1%205.92487%205.92487%201%2012%201C18.0751%201%2023%205.92487%2023%2012C23%2018.0751%2018.0751%2023%2012%2023C5.92487%2023%201%2018.0751%201%2012ZM18.4158%209.70405C18.8055%209.31268%2018.8041%208.67952%2018.4127%208.28984L17.7041%207.58426C17.3127%207.19458%2016.6796%207.19594%2016.2899%207.58731L10.5183%2013.3838L7.19723%2010.1089C6.80398%209.72117%206.17083%209.7256%205.78305%2010.1189L5.08092%2010.8309C4.69314%2011.2241%204.69758%2011.8573%205.09083%2012.2451L9.82912%2016.9174C10.221%2017.3039%2010.8515%2017.301%2011.2399%2016.911L18.4158%209.70405Z%22%20fill%3D%22%23ffffff%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+}
