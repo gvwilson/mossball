@@ -22,3 +22,13 @@
 2. Under the root directory `mossball`, run `pytest` to run all the tests
     - If you want to run a specific test file, run `pytest tests/testfiles/{test file name}`
     - If you want to run a specific test case under the specific file, run `pytest tests/testfiles/{test file name}::{test function name}`
+
+## Resources
+### Development
+- Marimo
+    - Learn basic functionality: https://docs.marimo.io/guides/
+    - Join their Discord community https://docs.marimo.io/community/
+    
+
+### Testing
+- Selenium with Python: https://selenium-python.readthedocs.io/ 
