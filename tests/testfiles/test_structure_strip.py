@@ -46,6 +46,37 @@ def test_structure_strip_elements(get_chrome_driver, start_marimo, mock_server):
                 # Check that at least one section is rendered
                 sections = widget.find_elements(By.CLASS_NAME, "structure-section")
                 assert len(sections) > 0
+
+                for section in sections:
+                    left_col = section.find_element(By.CLASS_NAME, "section-left")
+                    right_col = section.find_element(By.CLASS_NAME, "section-content")
+                    assert left_col.is_displayed()
+                    assert right_col.is_displayed()
+                    
+                    # Check for prompt in the left column
+                    prompt = left_col.find_element(By.CLASS_NAME, "section-prompt")
+                    assert prompt.is_displayed()
+                    
+                    # Check for instruction dropdown in the left column
+                    dropdowns = left_col.find_elements(By.CLASS_NAME, "instructions-dropdown")
+                    assert len(dropdowns) > 0
+                    
+                    # Check for textarea in the right column
+                    textareas = right_col.find_elements(By.TAG_NAME, "textarea")
+                    assert len(textareas) > 0
+
+                # Check that the button container exists.
+                button_container = widget.find_element(By.CLASS_NAME, "button-container")
+                assert button_container.is_displayed()
+
+                # Check for a check button
+                check_btn = button_container.find_element(By.CLASS_NAME, "check-button")
+                assert check_btn.is_displayed()
+
+                # Check for a copy button
+                copy_btn = button_container.find_element(By.CLASS_NAME, "try-button")
+                assert copy_btn.is_displayed()
+
                 break
         except Exception:
             continue
