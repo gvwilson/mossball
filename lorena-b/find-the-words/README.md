@@ -31,7 +31,7 @@ The plugin accepts a `data` object for configurations:
 - `gridHeight` (`integer`): The height of the word search grid in number of cells.  
 - `gameMode` (`object`): Settings related to game timing. *(See "Game Mode Object" below.)*  
 - `barColor` (`string`): The color of the selection bar (any valid CSS color).  
-- `seed` (`integer`, `optional`): A number to ensure the grid remains the same across different runs. Useful for testing.
+- `seed` (`integer`, optional): A number to ensure the grid remains the same across different runs. Useful for testing.
 
 ### Game Mode Object (`config.gameMode`)  
 
