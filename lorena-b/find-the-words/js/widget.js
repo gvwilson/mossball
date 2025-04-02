@@ -86,7 +86,7 @@ function render({ model, el }) {
         leftColumn.appendChild(startGameOverlay);
 
         startGameButton.addEventListener("click", () => {
-            endButton.style.display = "block";            
+            endButton.style.display = "block";
             startGameOverlay.style.display = "none";
             timer.start(() => {
                 resetGameState();
@@ -242,15 +242,44 @@ function render({ model, el }) {
     const validateWord = (selectedCells) => {
         const upperCaseWords = WORDS.map((word) => word.toUpperCase());
         let selectedWord = selectedCells.map((cell) => cell.innerText).join("");
-        let isWordFound = upperCaseWords.includes(selectedWord);
+
+        if (!upperCaseWords.includes(selectedWord)) {
+            return { isWordFound: false, selectedWord };
+        }
+
+        const wordElement = wordBank.querySelector(
+            `#${selectedWord.toLowerCase()}`
+        );
+        if (wordElement && wordElement.dataset.state === WORD_STATES.FOUND) {
+            return { isWordFound: false, selectedWord };
+        }
+
+        const selectedPositions = selectedCells.map((cell) => ({
+            row: parseInt(cell.dataset.row),
+            col: parseInt(cell.dataset.col),
+        }));
+        const wordPositions = grid.wordPositions[selectedWord];
+        // check if the word positioning match the map to avoid selecting substrings of a larger wrord
+        const positionsMatch =
+            wordPositions.length === selectedPositions.length &&
+            wordPositions.every(
+                (pos, index) =>
+                    pos.row === selectedPositions[index].row &&
+                    pos.col === selectedPositions[index].col
+            );
+
         return {
-            isWordFound,
+            isWordFound: positionsMatch,
             selectedWord,
         };
     };
 
     const markFoundWord = (word) => {
         let wordElement = wordBank.querySelector(`#${word.toLowerCase()}`);
+        if (wordElement && wordElement.dataset.state === WORD_STATES.FOUND) {
+            return;
+        }
+        // Mark the word as found if it has not been found before
         wordElement.dataset.state = WORD_STATES.FOUND;
         wordElement.classList.add("feedback", "correct");
     };
@@ -390,7 +419,7 @@ function render({ model, el }) {
                 "You found all the words!",
                 "success",
                 "OK",
-                timer.stop()
+                () => timer.stop()
             );
         }
     });
