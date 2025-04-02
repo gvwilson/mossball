@@ -183,3 +183,94 @@ def test_structure_strip_incomplete_check(get_chrome_driver, start_marimo, mock_
     process.terminate()
     process.wait()
     driver.quit()
+
+
+@pytest.mark.parametrize("start_marimo", ["tests/notebooks/structure_strip_test.py"], indirect=True)
+def test_structure_strip_complete_check(get_chrome_driver, start_marimo, mock_server):
+    url, process = start_marimo
+    url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
+    driver = get_chrome_driver
+    driver.get(url)
+    driver.maximize_window()
+    
+    # wait for plugin to load
+    shadow_hosts = WebDriverWait(driver, 30).until(
+         EC.presence_of_all_elements_located((By.CSS_SELECTOR, "marimo-anywidget"))
+    )
+    assert len(shadow_hosts) >= 1
+
+    widget_found = False
+    # Loop over shadow hosts to find the Structure Strip widget.
+    for host in shadow_hosts:
+        root = host.shadow_root
+        try:
+            widget = WebDriverWait(root, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "structure-strip"))
+            )
+        except Exception:
+            continue
+        
+        if widget:
+            widget_found = True
+            sections = widget.find_elements(By.CLASS_NAME, "structure-section")
+            assert len(sections) > 0
+            
+            # Make a long text that satisfies minimum requirements
+            complete_text = (
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vehicula massa at purus "
+                "ullamcorper, ut faucibus nulla tincidunt. Sed accumsan mi vitae eros feugiat, sed convallis "
+                "libero ullamcorper. Proin a justo nec erat fermentum volutpat. Vestibulum ante ipsum primis in "
+                "faucibus orci luctus et ultrices posuere cubilia curae; Duis non felis euismod, tincidunt orci "
+                "non, pulvinar elit. Praesent fermentum neque eget urna tincidunt, sed gravida felis malesuada. "
+                "Quisque id libero et metus gravida feugiat. Nam eget odio auctor, hendrerit leo at, blandit "
+                "felis. Suspendisse potenti. Praesent a interdum magna. Cras ullamcorper magna non nisi convallis, "
+                "vel cursus magna ultrices. Curabitur tincidunt eros a turpis volutpat, in auctor justo tempor. "
+                "Donec ac consequat lorem. Suspendisse eget ultrices sem. Sed non sem non leo aliquet ultricies. "
+                "Integer sit amet risus nec velit efficitur bibendum. Curabitur non orci vitae urna volutpat "
+                "ultrices a eget quam. Phasellus scelerisque, mi a dignissim mollis, enim turpis vestibulum neque, "
+                "id bibendum sapien libero ut dui. Sed nec ligula id nunc efficitur varius. "
+            )
+            
+            for section in sections:
+                left_col = section.find_element(By.CLASS_NAME, "section-left")
+                question_btn = left_col.find_element(By.CLASS_NAME, "question-btn")
+                question_btn.click()
+                dropdown = WebDriverWait(left_col, 5).until(
+                    lambda el: "Minimum characters:" in el.find_element(By.CLASS_NAME, "instructions-dropdown").text
+                )
+                dropdown = left_col.find_element(By.CLASS_NAME, "instructions-dropdown")
+                dropdown_text = dropdown.text
+                match = re.search(r"Minimum characters:\s*(\d+)", dropdown_text)
+                assert match, f"Could not get max length from dropdown: {dropdown_text}"
+                max_length = int(match.group(1))
+                # Check for the complete text satisfies the minimum requirement
+                assert len(complete_text) >= max_length, f"Complete text is too short: {len(complete_text)} < {max_length}"
+                
+                right_col = section.find_element(By.CLASS_NAME, "section-content")
+                textarea = right_col.find_element(By.TAG_NAME, "textarea")
+                textarea.clear()
+                textarea.send_keys(complete_text)
+                
+                # Check that character counter is updated correctly
+                counter = right_col.find_element(By.CLASS_NAME, "char-counter")
+                assert str(len(complete_text)) in counter.text, f"Counter does not show {len(complete_text)}"
+
+            button_container = widget.find_element(By.CLASS_NAME, "button-container")
+            check_button = button_container.find_element(By.CLASS_NAME, "check-button")
+            assert check_button.is_displayed()
+            check_button.click()
+            time.sleep(0.5)
+            
+            # For each section check the feedback text
+            for section in sections:
+                feedback = section.find_element(By.CLASS_NAME, "feedback")
+                WebDriverWait(section, 10).until(lambda s: feedback.text.strip() != "")
+                feedback_text = feedback.text.strip()
+                expected_message = "Section complete!"
+                assert feedback_text == expected_message, f"Expected '{expected_message}', got '{feedback_text}'"
+            break
+    assert widget_found
+    
+    process.terminate()
+    process.wait()
+    driver.quit()
