@@ -1,4 +1,32 @@
-# Contributing to Marimo Project
+# Contributing to the Mossball Project
+
+## First Time Setup 
+
+In the project root:
+
+- Initalize a virtual environment with `uv venv`
+- Activate the environment with `source .venv/bin/activate`
+- Install the development package with `uv pip install -e ".[dev]"`
+
+Quick start:
+```zsh
+uv venv && source .venv/bin/activate && uv pip install -e ".[dev]"
+```
+
+To manage project depenencies, update the `dependencies` list in `pyproject.toml`.
+
+## Plugin Development
+
+To run all of the plugins in a single notebook:
+
+- Go to the `frontend/` directory
+- Run `marimo edit` and select a notebook
+
+### Find The Words
+
+A plugin that allows users to configure play a word search game in the marimo notebook. Source code can be found [here](https://github.com/gvwilson/mossball/tree/08a43c5ffdeb3625a29f486048c14e8de443cae5/lorena-b/find-the-words).
+
+To develop for the `find-the-words` plugin, see the instructions in the [README](https://github.com/gvwilson/mossball/blob/08a43c5ffdeb3625a29f486048c14e8de443cae5/lorena-b/find-the-words/README.md)
 
 ## Testing
 ### How to set up and write tests
@@ -22,3 +50,4 @@
 2. Under the root directory `mossball`, run `pytest` to run all the tests
     - If you want to run a specific test file, run `pytest tests/testfiles/{test file name}`
     - If you want to run a specific test case under the specific file, run `pytest tests/testfiles/{test file name}::{test function name}`
+
