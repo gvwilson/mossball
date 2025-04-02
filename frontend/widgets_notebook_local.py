@@ -1,9 +1,8 @@
 import marimo
 
-__generated_with = "0.11.31"
+__generated_with = "0.12.2"
 app = marimo.App(width="full")
 
-from pathlib import Path
 
 @app.cell(hide_code=True)
 def _(__file__):
@@ -32,53 +31,53 @@ def _():
 
 
 @app.cell
-def _(create_widget, questions):
+def _(Path, __file__, create_widget, questions):
     CURRENT_DIR_1 = Path(__file__).resolve().parent
     # CUSTOM_CSS_PATH_1 = CURRENT_DIR_1 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
     CUSTOM_CSS_PATH_1 = CURRENT_DIR_1 / "custom_theme_brown_beige.css" # uncomment for brown beige theme
     create_widget(questions["1"], custom_css_path=str(CUSTOM_CSS_PATH_1))  # uncomment for custom theme
     # create_widget(questions["1"])  # uncomment for default theme
-    return
+    return CURRENT_DIR_1, CUSTOM_CSS_PATH_1
 
 
 @app.cell
-def _(create_widget, questions):
+def _(Path, __file__, create_widget, questions):
     CURRENT_DIR_2 = Path(__file__).resolve().parent
     # CUSTOM_CSS_PATH_2 = CURRENT_DIR_2 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
     CUSTOM_CSS_PATH_2 = CURRENT_DIR_2 / "custom_theme_brown_beige.css" # uncomment for brown beige theme
     create_widget(questions["2"], custom_css_path=str(CUSTOM_CSS_PATH_2))  # uncomment for custom theme
     # create_widget(questions["2"])  # uncomment for default theme
-    return
+    return CURRENT_DIR_2, CUSTOM_CSS_PATH_2
 
 
 @app.cell
-def _(create_widget, questions):
+def _(Path, __file__, create_widget, questions):
     CURRENT_DIR_3 = Path(__file__).resolve().parent
     # CUSTOM_CSS_PATH_3 = CURRENT_DIR_3 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
     CUSTOM_CSS_PATH_3 = CURRENT_DIR_3 / "custom_theme_brown_beige.css" # uncomment for brown beige theme
     create_widget(questions["3"], custom_css_path=str(CUSTOM_CSS_PATH_3))  # uncomment for custom theme
     # create_widget(questions["3"])  # uncomment for default theme
-    return
+    return CURRENT_DIR_3, CUSTOM_CSS_PATH_3
 
 
 @app.cell
-def _(create_widget, questions):
+def _(Path, __file__, create_widget, questions):
     CURRENT_DIR_4 = Path(__file__).resolve().parent
     # CUSTOM_CSS_PATH_4 = CURRENT_DIR_4 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
     CUSTOM_CSS_PATH_4 = CURRENT_DIR_4 / "custom_theme_brown_beige.css" # uncomment for brown beige theme
     create_widget(questions["4"], custom_css_path=str(CUSTOM_CSS_PATH_4))  # uncomment for custom theme
     # create_widget(questions["4"])  # uncomment for default theme
-    return
+    return CURRENT_DIR_4, CUSTOM_CSS_PATH_4
 
 
 @app.cell
-def _(create_widget, questions):
+def _(Path, __file__, create_widget, questions):
     CURRENT_DIR_5 = Path(__file__).resolve().parent
     # CUSTOM_CSS_PATH_5 = CURRENT_DIR_5 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
     CUSTOM_CSS_PATH_5 = CURRENT_DIR_5 / "custom_theme_brown_beige.css" # uncomment for brown beige theme
     create_widget(questions["5"], custom_css_path=str(CUSTOM_CSS_PATH_5))  # uncomment for custom theme
     # create_widget(questions["5"])  # uncomment for default theme
-    return
+    return CURRENT_DIR_5, CUSTOM_CSS_PATH_5
 
 
 @app.cell(hide_code=True)
@@ -99,7 +98,7 @@ def _(mo):
 
 
 @app.cell
-def _():
+def _(Path, __file__):
     from widgets import create_local_ftw
     CURRENT_DIR_FTW = Path(__file__).resolve().parent
     CUSTOM_CSS_PATH_FTW = CURRENT_DIR_FTW / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
@@ -111,16 +110,16 @@ def _():
         "Click and drag the words on the grid to select them",
         15,
         15,
-        True,
+        False,
         60,
         "green",
         custom_css_path=str(CUSTOM_CSS_PATH_FTW),  # uncomment for custom theme
     )
-    return (create_local_ftw,)
+    return CURRENT_DIR_FTW, CUSTOM_CSS_PATH_FTW, create_local_ftw
 
 
 @app.cell
-def _():
+def _(Path, __file__):
     from widgets import create_local_mc
     CURRENT_DIR_MC = Path(__file__).resolve().parent
     CUSTOM_CSS_PATH_MC = CURRENT_DIR_MC / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
@@ -132,11 +131,11 @@ def _():
         2,
         custom_css_path=str(CUSTOM_CSS_PATH_MC),  # uncomment for custom theme
     )
-    return (create_local_mc,)
+    return CURRENT_DIR_MC, CUSTOM_CSS_PATH_MC, create_local_mc
 
 
 @app.cell
-def _():
+def _(Path, __file__):
     from widgets import create_local_str
     CURRENT_DIR_STR = Path(__file__).resolve().parent
     CUSTOM_CSS_PATH_STR = CURRENT_DIR_STR / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
@@ -170,17 +169,17 @@ def _():
         ],
         custom_css_path=str(CUSTOM_CSS_PATH_STR),  # uncomment for custom theme
     )
-    return (create_local_str,)
+    return CURRENT_DIR_STR, CUSTOM_CSS_PATH_STR, create_local_str
 
 
 @app.cell(hide_code=True)
-def _(FileUploader):
+def _(FileUploader, Path, __file__):
     CURRENT_DIR_FILE = Path(__file__).resolve().parent
     CUSTOM_CSS_PATH_FILE = CURRENT_DIR_FILE / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
     # CUSTOM_CSS_PATH_FILE = CURRENT_DIR_FILE / "custom_theme_brown_beige.css" # uncomment for brown beige theme
 
     uploader = FileUploader(multiple=True, to_disk=True, cloud_only=True, custom_css_path=str(CUSTOM_CSS_PATH_FILE)) # add custom_css_path=str(CUSTOM_CSS_PATH_FILE) for custom theme
-    return (uploader,)
+    return CURRENT_DIR_FILE, CUSTOM_CSS_PATH_FILE, uploader
 
 
 @app.cell
@@ -196,7 +195,7 @@ def _(uploader):
 
 
 @app.cell(hide_code=True)
-def _():
+def _(Path, __file__):
     from widgets import create_local_drag
     CURRENT_DIR_DRAG = Path(__file__).resolve().parent
     CUSTOM_CSS_PATH_DRAG = CURRENT_DIR_DRAG / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
@@ -216,11 +215,11 @@ def _():
         ],
         custom_css_path=str(CUSTOM_CSS_PATH_DRAG),  # uncomment for custom theme
     )
-    return (create_local_drag,)
+    return CURRENT_DIR_DRAG, CUSTOM_CSS_PATH_DRAG, create_local_drag
 
 
 @app.cell
-def _():
+def _(Path, __file__):
     from widgets import create_local_stp
     CURRENT_DIR_STP = Path(__file__).resolve().parent
     CUSTOM_CSS_PATH_STP = CURRENT_DIR_STP / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
@@ -236,7 +235,7 @@ def _():
         ],
         custom_css_path=str(CUSTOM_CSS_PATH_STP),  # uncomment for custom theme
     )
-    return (create_local_stp,)
+    return CURRENT_DIR_STP, CUSTOM_CSS_PATH_STP, create_local_stp
 
 
 if __name__ == "__main__":
