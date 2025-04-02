@@ -17,6 +17,11 @@ To manage project depenencies, update the `dependencies` list in `pyproject.toml
 
 ## Plugin Development
 
+To run all of the plugins in a single notebook:
+
+- Go to the `frontend/` directory
+- Run `marimo edit` and select a notebook
+
 ### Find The Words
 
 A plugin that allows users to configure play a word search game in the marimo notebook. Source code can be found [here](https://github.com/gvwilson/mossball/tree/08a43c5ffdeb3625a29f486048c14e8de443cae5/lorena-b/find-the-words).
