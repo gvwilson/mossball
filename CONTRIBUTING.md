@@ -6,6 +6,13 @@ In the project root:
 - Activate the environment with `source .venv/bin/activate`
 - Install the development package with `uv pip install -e ".[dev]"`
 
+Quick start:
+```zsh
+uv venv && source .venv/bin/activate && uv pip install -e ".[dev]"
+```
+
+To manage project depenencies, update the `dependencies` list in `pyproject.toml`.
+
 ## Plugin Development
 
 ### Find The Words
