@@ -352,25 +352,24 @@ function createSubmitButton(model, userInputs, container, sections, uniqueId, pl
  */
 function createCopyButton(model, userInputs) {
   const copyBtn = document.createElement("button");
-  copyBtn.className = "try-button";
-  copyBtn.textContent = "Copy";
+    copyBtn.className = "try-button";
+    copyBtn.textContent = "Copy";
 
-  copyBtn.addEventListener("click", () => {
-    const allText = model
-      .get("sections")
-      .map((section) => userInputs[section.id] || "")
-      .join("\n\n");
+    copyBtn.addEventListener("click", () => {
+        const allText = model.get("data").sections
+            .map(section => userInputs[section.id] || "")
+            .join("\n\n");
 
-    navigator.clipboard.writeText(allText).then(() => {
-      const originalText = copyBtn.textContent;
-      copyBtn.textContent = "Copied";
-      setTimeout(() => {
-        copyBtn.textContent = originalText;
-      }, 2000);
+        navigator.clipboard.writeText(allText).then(() => {
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = "Copied";
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+            }, 2000);
+        });
     });
-  });
 
-  return copyBtn;
+    return copyBtn;
 }
 
 export default { render };
