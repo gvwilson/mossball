@@ -39,4 +39,5 @@
 - Pytest fixtures & clients: https://flask.palletsprojects.com/en/stable/testing/
 - Unittest mock library: https://docs.python.org/3/library/unittest.mock.html
 - Unittest mock tutorial: https://medium.com/@rohaangurunathrevankar/mocking-for-unit-tests-using-python-5e1fedde4f97
+- AWS mock library: https://docs.getmoto.org/en/latest/docs/getting_started.html
 
