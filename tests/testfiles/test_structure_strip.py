@@ -274,3 +274,54 @@ def test_structure_strip_complete_check(get_chrome_driver, start_marimo, mock_se
     process.terminate()
     process.wait()
     driver.quit()
+
+
+@pytest.mark.parametrize("start_marimo", ["tests/notebooks/structure_strip_test.py"], indirect=True)
+def test_structure_strip_copy_button(get_chrome_driver, start_marimo, mock_server):
+    url, process = start_marimo
+    url = url.encode('ascii', 'ignore').decode('unicode_escape').strip()
+    driver = get_chrome_driver
+    driver.get(url)
+    driver.maximize_window()
+    
+    # wait for plugin to load
+    shadow_hosts = WebDriverWait(driver, 30).until(
+         EC.presence_of_all_elements_located((By.CSS_SELECTOR, "marimo-anywidget"))
+    )
+    assert len(shadow_hosts) >= 1
+
+    widget_found = False
+    for host in shadow_hosts:
+        root = host.shadow_root
+        try:
+            widget = WebDriverWait(root, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "structure-strip"))
+            )
+        except Exception:
+            continue
+        
+        if widget:
+            widget_found = True
+            # Check for Copy button in the button container
+            button_container = widget.find_element(By.CLASS_NAME, "button-container")
+            copy_btn = button_container.find_element(By.CLASS_NAME, "try-button")
+            assert copy_btn.is_displayed(), "Copy button not visible"
+            copy_btn.click()
+
+            # Check if it changes to Copied
+            WebDriverWait(driver, 5).until(
+                lambda d: copy_btn.text.strip() == "Copied"
+            )
+            assert copy_btn.text.strip() == "Copied"
+
+            # Check if it reverts back to Copy
+            WebDriverWait(driver, 5).until(
+                lambda d: copy_btn.text.strip() == "Copy"
+            )
+            assert copy_btn.text.strip() == "Copy"
+            break
+    assert widget_found
+    
+    process.terminate()
+    process.wait()
+    driver.quit()
