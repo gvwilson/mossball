@@ -22,3 +22,22 @@
 2. Under the root directory `mossball`, run `pytest` to run all the tests
     - If you want to run a specific test file, run `pytest tests/testfiles/{test file name}`
     - If you want to run a specific test case under the specific file, run `pytest tests/testfiles/{test file name}::{test function name}`
+
+## Resources
+### Development
+- Marimo
+    - Learn basic functionality: https://docs.marimo.io/guides/
+    - Join their Discord community https://docs.marimo.io/community/
+ - esm imports:
+    - To easily import libraries: https://esm.sh/
+    
+- MongoDB
+    - Collection methods: https://www.mongodb.com/docs/manual/reference/method/js-collection/
+
+### Testing
+- Selenium with Python: https://selenium-python.readthedocs.io/ 
+- Pytest fixtures & clients: https://flask.palletsprojects.com/en/stable/testing/
+- Unittest mock library: https://docs.python.org/3/library/unittest.mock.html
+- Unittest mock tutorial: https://medium.com/@rohaangurunathrevankar/mocking-for-unit-tests-using-python-5e1fedde4f97
+- AWS mock library: https://docs.getmoto.org/en/latest/docs/getting_started.html
+
