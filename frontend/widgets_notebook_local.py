@@ -35,8 +35,8 @@ def _(Path, __file__, create_widget, questions):
     CURRENT_DIR_1 = Path(__file__).resolve().parent
     # CUSTOM_CSS_PATH_1 = CURRENT_DIR_1 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
     CUSTOM_CSS_PATH_1 = CURRENT_DIR_1 / "custom_theme_brown_beige.css" # uncomment for brown beige theme
-    create_widget(questions["1"], custom_css_path=str(CUSTOM_CSS_PATH_1))  # uncomment for custom theme
-    # create_widget(questions["1"])  # uncomment for default theme
+    #create_widget(questions["1"], custom_css_path=str(CUSTOM_CSS_PATH_1))  # uncomment for custom theme
+    create_widget(questions["1"])  # uncomment for default theme
     return CURRENT_DIR_1, CUSTOM_CSS_PATH_1
 
 
@@ -45,8 +45,8 @@ def _(Path, __file__, create_widget, questions):
     CURRENT_DIR_2 = Path(__file__).resolve().parent
     # CUSTOM_CSS_PATH_2 = CURRENT_DIR_2 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
     CUSTOM_CSS_PATH_2 = CURRENT_DIR_2 / "custom_theme_brown_beige.css" # uncomment for brown beige theme
-    create_widget(questions["2"], custom_css_path=str(CUSTOM_CSS_PATH_2))  # uncomment for custom theme
-    # create_widget(questions["2"])  # uncomment for default theme
+    # create_widget(questions["2"], custom_css_path=str(CUSTOM_CSS_PATH_2))  # uncomment for custom theme
+    create_widget(questions["2"])  # uncomment for default theme
     return CURRENT_DIR_2, CUSTOM_CSS_PATH_2
 
 
@@ -55,8 +55,8 @@ def _(Path, __file__, create_widget, questions):
     CURRENT_DIR_3 = Path(__file__).resolve().parent
     # CUSTOM_CSS_PATH_3 = CURRENT_DIR_3 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
     CUSTOM_CSS_PATH_3 = CURRENT_DIR_3 / "custom_theme_brown_beige.css" # uncomment for brown beige theme
-    create_widget(questions["3"], custom_css_path=str(CUSTOM_CSS_PATH_3))  # uncomment for custom theme
-    # create_widget(questions["3"])  # uncomment for default theme
+    # create_widget(questions["3"], custom_css_path=str(CUSTOM_CSS_PATH_3))  # uncomment for custom theme
+    create_widget(questions["3"])  # uncomment for default theme
     return CURRENT_DIR_3, CUSTOM_CSS_PATH_3
 
 
@@ -65,8 +65,8 @@ def _(Path, __file__, create_widget, questions):
     CURRENT_DIR_4 = Path(__file__).resolve().parent
     # CUSTOM_CSS_PATH_4 = CURRENT_DIR_4 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
     CUSTOM_CSS_PATH_4 = CURRENT_DIR_4 / "custom_theme_brown_beige.css" # uncomment for brown beige theme
-    create_widget(questions["4"], custom_css_path=str(CUSTOM_CSS_PATH_4))  # uncomment for custom theme
-    # create_widget(questions["4"])  # uncomment for default theme
+    # create_widget(questions["4"], custom_css_path=str(CUSTOM_CSS_PATH_4))  # uncomment for custom theme
+    create_widget(questions["4"])  # uncomment for default theme
     return CURRENT_DIR_4, CUSTOM_CSS_PATH_4
 
 
@@ -75,8 +75,8 @@ def _(Path, __file__, create_widget, questions):
     CURRENT_DIR_5 = Path(__file__).resolve().parent
     # CUSTOM_CSS_PATH_5 = CURRENT_DIR_5 / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
     CUSTOM_CSS_PATH_5 = CURRENT_DIR_5 / "custom_theme_brown_beige.css" # uncomment for brown beige theme
-    create_widget(questions["5"], custom_css_path=str(CUSTOM_CSS_PATH_5))  # uncomment for custom theme
-    # create_widget(questions["5"])  # uncomment for default theme
+    # create_widget(questions["5"], custom_css_path=str(CUSTOM_CSS_PATH_5))  # uncomment for custom theme
+    create_widget(questions["5"])  # uncomment for default theme
     return CURRENT_DIR_5, CUSTOM_CSS_PATH_5
 
 
@@ -113,7 +113,7 @@ def _(Path, __file__):
         False,
         60,
         "green",
-        custom_css_path=str(CUSTOM_CSS_PATH_FTW),  # uncomment for custom theme
+        #custom_css_path=str(CUSTOM_CSS_PATH_FTW),  # uncomment for custom theme
     )
     return CURRENT_DIR_FTW, CUSTOM_CSS_PATH_FTW, create_local_ftw
 
@@ -129,7 +129,7 @@ def _(Path, __file__):
         "What is the capital of China?",
         ["Hong Kong", "Shanghai", "Beijing", "Tokyo"],
         2,
-        custom_css_path=str(CUSTOM_CSS_PATH_MC),  # uncomment for custom theme
+        #custom_css_path=str(CUSTOM_CSS_PATH_MC),  # uncomment for custom theme
     )
     return CURRENT_DIR_MC, CUSTOM_CSS_PATH_MC, create_local_mc
 
@@ -167,7 +167,7 @@ def _(Path, __file__):
                 "max_length": 600
             }
         ],
-        custom_css_path=str(CUSTOM_CSS_PATH_STR),  # uncomment for custom theme
+        #custom_css_path=str(CUSTOM_CSS_PATH_STR),  # uncomment for custom theme
     )
     return CURRENT_DIR_STR, CUSTOM_CSS_PATH_STR, create_local_str
 
@@ -178,7 +178,8 @@ def _(FileUploader, Path, __file__):
     CUSTOM_CSS_PATH_FILE = CURRENT_DIR_FILE / "custom_theme_orange_yellow.css" # uncomment for orange yellow theme
     # CUSTOM_CSS_PATH_FILE = CURRENT_DIR_FILE / "custom_theme_brown_beige.css" # uncomment for brown beige theme
 
-    uploader = FileUploader(multiple=True, to_disk=True, cloud_only=True, custom_css_path=str(CUSTOM_CSS_PATH_FILE)) # add custom_css_path=str(CUSTOM_CSS_PATH_FILE) for custom theme
+    #uploader = FileUploader(multiple=True, to_disk=True, cloud_only=True, custom_css_path=str(CUSTOM_CSS_PATH_FILE)) # add custom_css_path=str(CUSTOM_CSS_PATH_FILE) for custom theme
+    uploader = FileUploader(multiple=True, to_disk=True, cloud_only=True)   # uncomment for default theme
     return CURRENT_DIR_FILE, CUSTOM_CSS_PATH_FILE, uploader
 
 
@@ -213,7 +214,7 @@ def _(Path, __file__):
             "performance",
             "file",
         ],
-        custom_css_path=str(CUSTOM_CSS_PATH_DRAG),  # uncomment for custom theme
+        #custom_css_path=str(CUSTOM_CSS_PATH_DRAG),  # uncomment for custom theme
     )
     return CURRENT_DIR_DRAG, CUSTOM_CSS_PATH_DRAG, create_local_drag
 
@@ -233,7 +234,7 @@ def _(Path, __file__):
             "Precipitation occurs as rain or snow.",
             "Water collects in bodies of water."
         ],
-        custom_css_path=str(CUSTOM_CSS_PATH_STP),  # uncomment for custom theme
+        #custom_css_path=str(CUSTOM_CSS_PATH_STP),  # uncomment for custom theme
     )
     return CURRENT_DIR_STP, CUSTOM_CSS_PATH_STP, create_local_stp
 
