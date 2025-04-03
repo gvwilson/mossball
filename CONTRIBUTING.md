@@ -15,6 +15,31 @@ uv venv && source .venv/bin/activate && uv pip install -e ".[dev]"
 
 To manage project depenencies, update the `dependencies` list in `pyproject.toml`.
 
+### Backend Setup
+
+If using the backend server, first set up the database:
+
+- Install [MongoDB Community Edition](https://www.mongodb.com/docs/manual/installation/) for your operating system / platform
+- Within a terminal, run MongoDB using the command corresponding to your platform (read "Run MongoDB Community Edition..." in your platform's section from the link above)
+- Optionally, install [mongosh](https://www.mongodb.com/docs/mongodb-shell/#mongodb-binary-bin.mongosh) if you wish to use the command-line interface to interact with MongoDB
+
+To run the plugin backend server:
+- Within the virtual environment, go to the `backends/plugin `directory
+- Run `python -m plugin_backend` (or possibly `py -m plugin_backend` for Windows)
+
+To run the sample institution backend server:
+- Repeat the above steps, but using the `backends/institution/institution_backend` file instead
+
+To create an institution in the database:
+- While the backend servers are running, open the following link http://localhost:5001/ui/register in a browser
+- Add the ID and base URL for the institution (to use the notebook provided in `frontend/widgets_notebook.py`, use ID "inst2" with URL "http://localhost:5002")
+- To confirm that the institution was created, run `mongosh` in a terminal (if installed) and run the following commands: 
+```
+use plugin_backend_db
+db.institutions.find()
+```
+
+
 ## Plugin Development
 
 To run all of the plugins in a single notebook:
