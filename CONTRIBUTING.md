@@ -28,7 +28,7 @@ To run the plugin backend server:
 - Run `python -m plugin_backend` (or possibly `py -m plugin_backend` for Windows)
 
 To run the sample institution backend server:
-- Repeat the above steps, but using the `backends/institution/institution_backend` file instead
+- Repeat the above steps in another terminal, but using the `backends/institution/institution_backend` file instead
 
 To create an institution in the database:
 - While the backend servers are running, open the following link http://localhost:5001/ui/register in a browser
@@ -40,7 +40,7 @@ db.institutions.find()
 ```
 
 
-## Plugin Development
+## Plugin Development and Code Structure
 
 To run all of the plugins in a single notebook:
 
