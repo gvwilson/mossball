@@ -6,7 +6,7 @@ app = marimo.App(width="medium")
 
 @app.cell
 def _():
-    from find_the_words import WordSearch
+    from src.find_the_words import WordSearch
 
     data = {
         "title": "Select the words in the grid below:",
