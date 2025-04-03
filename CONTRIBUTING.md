@@ -1,6 +1,6 @@
 # Contributing to the Mossball Project
 
-## First Time Setup 
+## First Time Setup
 
 In the project root:
 
@@ -28,6 +28,72 @@ A plugin that allows users to configure play a word search game in the marimo no
 
 To develop for the `find-the-words` plugin, see the instructions in the [README](https://github.com/gvwilson/mossball/blob/08a43c5ffdeb3625a29f486048c14e8de443cae5/lorena-b/find-the-words/README.md)
 
+### FileUploader Widget
+
+The FileUploader widget provides a drag-and-drop interface for uploading files to both local storage (disk or application memory) and AWS S3. The source code can be found in the `FileUploader` module.
+
+#### FileUploader Features
+- Drag-and-drop file upload interface
+- Local file storage with progress indicators
+- AWS S3 integration for cloud storage
+- File deletion support for both local and S3 storage
+- Bucket creation and management features
+- Support for single or multiple file uploads
+- Preview capabilities for images and PDFs
+
+#### Working with the FileUploader Code
+
+The module is organized as follows:
+- `FileUploader.py`: Main Python class implementing the widget functionality
+- `s3_helpers.py`: Helper functions for S3 operations
+- `upload.js`: Frontend JavaScript code handling UI and interactions
+- `upload.css`: Styling for the upload interface
+
+To use the widget in a notebook:
+
+```python
+from FileUploaderModule import FileUploader
+
+# Basic usage
+uploader = FileUploader(multiple=True)
+
+# With S3 integration
+uploader = FileUploader(multiple=True, cloud_only=True)
+
+# Display the widget
+uploader
+```
+
+To access uploaded files:
+```python
+# Get file names
+files = uploader.names()
+
+# Get file contents (raw bytes)
+content = uploader.contents(0)  # First file
+
+# Display content (images or PDFs for now)
+uploader.contents(0, display=True)
+```
+
+#### Setting Up AWS S3 Integration
+
+To enable S3 integration, follow these steps:
+
+1. Set the environment variable `S3_UPLOAD_ENABLED=1` in your `.env` file
+2. Configure AWS credentials either using:
+   - AWS CLI with `aws configure`
+   - Environment variables in `.env` file (temporary configuration):
+     ```
+     AWS_ACCESS_KEY_ID=<access_key>
+     AWS_SECRET_ACCESS_KEY=<secret_key>
+     AWS_DEFAULT_REGION=<your_region>
+     ```
+
+
+For testing S3 functionality locally, you can use [LocalStack](https://localstack.cloud/) to mock AWS services
+
+
 ## Testing
 ### How to set up and write tests
 1. Make sure that all the required packages are installed via `uv pip install -e ".[dev]"`
@@ -51,3 +117,13 @@ To develop for the `find-the-words` plugin, see the instructions in the [README]
     - If you want to run a specific test file, run `pytest tests/testfiles/{test file name}`
     - If you want to run a specific test case under the specific file, run `pytest tests/testfiles/{test file name}::{test function name}`
 
+## Development Tools
+
+### Recommended Tools
+- [AWS CLI](https://aws.amazon.com/cli/) for S3 configuration
+- [LocalStack](https://localstack.cloud/) for local AWS service emulation
+
+### Troubleshooting AWS Issues
+- **Access Denied Errors**: Ensure your IAM user has the correct permissions (`AmazonS3FullAccess` or custom policy)
+- **Bucket Already Exists**: S3 bucket names must be globally unique
+- **Region Issues**: Ensure your region in AWS config matches the region in your code
