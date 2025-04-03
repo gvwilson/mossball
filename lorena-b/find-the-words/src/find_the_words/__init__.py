@@ -33,14 +33,16 @@ class WordSearch(anywidget.AnyWidget):
         super().__init__(**kwargs)
 
     def validate_input(self, data):
-        # TODO: handle validation for all configuration options
-        # Ensure that gridWidth and gridHeight are valid given the words
-        words = data.get("words", [])
-        config = data.get("config", {})
+        words = self.data.get("words", [])
+        if not words:
+            raise ValueError("No words provided for the word search.")
+
+        config = self.data.get("config", {})
         gridWidth = config.get("gridWidth", 10)
         gridHeight = config.get("gridHeight", 10)
         longest_word_length = len(max(words, key=len))
 
+        # ensure that gridWidth and gridHeight are valid given the words
         if gridWidth < longest_word_length or gridHeight < longest_word_length:
             raise ValueError(
                 f"gridWidth and gridHeight must be at least {longest_word_length}")

@@ -1,13 +1,13 @@
 .title {
-  margin-bottom: 10px;
-  align-self: flex-start;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    margin-bottom: 10px;
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .left-column {
-  position: relative;
+    position: relative;
 }
 
 /**
@@ -15,116 +15,116 @@
 **/
 
 .start-game-overlay {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--background-color);
-  z-index: 100;
-  border-radius: 8px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-color);
+    z-index: 100;
+    border-radius: 8px;
 }
 
 .grid {
-  border: var(--border-color) 1px solid;
-  border-radius: 8px;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -webkit-user-drag: none;
-  touch-action: none;
-  position: relative;
+    border: var(--border-color) 1px solid;
+    border-radius: 8px;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-drag: none;
+    touch-action: none;
+    position: relative;
 }
 
 .grid-cell {
-  text-align: center;
-  vertical-align: middle;
-  font-size: 16px;
-  cursor: pointer;
-  user-select: none;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 16px;
+    cursor: pointer;
+    user-select: none;
 }
 
 .selection-path.found-word {
-  pointer-events: none;
+    pointer-events: none;
 }
 
 .selection-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
 }
 
 .word-bank {
-  display: inline-block;
-  flex-direction: column;
-  padding: 10px 20px;
-  background-color: var(--background-color);
-  border: var(--border-color) 1px solid;
-  border-radius: 8px;
+    display: inline-block;
+    flex-direction: column;
+    padding: 10px 20px;
+    background-color: var(--background-color);
+    border: var(--border-color) 1px solid;
+    border-radius: 8px;
 }
 
 .main-area {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }
 
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #word-title {
-  margin-bottom: 10px;
-  font-size: 16px;
-  font-weight: bold;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
 }
 
 .word {
-  margin-bottom: 5px;
-  font-size: 15px;
-  display: flex;
-  align-items: center;
-  color: var(--text-colour);
+    margin-bottom: 5px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    color: var(--text-colour);
 }
 
 .word[data-state="found"] {
-  color: var(--main-correct-colour);
-  text-decoration: line-through;
+    color: var(--main-correct-colour);
+    text-decoration: line-through;
 }
 
 .word[data-state="unfound"] {
-  color: var(--main-incorrect-colour);
+    color: var(--main-incorrect-colour);
 }
 
 .bottom-wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
 }
 
 .score-counter {
-  margin-top: 10px;
-  text-align: center;
-  font-size: 14px;
-  color: var(--text-colour);
+    margin-top: 10px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-colour);
 }
 
 .timer {
-  display: flex;
-  flex-direction: row;
-  font-size: 16px;
-  align-items: center;
-  gap: 5px;
-  color: var(--text-colour);
+    display: flex;
+    flex-direction: row;
+    font-size: 16px;
+    align-items: center;
+    gap: 5px;
+    color: var(--text-colour);
 }
