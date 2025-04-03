@@ -17,7 +17,9 @@ To manage project depenencies, update the `dependencies` list in `pyproject.toml
 
 ### Backend Setup
 
-If using the backend server, first set up the database:
+If using the backend server, please see this [diagram](https://raw.githubusercontent.com/gvwilson/mossball/refs/heads/contributing-backend-setup/backends/backend-diagram.png) to understand how the plugin backend works with the frontend and institution backend.
+
+To set up the database:
 
 - Install [MongoDB Community Edition](https://www.mongodb.com/docs/manual/installation/) for your operating system / platform
 - Within a terminal, run MongoDB using the command corresponding to your platform (read "Run MongoDB Community Edition..." in your platform's section from the link above)
