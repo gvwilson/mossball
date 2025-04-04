@@ -40,7 +40,7 @@ For `choices`, you should pass the words in the right order that it appears in t
 
 ## Check your work
 
-You can check your changes on this plugin by running either one of the commands on Terminal:
+You can check your changes on this plugin by running either one of the commands on Terminal after you properly set up the [backend](../../../CONTRIBUTING.md) as well:
 - Under the `mossball` root directory: run `marimo edit eun-chae-s/drag-the-words/implementation/drag_the_words.py`
 - Under the current `eun-chae-s/drag-the-words/implementation` directory: run `marimo edit drag_the_words.py`
 
