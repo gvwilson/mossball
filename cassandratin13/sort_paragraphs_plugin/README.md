@@ -34,6 +34,16 @@ Sample:
 }
 ```
 
+## Developing
+
+The JS and CSS files for developing the sort the paragraphs plugin can be found under `cassandratin13/sort_paragraphs_plugin`. For testing an example notebook with this plugin, run `marimo edit sort_paragraphs.py` within the same directory. To view the version requiring backend support, follow the [instructions](https://github.com/gvwilson/mossball/blob/main/CONTRIBUTING.md) to set up the backend and database.
+
+You can call the following functions defined in `frontend/widgets.py` to create a multiple choice widget:
+
+- `create_stp` - using backend support ("question_num" must be defined by the institition backend)
+- `create_local_stp` - without backend support, simply pass in the data directly or upload the data via a JSON file
+- `create_widget` - without backend support, simply pass in the plugin type and data directly or upload via a JSON file
+
 ## Mockups
 
 ![mockups](sort_the_paragraphs_design.jpg)
