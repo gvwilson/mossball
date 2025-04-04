@@ -11,6 +11,8 @@ CORS(app)
 
 # --- Endpoints ---
 
+# Helper functions to query a question for each plugin type
+
 def query_stp(unique_id):
     data = sort_paragraphs_data.get(unique_id)
     if data:
@@ -78,7 +80,13 @@ def query_ftw(unique_id):
 def institution_query():
     """
     Query endpoint.
-    Expects query parameters: plugin_type and unique_id.
+    QueryParameters:
+
+    - plugin_type (str): Type of plugin.
+    - unique_id (str): Unique identifier.
+
+    Returns:
+    - JSON response containing plugin-specific data.
     """
     plugin_type = request.args.get("plugin_type")
     unique_id = request.args.get("unique_id")
@@ -94,6 +102,8 @@ def institution_query():
         return query_ftw(unique_id)
     return jsonify({"error": "Unsupported plugin type"}), 400
 
+
+# Helper functions to verify a submission for each plugin type
 
 def verify_stp(data, unique_id, student_id):
     user_answer = data.get("answer")
@@ -179,7 +189,12 @@ def verify_str(data, unique_id, student_id):
 def institution_verify():
     """
     Verify endpoint.
-    Expects JSON with: plugin_type, unique_id, student_id, and plugin-specific answer data.
+
+    Parameters:
+    - JSON containing plugin_type, unique_id, student_id, and plugin-specific answer data.
+    
+    Returns:
+    - JSON response indicating verification status.
     """
     data = request.json
     plugin_type = data.get("plugin_type")
@@ -205,7 +220,12 @@ def institution_verify():
 def institution_save():
     """
     Save endpoint.
-    Expects JSON with: plugin_type, unique_id, and result details.
+
+    Parameters:
+    - JSON containing plugin_type, unique_id, and result details.
+
+    Returns:
+    - JSON response confirming data save.
     """
     data = request.json
     plugin_type = data.get("plugin_type")
@@ -223,8 +243,13 @@ def institution_save():
 @app.route("/api/institution/plugin/student", methods=["POST"])
 def institution_student():
     """
-    Query endpoint.
-    Expects query parameters: student_id.
+    Query endpoint for student login.
+    
+    Parameters:
+    - JSON containing institution_id and student_id.
+    
+    Returns:
+    - JSON response with student information or an error message.
     """
     data = request.json
     institution_id = data.get("institution_id")
