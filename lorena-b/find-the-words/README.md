@@ -59,9 +59,9 @@ Sample:
 
 ## Usage 
 
-The Python class for the widget initalization can be found in `frontend/widgets.py` (`FindTheWords`)
+The Python class for the widget initialization can be found in `frontend/widgets.py` (`FindTheWords`)
 
-To test a local instance of the plugin for testing, the plugin can be imported in the following way in a test notebook(see `demo.py`):
+To run a local instance of the plugin for testing, the plugin can be imported the following way in a test notebook (see `demo.py`):
 
 ```python
 import sys
