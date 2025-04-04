@@ -85,5 +85,19 @@ def _(CUSTOM_CSS_PATH, DragWords):
     return (local_data,)
 
 
+@app.cell
+def _(CUSTOM_CSS_PATH, DragWords):
+    local_data2 = {
+        "instruction": "Finish the following",
+        "question":    (
+                "Kelly is a {{}} scientist, and she is working on a project to study the {{}} system. "
+                "She is interested in the {{}} of the {{}} system."
+            ),
+        "choices":  [ "computer", "operating", "performance", "file"]
+    }
+    DragWords("local", local_data2, custom_css_path=CUSTOM_CSS_PATH)
+    return (local_data2,)
+
+
 if __name__ == "__main__":
     app.run()
