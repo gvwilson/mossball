@@ -34,6 +34,10 @@ Sample:
 }
 ```
 
+## Mockups
+
+![mockups](sort_the_paragraphs_design.jpg)
+
 ## Possible Enhancements
 
 - Giving the option to keep the correct answers in place after restarting, so that only the texts that haven't been placed correctly yet can be moved
