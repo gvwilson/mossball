@@ -78,3 +78,17 @@ To develop for the `find-the-words` plugin, see the instructions in the [README]
     - If you want to run a specific test file, run `pytest tests/testfiles/{test file name}`
     - If you want to run a specific test case under the specific file, run `pytest tests/testfiles/{test file name}::{test function name}`
 
+
+## Styling
+### Information on CSS Files
+#### Widget-Specific CSS Files 
+Each widget has its own CSS file, which defines styles specific to that widget’s layout and behavior. These files are stored in the corresponding plugin folders, named after the person who created them. Each widget python class includes its CSS file by adding it to the `_css` attribute, making sure that the styles are applied when the widget is loaded.
+#### Global CSS File 
+In addition to the widget-specific CSS, we have a shared global CSS file. This file provides common styles used by all widgets, such as the default button styles, title and instruction text styles, tooltip styles, and other design elements. It also defines CSS variables that are used for all the colours and these variables allow for a consistent look across all widgets and makes it easy to change the overall theme by simply overriding the values.
+#### Custom Styling
+Institutions can apply custom styling by providing an additional CSS file through a parameter in each widget’s constructor. When a custom CSS file is specified, it is loaded and applied after both the global and widget-specific CSS files. This ensures that any variables or styles defined in the custom CSS override the existing ones, allowing for theme customization. Currently, two predefined custom CSS files are available in the `frontend` folder: `custom_theme_brown_beige` and `custom_theme_orange_yellow`. These files include detailed comments explaining the purpose of each variable and providing instructions on how to modify them. Users can reference these examples to create their own themes by adjusting colours according to their institution's requirements. If adding a new custom theme, we recommended to follow the existing structure to ensure consistency and maintainability.
+
+### Suggestions on Styling
+- Avoid Deeply Nested Selectors: When writing CSS for new widgets, keep your selectors as flat as possible. plan the CSS so that the global styles can easily override them if needed. If styles are nested too deeply, it can be harder for the global CSS (and custom CSS overrides) to apply changes.
+- Embedded SVGs: If you embed SVGs directly into your CSS (as data URIs), the colours in those SVGs are hard-coded. Changing the colour later is not as simple as changing a variable value. You may need to replace the data URI or use an alternative approach if you expect frequent theme changes. Consider using inline SVG with `currentColor` or another alternative method so that the colour can be controlled with CSS if possible.
+- File Paths: When providing a custom CSS file, make sure the path is correct relative to where the widget is being used. The global CSS file is currenly located in the design-system folder at `mossball/design-system/global.css`. For the widget-specific CSS files, they are stored with the widget’s code.
