@@ -8,6 +8,11 @@ The aim of this project is to design, build, and test a set of Marimo plugins
 for classroom exercises similar to those in [H5P][h5p]:
 multiple choice, fill in the blanks, and so on.
 
+## Demo
+You can watch the demo video of explaining the overall design and structure of plugins
+- YouTube: https://youtu.be/oeYEotXOvgA
+- Google Drive: https://drive.google.com/file/d/1DYZI3w0ikATuKTXiATNHsOeLZL5uu5M_/view?usp=sharing
+
 ## Setup
 
 1.  Clone [this repository][repo].
