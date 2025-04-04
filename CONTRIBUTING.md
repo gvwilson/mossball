@@ -60,7 +60,7 @@ For new widgets, create new classes that inherit from `anywidget.AnyWidget` and 
 
 ### Widgets without Backend Support
 
-To create a widget without backend support, you can provide the question/configuration data by directly passing in a data dictionary directly within the notebook cell, or you can upload a JSON file with the data object(s). In `frontend/widgets.py`, the `create_local_<plugin type>` functions create an instance of the specific widget's class with ID "local" to indicate that no backend is being used, and the `create_widget` function creates a local widget based on the plugin type provided. 
+To create a widget without backend support, you can provide the question/configuration data by directly passing in a data dictionary directly within the notebook cell, or you can upload a JSON file with the data object(s). In `frontend/widgets.py`, the `create_local_<plugin type>` functions create an instance of the specific widget's class with ID "local" to indicate that no backend is being used, and the `create_widget` function creates a local widget based on the plugin type and data provided. 
 
 1. Pass in the data object/dictionary directly within the notebook cell
     - Example usage within a notebook:
@@ -78,7 +78,7 @@ To create a widget without backend support, you can provide the question/configu
     ```
     
 2. Upload a JSON file containing the data object(s)
-    - At the top of the notebook, a JSON file can be opened to retrieve any number of questions and their data object (see `frontend/data.json` for an example of the JSON format)
+    - At the top of the notebook, a JSON file can be opened to retrieve any number of questions and their data object (see `frontend/data.json` for an example)
     - This option allows for multiple questions to be uploaded via the JSON file and does not directly display the data contents within the notebook cells
     - Example usage using `data.json`:
     ```
