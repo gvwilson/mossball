@@ -53,17 +53,9 @@ To run all of the plugins in a single notebook:
 
 A plugin where users can fill in the blanks of the questions by dragging the words to the correct positions.
 
-Source code for rendering and styling the models can be found [here](https://github.com/gvwilson/mossball/tree/main/eun-chae-s/drag-the-words/implementation).
+The design document of the plugin can be found [here](https://github.com/gvwilson/mossball/blob/main/eun-chae-s/drag-the-words/design.md). Source code for rendering and styling the models can be found [here](https://github.com/gvwilson/mossball/tree/main/eun-chae-s/drag-the-words/implementation).
 
-Currently, it supports the following functionalities:
-1. Dragging words to blank boxes for the correct number of times it appears in the question
-2. Resetting all the answer boxes to empty
-3. Verifying answers + displaying the correct and incorrect answers
-4. Retrying the question + Keeping the correct answers in place
-
-You can check your changes on this plugin by running either one of the commands on Terminal:
-- Under the `mossball` root directory: run `marimo edit eun-chae-s/drag-the-words/implementation/drag_the_words.py`
-- Under the `eun-chae-s/drag-the-words/implementation` directory: run `marimo edit drag_the_words.py`
+For the detailed instruction about the current status and how to update this plugin, please review [this README file](eun-chae-s/drag-the-words/implementation/README.md) for this plugin.
 
 ### Find The Words
 
