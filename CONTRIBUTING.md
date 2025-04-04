@@ -17,7 +17,7 @@ To manage project depenencies, update the `dependencies` list in `pyproject.toml
 
 ### Backend Setup
 
-If using the backend server, please see this [diagram](https://raw.githubusercontent.com/gvwilson/mossball/refs/heads/contributing-backend-setup/backends/backend-diagram.png) to understand how the plugin backend works with the frontend and institution backend.
+If using the backend server, please see this [diagram](https://github.com/gvwilson/mossball/blob/main/backends/backend-diagram.png) to understand how the plugin backend works with the frontend and institution backend.
 
 To set up the database:
 
@@ -41,7 +41,6 @@ use plugin_backend_db
 db.institutions.find()
 ```
 
-
 ## Plugin Development and Code Structure
 
 To run all of the plugins in a single notebook:
@@ -49,7 +48,68 @@ To run all of the plugins in a single notebook:
 - Go to the `frontend/` directory
 - Run `marimo edit` and select a notebook
 
-### Drag the Words
+### Widgets Class
+
+In `frontend/widgets.py`, each widget is a class than inherits from `anywidget.AnyWidget` to be compatible within the Marimo notebook, and from our custom `Widget` class defined within the same file. This parent class contains attributes common to all plugins: `unique_id`, `plugin_type`, `local_data` (optional with backend support), and `data`. It also provides a `fetch_data` method that either makes a GET request to the institution's backend, or stores the local data within the `data` field.
+
+Each child widget class has an `__init__` method which calls its parents' initializations to populate the common attributes, and can contain further custom initializations. 
+
+They also contain a `_handle_custom_msg` method that _must_ be defined directly within the child class (it cannot inherit the method from a parent class). This is a method from anywidget and is used for verifying the answer (either locally or through the backend) and sending back messages to display in the frontend.
+
+For new widgets, create new classes that inherit from `anywidget.AnyWidget` and `Widget` and that contain implement `__init__`and `_handle_custom_msg` methods. Add attributes for the JS and CSS files, as well as for specific Traitlets fields that will be used by the anywidgets model.
+
+### Widgets without Backend Support
+
+To create a widget without backend support, there are two options for providing the question/configuration data:
+
+1. Pass in the data object/dictionary directly within the notebook cell
+    - Call one of the `create_local_<plugin type>` functions defined in `frontend/widgets.py` - these functions create an instance of the specific widget's class with ID "local" to indicate that no backend is being used
+    - Example usage within a notebook:
+
+    ```
+    @app.cell
+    from widgets import create_local_mc
+    def _(create_local_mc):
+        create_local_mc(
+            "What is the capital of China?",
+            ["Hong Kong", "Shanghai", "Beijing", "Tokyo"],
+            2,
+        )
+        return
+    ```
+    
+2. Upload a JSON file containing the data object(s)
+    - At the top of the notebook, a JSON file can be opened to retrieve any number of questions and their data object (see `frontend/data.json` for an example of the JSON format)
+    - The `create_widget` function in `frontend/widgets.py` creates a local widget based on the plugin type provided
+    - This option allows for multiple questions to be uploaded via the JSON file and does not directly display the data contents within the notebook cells
+    - Example usage using `data.json`:
+    ```
+    @app.cell
+    def _():
+        import json
+        from widgets import create_widget
+
+        with open('FILE_NAME.json', 'r') as file:
+            questions = json.load(file)
+        return create_widget, file, json, questions
+
+    @app.cell
+    def _(create_widget, questions):
+        create_widget(questions["1"]) 
+        return 
+    ```
+    
+### Widgets with Backend Support
+
+To create a widget that uses the backend, use the `create_<plugin type>` functions from `frontend/widgets.py`. With the given unique ID that is _not_ "local", these functions will create instances of the widget classes and will fetch the appropriate data from the backend. 
+
+When students log in, a global session will be created to pass along their ID.
+
+See `frontend/widgets_notebook.py` for some examples.
+
+### Plugins
+
+#### Drag the Words
 
 A plugin where users can fill in the blanks of the questions by dragging the words to the correct positions.
 
@@ -57,11 +117,21 @@ The design document of the plugin can be found [here](https://github.com/gvwilso
 
 For the detailed instruction about the current status and how to update this plugin, please review [this README file](eun-chae-s/drag-the-words/implementation/README.md) for this plugin.
 
-### Find The Words
+#### Find The Words
 
 A plugin that allows users to configure play a word search game in the marimo notebook. Source code can be found [here](https://github.com/gvwilson/mossball/tree/08a43c5ffdeb3625a29f486048c14e8de443cae5/lorena-b/find-the-words).
 
 To develop for the `find-the-words` plugin, see the instructions in the [README](https://github.com/gvwilson/mossball/blob/08a43c5ffdeb3625a29f486048c14e8de443cae5/lorena-b/find-the-words/README.md)
+
+#### Multiple Choice
+
+#### Sort the Paragraphs
+
+A plugin where users can rearrange texts in the correct order by dragging textboxes or using a dropdown to select which text to place in each position.
+
+Source code for the plugin can be found [here](https://github.com/gvwilson/mossball/tree/main/cassandratin13/sort_paragraphs_plugin).
+
+For further development instructions, see the [README]() file for this plugin.
 
 ## Testing
 ### How to set up and write tests
