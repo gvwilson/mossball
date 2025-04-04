@@ -125,6 +125,12 @@ To develop for the `find-the-words` plugin, see the instructions in the [README]
 
 #### Multiple Choice
 
+A plugin where users can select a single correct answer.
+
+Source code for the plugin can be found [here](https://github.com/gvwilson/mossball/tree/main/cassandratin13/mcq_plugin).
+
+For further development instructions, see the [README]() file for this plugin.
+
 #### Sort the Paragraphs
 
 A plugin where users can rearrange texts in the correct order by dragging textboxes or using a dropdown to select which text to place in each position.
