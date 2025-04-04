@@ -49,6 +49,14 @@ To run all of the plugins in a single notebook:
 - Go to the `frontend/` directory
 - Run `marimo edit` and select a notebook
 
+### Drag the Words
+
+A plugin where users can fill in the blanks of the questions by dragging the words to the correct positions.
+
+The design document of the plugin can be found [here](https://github.com/gvwilson/mossball/blob/main/eun-chae-s/drag-the-words/design.md). Source code for rendering and styling the models can be found [here](https://github.com/gvwilson/mossball/tree/main/eun-chae-s/drag-the-words/implementation).
+
+For the detailed instruction about the current status and how to update this plugin, please review [this README file](eun-chae-s/drag-the-words/implementation/README.md) for this plugin.
+
 ### Find The Words
 
 A plugin that allows users to configure play a word search game in the marimo notebook. Source code can be found [here](https://github.com/gvwilson/mossball/tree/08a43c5ffdeb3625a29f486048c14e8de443cae5/lorena-b/find-the-words).
