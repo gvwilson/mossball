@@ -6,14 +6,25 @@ __generated_with = "0.11.7"
 app = marimo.App(width="medium")
 
 
+@app.cell(hide_code=True)
+def _(__file__):
+    import sys
+    import os
+    # Add the project root and the shared frontend folder to sys.path.
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../frontend")))
+    from widgets import create_local_str
+    return create_local_str, os, sys
+
+
 @app.cell
 def _():
     from StructureStripWidget import StructureStripWidget
 
-    structure_strip = StructureStripWidget(
-        title="London Docklands Evaluation",
-        description="Make yourself familiar with the Docklands in London that underwent major changes. To what extend was the Docklands Regeneration successful? Your evaluation of the successes and the failures each should be roughly three times the size of your introduction and your conclusion.",
-        sections=[
+    data = {
+        "title": "London Docklands Evaluation",
+        "description": "Make yourself familiar with the Docklands in London that underwent major changes. To what extend was the Docklands Regeneration successful? Your evaluation of the successes and the failures each should be roughly three times the size of your introduction and your conclusion.",
+        "sections": [
             {
                 "id": "introduction",
                 "label": "Introduction",
@@ -43,10 +54,21 @@ def _():
                 "max_length": 200
             }
         ]
-    )
+    }
+        
+    return data
 
-    structure_strip
-    return StructureStripWidget, structure_strip
+@app.cell
+def _(create_local_str, data):
+    from pathlib import Path
+    CURRENT_DIR = Path(__file__).resolve().parent
+    # Uncomment the following line to apply a custom theme.
+    # CUSTOM_CSS_PATH = CURRENT_DIR / "custom_theme_orange_yellow.css"
+    # create_local_str(data, custom_css_path=str(CUSTOM_CSS_PATH))
+    
+    # For now, use the default theme.
+    create_local_str(data["title"], data["description"], data["sections"])
+    return
 
 
 if __name__ == "__main__":
