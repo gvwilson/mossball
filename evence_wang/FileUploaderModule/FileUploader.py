@@ -12,7 +12,7 @@ import boto3
 from uuid import uuid4
 from dotenv import load_dotenv
 
-from s3_helpers import (
+from .s3_helpers import (
     create_bucket,
     refresh_buckets,
     upload_to_s3,
