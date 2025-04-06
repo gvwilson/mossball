@@ -121,6 +121,12 @@ A plugin that allows users to configure play a word search game in the marimo no
 
 To develop for the `find-the-words` plugin, see the instructions in the [README](https://github.com/gvwilson/mossball/blob/08a43c5ffdeb3625a29f486048c14e8de443cae5/lorena-b/find-the-words/README.md)
 
+### Structure Strip
+
+A plugin that help users organize their writing into clearly defined sections, each based on a specific prompt. Javascript and CSS code can be found [here](https://github.com/gvwilson/mossball/tree/main/Barsamyan-D/str-strip-plugin-david). The python widget class can be found [here](https://github.com/gvwilson/mossball/blob/main/frontend/widgets.py).
+
+For the detailed instruction about the current status and how to update this plugin, please review this [README](https://github.com/gvwilson/mossball/tree/main/Barsamyan-D/str-strip-plugin-david/README.md) file for the plugin.
+
 #### Multiple Choice
 
 A plugin where users can select a single correct answer.
