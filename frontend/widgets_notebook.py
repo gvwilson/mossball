@@ -59,16 +59,6 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _():
-    from sessions.login import LoginWidget
-
-    login_widget = LoginWidget()
-    login_widget.institution_id = "inst2"  # need to create `inst2`
-    login_widget.login()
-    return LoginWidget, login_widget
-
-
-@app.cell(hide_code=True)
-def _():
     from sessions.login import StudentLoginWidget
 
     login = StudentLoginWidget()
