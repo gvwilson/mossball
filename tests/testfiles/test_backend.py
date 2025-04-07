@@ -106,7 +106,7 @@ def test_login_student(client, data, mock_response, expected_status, expected_co
             assert expected_content in response.get_json().values() if isinstance(expected_content, dict) else response.data.decode()
 
 
-# Succesul queries will use the data from backends/institution/dummy_data.py
+# Successful queries will use the data from backends/institution/dummy_data.py
 @pytest.mark.order(4)
 @pytest.mark.parametrize("institution_id,plugin_type,unique_id,expected_status,expected_content", [
     ("dummy_inst", "sort_paragraphs", get_id("sort_paragraphs"), 200, get_data("sort_paragraphs")), # successful sort the paragraphs query

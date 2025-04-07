@@ -5,9 +5,20 @@ app = marimo.App(width="medium")
 
 
 @app.cell
-def _():
-    from src.find_the_words import WordSearch
+def _(__file__):
+    import sys
+    import os
 
+    # Add the project root to sys.path
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../frontend")))
+
+    from widgets import create_widget
+    return create_widget, os, sys
+
+
+@app.cell
+def _(create_widget):
     data = {
         "title": "Select the words in the grid below:",
         "words": ["Apple", "Orange", "Banana", "Pineapple"],
@@ -24,8 +35,13 @@ def _():
         },
     }
 
-    WordSearch(data=data)
-    return WordSearch, data
+    input_data = {
+        "widget": "find_words",
+        "data": data
+    }
+
+    create_widget(input_data)
+    return data, input_data
 
 
 if __name__ == "__main__":

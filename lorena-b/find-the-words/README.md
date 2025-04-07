@@ -59,10 +59,19 @@ Sample:
 
 ## Usage 
 
-In a test notebook within the scope of the plugin directory, the plugin can be imported in the following way (see `demo.py`):
+The Python class for the widget initialization can be found in `frontend/widgets.py` (`FindTheWords`)
+
+To run a local instance of the plugin for testing, the plugin can be imported the following way in a test notebook (see `demo.py`):
 
 ```python
-from src.find_the_words import WordSearch
+import sys
+import os
+
+# Add the project root to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../frontend")))
+
+from widgets import create_widget
 
 data = {
     "title": "Select the words in the grid below:",
@@ -80,7 +89,12 @@ data = {
     },
 }
 
-WordSearch(data=data)
+input_data = {
+    "widget": "find_words",
+    "data": data
+}
+
+create_widget(input_data)
 ```
 
 ## Mockups
