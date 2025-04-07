@@ -35,7 +35,7 @@ To run the sample institution backend server:
 To create an institution in the database:
 - While the backend servers are running, open the following link http://localhost:5001/ui/register in a browser
 - Add the ID and base URL for the institution (to use the notebook provided in `frontend/widgets_notebook.py`, use ID "inst2" with URL "http://localhost:5002")
-- To confirm that the institution was created, run `mongosh` in a terminal (if installed) and run the following commands: 
+- To confirm that the institution was created, run `mongosh` in a terminal (if installed) and run the following commands:
 ```
 use plugin_backend_db
 db.institutions.find()
@@ -52,7 +52,7 @@ To run all of the plugins in a single notebook:
 
 In `frontend/widgets.py`, each widget is a class than inherits from `anywidget.AnyWidget` to be compatible within the Marimo notebook, and from our custom `Widget` class defined within the same file. This parent class contains attributes common to all plugins: `unique_id`, `plugin_type`, `local_data` (optional with backend support), and `data`. It also provides a `fetch_data` method that either makes a GET request to the institution's backend, or stores the local data within the `data` field.
 
-Each child widget class has an `__init__` method which calls its parents' initializations to populate the common attributes, and can contain further custom initializations. 
+Each child widget class has an `__init__` method which calls its parents' initializations to populate the common attributes, and can contain further custom initializations.
 
 They also contain a `_handle_custom_msg` method that _must_ be defined directly within the child class (it cannot inherit the method from a parent class). This is a method from anywidget and is used for verifying the answer (either locally or through the backend) and sending back messages to display in the frontend.
 
@@ -60,7 +60,7 @@ For new widgets, create new classes that inherit from `anywidget.AnyWidget` and 
 
 ### Widgets without Backend Support
 
-To create a widget without backend support, you can provide the question/configuration data by directly passing in a data dictionary directly within the notebook cell, or you can upload a JSON file with the data object(s). In `frontend/widgets.py`, the `create_local_<plugin type>` functions create an instance of the specific widget's class with ID "local" to indicate that no backend is being used, and the `create_widget` function creates a local widget based on the plugin type and data provided. 
+To create a widget without backend support, you can provide the question/configuration data by directly passing in a data dictionary directly within the notebook cell, or you can upload a JSON file with the data object(s). In `frontend/widgets.py`, the `create_local_<plugin type>` functions create an instance of the specific widget's class with ID "local" to indicate that no backend is being used, and the `create_widget` function creates a local widget based on the plugin type and data provided.
 
 1. Pass in the data object/dictionary directly within the notebook cell
     - Example usage within a notebook:
@@ -76,7 +76,7 @@ To create a widget without backend support, you can provide the question/configu
         )
         return
     ```
-    
+
 2. Upload a JSON file containing the data object(s)
     - At the top of the notebook, a JSON file can be opened to retrieve any number of questions and their data object (see `frontend/data.json` for an example)
     - This option allows for multiple questions to be uploaded via the JSON file and does not directly display the data contents within the notebook cells
@@ -93,13 +93,13 @@ To create a widget without backend support, you can provide the question/configu
 
     @app.cell
     def _(create_widget, questions):
-        create_widget(questions["1"]) 
-        return 
+        create_widget(questions["1"])
+        return
     ```
-    
+
 ### Widgets with Backend Support
 
-To create a widget that uses the backend, use the `create_<plugin type>` functions from `frontend/widgets.py`. With the given unique ID that is _not_ "local", these functions will create instances of the widget classes and will fetch the appropriate data from the backend. 
+To create a widget that uses the backend, use the `create_<plugin type>` functions from `frontend/widgets.py`. With the given unique ID that is _not_ "local", these functions will create instances of the widget classes and will fetch the appropriate data from the backend.
 
 When students log in, a global session will be created to pass along their ID.
 
@@ -229,22 +229,11 @@ For further development instructions, see the [README](https://github.com/gvwils
     - If you want to run a specific test file, run `pytest tests/testfiles/{test file name}`
     - If you want to run a specific test case under the specific file, run `pytest tests/testfiles/{test file name}::{test function name}`
 
-## Development Tools
-
-### Recommended Tools
-- [AWS CLI](https://aws.amazon.com/cli/) for S3 configuration
-- [LocalStack](https://localstack.cloud/) for local AWS service emulation
-
-### Troubleshooting AWS Issues
-- **Access Denied Errors**: Ensure your IAM user has the correct permissions (`AmazonS3FullAccess` or custom policy)
-- **Bucket Already Exists**: S3 bucket names must be globally unique
-- **Region Issues**: Ensure your region in AWS config matches the region in your code
-
 ## Styling
 ### Information on CSS Files
-#### Widget-Specific CSS Files 
+#### Widget-Specific CSS Files
 Each widget has its own CSS file, which defines styles specific to that widget’s layout and behavior. These files are stored in the corresponding plugin folders, named after the person who created them. Each widget python class includes its CSS file by adding it to the `_css` attribute, making sure that the styles are applied when the widget is loaded.
-#### Global CSS File 
+#### Global CSS File
 In addition to the widget-specific CSS, we have a shared global CSS file. This file provides common styles used by all widgets, such as the default button styles, title and instruction text styles, tooltip styles, and other design elements. It also defines CSS variables that are used for all the colours and these variables allow for a consistent look across all widgets and makes it easy to change the overall theme by simply overriding the values.
 #### Custom Styling
 Institutions can apply custom styling by providing an additional CSS file through a parameter in each widget’s constructor. When a custom CSS file is specified, it is loaded and applied after both the global and widget-specific CSS files. This ensures that any variables or styles defined in the custom CSS override the existing ones, allowing for theme customization. Currently, two predefined custom CSS files are available in the `frontend` folder: `custom_theme_brown_beige` and `custom_theme_orange_yellow`. These files include detailed comments explaining the purpose of each variable and providing instructions on how to modify them. Users can reference these examples to create their own themes by adjusting colours according to their institution's requirements. If adding a new custom theme, we recommended to follow the existing structure to ensure consistency and maintainability.
