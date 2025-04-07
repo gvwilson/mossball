@@ -24,20 +24,29 @@
     - If you want to run a specific test case under the specific file, run `pytest tests/testfiles/{test file name}::{test function name}`
 
 ## Resources
+
+### Recommended Tools
+- [AWS CLI](https://aws.amazon.com/cli/) for S3 configuration
+- [LocalStack](https://localstack.cloud/) for local AWS service emulation
+
 ### Development
 - Marimo
     - Learn basic functionality: https://docs.marimo.io/guides/
     - Join their Discord community https://docs.marimo.io/community/
  - esm imports:
     - To easily import libraries: https://esm.sh/
-    
+
 - MongoDB
     - Collection methods: https://www.mongodb.com/docs/manual/reference/method/js-collection/
 
 ### Testing
-- Selenium with Python: https://selenium-python.readthedocs.io/ 
+- Selenium with Python: https://selenium-python.readthedocs.io/
 - Pytest fixtures & clients: https://flask.palletsprojects.com/en/stable/testing/
 - Unittest mock library: https://docs.python.org/3/library/unittest.mock.html
 - Unittest mock tutorial: https://medium.com/@rohaangurunathrevankar/mocking-for-unit-tests-using-python-5e1fedde4f97
 - AWS mock library: https://docs.getmoto.org/en/latest/docs/getting_started.html
 
+### Troubleshooting AWS Issues
+- **Access Denied Errors**: Ensure your IAM user has the correct permissions (`AmazonS3FullAccess` or custom policy)
+- **Bucket Already Exists**: S3 bucket names must be globally unique
+- **Region Issues**: Ensure your region in AWS config matches the region in your code
