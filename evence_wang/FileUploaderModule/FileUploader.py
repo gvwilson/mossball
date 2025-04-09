@@ -25,10 +25,13 @@ load_dotenv()
 ROOT_DIR = pathlib.Path(__file__).parent.parent.parent
 DESIGN_SYSTEM_ROOT = ROOT_DIR / "design-system"
 
+
 class FileUploader(anywidget.AnyWidget):
     # S3 feature
-    s3_enabled = traitlets.Bool(os.getenv("S3_UPLOAD_ENABLED", "0").lower() == "1").tag(sync=True)
-    s3_buckets = traitlets.List(traitlets.Unicode(), default_value=[]).tag(sync=True)
+    s3_enabled = traitlets.Bool(
+        os.getenv("S3_UPLOAD_ENABLED", "0").lower() == "1").tag(sync=True)
+    s3_buckets = traitlets.List(
+        traitlets.Unicode(), default_value=[]).tag(sync=True)
     selected_bucket = traitlets.Unicode("").tag(sync=True)
 
     _widget_dir = pathlib.Path(__file__).parent
@@ -77,7 +80,8 @@ class FileUploader(anywidget.AnyWidget):
             self._widget_css.read_text(encoding="utf-8")
         ])
         if custom_css_path:
-            custom_css = pathlib.Path(custom_css_path).read_text(encoding="utf-8")
+            custom_css = pathlib.Path(
+                custom_css_path).read_text(encoding="utf-8")
             self._css = default_css + "\n" + custom_css
         else:
             self._css = default_css
@@ -109,14 +113,16 @@ class FileUploader(anywidget.AnyWidget):
             if bucket_name:
                 success, err_msg = self._create_bucket(bucket_name)
                 if not success:
-                    self.send({"method": "bucket_creation_error", "message": err_msg})
+                    self.send(
+                        {"method": "bucket_creation_error", "message": err_msg})
                 else:
                     self.send({"method": "bucket_creation_success"})
 
         elif method == "refresh_buckets":
             success, err_msg = self._refresh_buckets()
             if not success:
-                self.send({"method": "bucket_refresh_error", "message": err_msg})
+                self.send(
+                    {"method": "bucket_refresh_error", "message": err_msg})
             else:
                 self.send({"method": "bucket_refresh_success"})
 
@@ -143,7 +149,6 @@ class FileUploader(anywidget.AnyWidget):
                         file_name=file_data['name'],
                         bucket_name=file_data['s3_bucket']
                     )
-
 
     def _ensure_temp_dir(self):
         if not self._temp_dir.exists():
@@ -210,16 +215,18 @@ class FileUploader(anywidget.AnyWidget):
     def contents(self, idx=None, display=False):
         def get_content(file_data):
             if self.cloud_only:
-                content = self._get_from_s3(file_data["name"], file_data.get("s3_bucket"))
+                content = self._get_from_s3(
+                    file_data["name"], file_data.get("s3_bucket"))
                 if not content:
                     return None
             else:
-                content = self._get_from_s3(file_data["name"], file_data.get("s3_bucket"))
+                content = self._get_from_s3(
+                    file_data["name"], file_data.get("s3_bucket"))
 
                 if not content:
                     content = (base64.b64decode(file_data["content"])
-                            if file_data["content"]
-                            else open(file_data["path"], "rb").read())
+                               if file_data["content"]
+                               else open(file_data["path"], "rb").read())
 
             if not display:
                 return content
